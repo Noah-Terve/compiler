@@ -11,7 +11,7 @@ rule token = parse
 | '('      { LPAREN }
 | ')'      { RPAREN }
 | '{'      { LBRACE }
-| '}'      { RBRACE }
+| '}'      { RBRACE } (* Here is an implicit declaration *)
 | ';'      { SEMI }
 | ','      { COMMA }
 | '+'      { PLUS }
@@ -30,9 +30,11 @@ rule token = parse
 | ["&&" "and"]    { AND }
 | "||"     { OR }
 | ["!" "not"]     { NOT }
+| "exception" { EXCEPTION}
 | "case"   { CASE }
 | "switch" { SWITCH }
 | "in"     { IN }
+| "isin"   { MEMBERSHIP }
 | "if"     { IF }
 | "else"   { ELSE }
 | "for"    { FOR }
@@ -42,6 +44,7 @@ rule token = parse
 | "double" { DOUBLE }
 | "bool"   { BOOL }
 | "function" { FUNCTION }
+| "set"  { ?}
 | "void"   { VOID }
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }
