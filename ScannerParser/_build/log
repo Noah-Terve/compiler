@@ -1,0 +1,134 @@
+# dune build
+# OCAMLPARAM: unset
+# Shared cache: disabled
+# Workspace root: "/Users/haijun/Desktop/Academics/Fall
+# 2023/107/Wampus/ScannerParser"
+# Auto-detected concurrency: 8
+$ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n5prp5bqxcqrt00000gn/T/dune_c58dfd_output
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Dev
+#  ; merlin = true
+#  ; for_host = None
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; ocaml_bin = External "/Users/haijun/.opam/5.0.0/bin"
+#  ; ocaml = Ok External "/Users/haijun/.opam/5.0.0/bin/ocaml"
+#  ; ocamlc = External "/Users/haijun/.opam/5.0.0/bin/ocamlc.opt"
+#  ; ocamlopt = Ok External "/Users/haijun/.opam/5.0.0/bin/ocamlopt.opt"
+#  ; ocamldep = Ok External "/Users/haijun/.opam/5.0.0/bin/ocamldep.opt"
+#  ; ocamlmklib = Ok External "/Users/haijun/.opam/5.0.0/bin/ocamlmklib.opt"
+#  ; env =
+#      map
+#        { "DUNE_OCAML_HARDCODED" :
+#            "/Users/haijun/.opam/5.0.0/lib/ocaml:/Users/haijun/.opam/5.0.0/lib"
+#        ; "DUNE_OCAML_STDLIB" : "/Users/haijun/.opam/5.0.0/lib/ocaml"
+#        ; "DUNE_SOURCEROOT" :
+#            "/Users/haijun/Desktop/Academics/Fall 2023/107/Wampus/ScannerParser"
+#        ; "INSIDE_DUNE" :
+#            "/Users/haijun/Desktop/Academics/Fall 2023/107/Wampus/ScannerParser/_build/default"
+#        ; "MANPATH" :
+#            "/Users/haijun/Desktop/Academics/Fall 2023/107/Wampus/ScannerParser/_build/install/default/man"
+#        ; "OCAMLFIND_IGNORE_DUPS_IN" :
+#            "/Users/haijun/Desktop/Academics/Fall 2023/107/Wampus/ScannerParser/_build/install/default/lib"
+#        ; "OCAMLPATH" :
+#            "/Users/haijun/Desktop/Academics/Fall 2023/107/Wampus/ScannerParser/_build/install/default/lib"
+#        ; "OCAMLTOP_INCLUDE_PATH" :
+#            "/Users/haijun/Desktop/Academics/Fall 2023/107/Wampus/ScannerParser/_build/install/default/lib/toplevel"
+#        ; "OCAML_COLOR" : "always"
+#        ; "OPAMCOLOR" : "always"
+#        }
+#  ; findlib_paths =
+#      [ External "/Users/haijun/.opam/5.0.0/lib/ocaml"
+#      ; External "/Users/haijun/.opam/5.0.0/lib"
+#      ]
+#  ; natdynlink_supported = true
+#  ; supports_shared_libraries = true
+#  ; ocaml_config =
+#      { version = "5.0.0"
+#      ; standard_library_default = "/Users/haijun/.opam/5.0.0/lib/ocaml"
+#      ; standard_library = "/Users/haijun/.opam/5.0.0/lib/ocaml"
+#      ; standard_runtime = "the_standard_runtime_variable_was_deleted"
+#      ; ccomp_type = "cc"
+#      ; c_compiler = "cc"
+#      ; ocamlc_cflags =
+#          [ "-O2"; "-fno-strict-aliasing"; "-fwrapv"; "-pthread" ]
+#      ; ocamlc_cppflags = [ "-D_FILE_OFFSET_BITS=64" ]
+#      ; ocamlopt_cflags =
+#          [ "-O2"; "-fno-strict-aliasing"; "-fwrapv"; "-pthread" ]
+#      ; ocamlopt_cppflags = [ "-D_FILE_OFFSET_BITS=64" ]
+#      ; bytecomp_c_compiler =
+#          [ "cc"
+#          ; "-O2"
+#          ; "-fno-strict-aliasing"
+#          ; "-fwrapv"
+#          ; "-pthread"
+#          ; "-D_FILE_OFFSET_BITS=64"
+#          ]
+#      ; bytecomp_c_libraries = [ "-lm"; "-lpthread" ]
+#      ; native_c_compiler =
+#          [ "cc"
+#          ; "-O2"
+#          ; "-fno-strict-aliasing"
+#          ; "-fwrapv"
+#          ; "-pthread"
+#          ; "-D_FILE_OFFSET_BITS=64"
+#          ]
+#      ; native_c_libraries = [ "-lm"; "-lpthread" ]
+#      ; native_pack_linker = [ "ld"; "-r"; "-o" ]
+#      ; cc_profile = []
+#      ; architecture = "amd64"
+#      ; model = "default"
+#      ; int_size = 63
+#      ; word_size = 64
+#      ; system = "macosx"
+#      ; asm = [ "cc"; "-c"; "-Wno-trigraphs" ]
+#      ; asm_cfi_supported = true
+#      ; with_frame_pointers = false
+#      ; ext_exe = ""
+#      ; ext_obj = ".o"
+#      ; ext_asm = ".s"
+#      ; ext_lib = ".a"
+#      ; ext_dll = ".so"
+#      ; os_type = "Unix"
+#      ; default_executable_name = "a.out"
+#      ; systhread_supported = true
+#      ; host = "x86_64-apple-darwin22.6.0"
+#      ; target = "x86_64-apple-darwin22.6.0"
+#      ; profiling = false
+#      ; flambda = false
+#      ; spacetime = false
+#      ; safe_string = true
+#      ; exec_magic_number = "Caml1999X032"
+#      ; cmi_magic_number = "Caml1999I032"
+#      ; cmo_magic_number = "Caml1999O032"
+#      ; cma_magic_number = "Caml1999A032"
+#      ; cmx_magic_number = "Caml1999Y032"
+#      ; cmxa_magic_number = "Caml1999Z032"
+#      ; ast_impl_magic_number = "Caml1999M032"
+#      ; ast_intf_magic_number = "Caml1999N032"
+#      ; cmxs_magic_number = "Caml1999D032"
+#      ; cmt_magic_number = "Caml1999T032"
+#      ; natdynlink_supported = true
+#      ; supports_shared_libraries = true
+#      ; windows_unicode = false
+#      }
+#  }
+# Promoting "_build/default/microc.opam" to "microc.opam"
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I lib/.microc.objs/byte -no-alias-deps -opaque -o lib/.microc.objs/byte/microc.cmo -c -impl lib/microc.ml-gen)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/microc.cma lib/.microc.objs/byte/microc.cmo)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamllex -q -o bin/scanner.ml bin/scanner.mll)
+> File "bin/scanner.mll", line 30, character 6: syntax error.
+[3]
+$ (cd _build/.sandbox/6e49f7ce4455e0ce1dedd2b15e865852/default && /Users/haijun/.opam/5.0.0/bin/menhir bin/parser.mly --base bin/parser --infer-write-query bin/parser__mock.ml.mock)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/microc.ml) > _build/default/bin/.microc.eobjs/dune__exe__Microc.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/parser__mock.ml.mock) > _build/default/bin/.microc.eobjs/parser__mock.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/ast.ml) > _build/default/bin/.microc.eobjs/dune__exe__Ast.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/codegen.ml) > _build/default/bin/.microc.eobjs/dune__exe__Codegen.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/sast.ml) > _build/default/bin/.microc.eobjs/dune__exe__Sast.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/semant.ml) > _build/default/bin/.microc.eobjs/dune__exe__Semant.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I bin/.microc.eobjs/byte -no-alias-deps -opaque -o bin/.microc.eobjs/byte/dune__exe.cmo -c -impl bin/.microc.eobjs/dune__exe.ml-gen)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I lib/.microc.objs/byte -I lib/.microc.objs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o lib/.microc.objs/native/microc.cmx -c -impl lib/microc.ml-gen)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/microc.cmxa lib/.microc.objs/native/microc.cmx)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -shared -linkall -I lib -o lib/microc.cmxs lib/microc.cmxa)

@@ -8,19 +8,18 @@ let digits = digit+
 rule token = parse
   [' ' '\t' '\r' '\n'] { token lexbuf } (* Whitespace *)
 | "/*"     { comment lexbuf }           (* Comments *)
-(* Our edits *)
-
-(*  *)
 | '('      { LPAREN }
 | ')'      { RPAREN }
 | '{'      { LBRACE }
-| '}'      { RBRACE }
+| '}'      { RBRACE } (* Here is an implicit declaration *)
 | ';'      { SEMI }
 | ','      { COMMA }
 | '+'      { PLUS }
 | '-'      { MINUS }
 | '*'      { TIMES }
 | '/'      { DIVIDE }
+| '^'      { }
+| '%'      { MOD }
 | '='      { ASSIGN }
 | "=="     { EQ }
 | "!="     { NEQ }
@@ -28,20 +27,29 @@ rule token = parse
 | "<="     { LEQ }
 | ">"      { GT }
 | ">="     { GEQ }
-| "&&"     { AND }
+| ["&&" "and"]    { AND }
 | "||"     { OR }
-| "!"      { NOT }
+| ["!" "not"]     { NOT }
+| "exception" { EXCEPTION}
+| "case"   { CASE }
+| "switch" { SWITCH }
+| "in"     { IN }
+| "isin"   { MEMBERSHIP }
 | "if"     { IF }
 | "else"   { ELSE }
 | "for"    { FOR }
 | "while"  { WHILE }
 | "return" { RETURN }
 | "int"    { INT }
+| "double" { DOUBLE }
 | "bool"   { BOOL }
-| "float"  { FLOAT }
+| "function" { FUNCTION }
+| "set"  { ?}
 | "void"   { VOID }
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }
+| "template" { TEMPLATE }
+| "include"  { INCLUDE }
 | digits as lxm { LITERAL(int_of_string lxm) }
 | digits '.'  digit* as lxm { FLIT(lxm) }
 | ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }
