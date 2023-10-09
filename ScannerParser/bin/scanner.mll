@@ -9,7 +9,7 @@ rule token = parse
   [' ' '\t' '\r' '\n'] { token lexbuf } (* Whitespace *)
 | "/*"     { comment lexbuf }           (* Comments *)
 (* Our edits *)
-| "float"  { FLOAT }
+
 | "include" { INCLUDE }
 | "and"    { AND }
 | "or"     { OR }
@@ -22,6 +22,7 @@ rule token = parse
 | "case"   { CASE }
 | "string" { STRING }
 | "template" { TEMPLATE }
+| "isin"   { ISIN }
 | "in"     { IN }
 | "%"      { MOD }
 | "["      { LBRACK }
@@ -62,7 +63,6 @@ rule token = parse
 | "int"    { INT }
 | "bool"   { BOOL }
 | "float"  { FLOAT }
-| "void"   { VOID }
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }
 | digits as lxm { LITERAL(int_of_string lxm) }
@@ -70,6 +70,8 @@ rule token = parse
 | ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }
 | eof { EOF }
 | _ as char { raise (Failure("illegal character " ^ Char.escaped char)) }
+(* Remove *)
+| "void"   { VOID }
 
 and comment = parse
   "*/" { token lexbuf }

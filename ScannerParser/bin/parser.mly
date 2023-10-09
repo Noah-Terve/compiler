@@ -7,6 +7,11 @@ open Ast
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN
 %token NOT EQ NEQ LT LEQ GT GEQ AND OR
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
+/* edits */
+%token LBRACK RBRACK IN MOD COLON TEMPLATE
+%token INCLUDE ELSEIF SWITCH TYPE FUNCTION CASE
+// float, char, and string?
+%token <char> CHAR
 %token <int> LITERAL
 %token <bool> BLIT
 %token <string> ID FLIT
@@ -57,6 +62,8 @@ typ:
   | BOOL  { Bool  }
   | FLOAT { Float }
   | VOID  { Void  }
+  // Edit here for additional types
+  | CHAR  { Char }
 
 vdecl_list:
     /* nothing */    { [] }
@@ -64,6 +71,16 @@ vdecl_list:
 
 vdecl:
    typ ID SEMI { ($1, $2) }
+
+
+/* Wampus Case list, then we would need to have a case and default keyword */
+case_list:
+  case_list case { $2 :: $1 }
+
+case:
+    CASE LITERAL COLON expr SEMI {}
+  | DEFAULT COLON expr SEMI {}
+  /* else if */
 
 stmt_list:
     /* nothing */  { [] }
@@ -73,11 +90,14 @@ stmt:
     expr SEMI                               { Expr $1               }
   | RETURN expr_opt SEMI                    { Return $2             }
   | LBRACE stmt_list RBRACE                 { Block(List.rev $2)    }
+  /* elseif can be represented as a case list, also all of these would need {}? */
   | IF LPAREN expr RPAREN stmt %prec NOELSE { If($3, $5, Block([])) }
   | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)        }
   | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
                                             { For($3, $5, $7, $9)   }
   | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
+  /* Wampus statements */
+  | SWITCH LPAREN expr RPAREN LBRACE case_list RBRACE { Switch ($3, $6)}
 
 expr_opt:
     /* nothing */ { Noexpr }
@@ -100,6 +120,10 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,   $3)   }
   | expr AND    expr { Binop($1, And,   $3)   }
   | expr OR     expr { Binop($1, Or,    $3)   }
+  // adding more expression operators
+  | expr MOD    expr { Binop ($1, Mod, $3)}
+  | ID ADD ASSIGN expr { Assign( $1, Binop ($1, Add, $3))}
+
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }
   | ID ASSIGN expr   { Assign($1, $3)         }
