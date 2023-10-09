@@ -8,18 +8,41 @@ let digits = digit+
 rule token = parse
   [' ' '\t' '\r' '\n'] { token lexbuf } (* Whitespace *)
 | "/*"     { comment lexbuf }           (* Comments *)
+(* Our edits *)
+| "float"  { FLOAT }
+| "include" { INCLUDE }
+| "and"    { AND }
+| "or"     { OR }
+| "elseif" { ELSEIF }
+| "switch" { SWITCH }
+| "type"   { TYPE }
+| "char"   { CHAR }
+| "function" { FUNCTION }
+| "not"    { NOT }
+| "case"   { CASE }
+| "string" { STRING }
+| "template" { TEMPLATE }
+| "in"     { IN }
+| "%"      { MOD }
+| "["      { LBRACK }
+| "]"      { RBRACK }
+| ":"      { COLON }
+(* TODO *)
+(* \ table sequence *)
+(* Data structures: Sets, tuples, arrays *)
+(* Assert?, ^?, <> for initializing sets? *)
+
+(* MicroC *)
 | '('      { LPAREN }
 | ')'      { RPAREN }
 | '{'      { LBRACE }
-| '}'      { RBRACE } (* Here is an implicit declaration *)
+| '}'      { RBRACE }
 | ';'      { SEMI }
 | ','      { COMMA }
 | '+'      { PLUS }
 | '-'      { MINUS }
 | '*'      { TIMES }
 | '/'      { DIVIDE }
-| '^'      { }
-| '%'      { MOD }
 | '='      { ASSIGN }
 | "=="     { EQ }
 | "!="     { NEQ }
@@ -27,29 +50,21 @@ rule token = parse
 | "<="     { LEQ }
 | ">"      { GT }
 | ">="     { GEQ }
-| ["&&" "and"]    { AND }
+(* change or & and *)
+| "&&"     { AND }
 | "||"     { OR }
-| ["!" "not"]     { NOT }
-| "exception" { EXCEPTION}
-| "case"   { CASE }
-| "switch" { SWITCH }
-| "in"     { IN }
-| "isin"   { MEMBERSHIP }
+| "!"      { NOT }
 | "if"     { IF }
 | "else"   { ELSE }
 | "for"    { FOR }
 | "while"  { WHILE }
 | "return" { RETURN }
 | "int"    { INT }
-| "double" { DOUBLE }
 | "bool"   { BOOL }
-| "function" { FUNCTION }
-| "set"  { ?}
+| "float"  { FLOAT }
 | "void"   { VOID }
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }
-| "template" { TEMPLATE }
-| "include"  { INCLUDE }
 | digits as lxm { LITERAL(int_of_string lxm) }
 | digits '.'  digit* as lxm { FLIT(lxm) }
 | ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }

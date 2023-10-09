@@ -1,6 +1,6 @@
 (lang dune 3.7)
 
-(name microc)
+(name wampus)
 
 (generate_opam_files true)
 
@@ -16,7 +16,7 @@
 (documentation https://url/to/documentation)
 
 (package
- (name microc)
+ (name wampus)
  (synopsis "A short synopsis")
  (description "A longer description")
  (depends ocaml dune)

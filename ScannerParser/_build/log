@@ -4,7 +4,7 @@
 # Workspace root: "/Users/haijun/Desktop/Academics/Fall
 # 2023/107/Wampus/ScannerParser"
 # Auto-detected concurrency: 8
-$ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n5prp5bqxcqrt00000gn/T/dune_c58dfd_output
+$ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n5prp5bqxcqrt00000gn/T/dune_9da7df_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -115,20 +115,18 @@ $ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n
 #      ; windows_unicode = false
 #      }
 #  }
-# Promoting "_build/default/microc.opam" to "microc.opam"
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I lib/.microc.objs/byte -no-alias-deps -opaque -o lib/.microc.objs/byte/microc.cmo -c -impl lib/microc.ml-gen)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/microc.cma lib/.microc.objs/byte/microc.cmo)
+# Promoting "_build/default/wampus.opam" to "wampus.opam"
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I lib/.wampus.objs/byte -no-alias-deps -opaque -o lib/.wampus.objs/byte/wampus.cmo -c -impl lib/wampus.ml-gen)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/wampus.cma lib/.wampus.objs/byte/wampus.cmo)
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamllex -q -o bin/scanner.ml bin/scanner.mll)
-> File "bin/scanner.mll", line 30, character 6: syntax error.
-[3]
-$ (cd _build/.sandbox/6e49f7ce4455e0ce1dedd2b15e865852/default && /Users/haijun/.opam/5.0.0/bin/menhir bin/parser.mly --base bin/parser --infer-write-query bin/parser__mock.ml.mock)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/microc.ml) > _build/default/bin/.microc.eobjs/dune__exe__Microc.impl.d
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/parser__mock.ml.mock) > _build/default/bin/.microc.eobjs/parser__mock.impl.d
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/ast.ml) > _build/default/bin/.microc.eobjs/dune__exe__Ast.impl.d
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/codegen.ml) > _build/default/bin/.microc.eobjs/dune__exe__Codegen.impl.d
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/sast.ml) > _build/default/bin/.microc.eobjs/dune__exe__Sast.impl.d
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/semant.ml) > _build/default/bin/.microc.eobjs/dune__exe__Semant.impl.d
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I bin/.microc.eobjs/byte -no-alias-deps -opaque -o bin/.microc.eobjs/byte/dune__exe.cmo -c -impl bin/.microc.eobjs/dune__exe.ml-gen)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I lib/.microc.objs/byte -I lib/.microc.objs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o lib/.microc.objs/native/microc.cmx -c -impl lib/microc.ml-gen)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/microc.cmxa lib/.microc.objs/native/microc.cmx)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -shared -linkall -I lib -o lib/microc.cmxs lib/microc.cmxa)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/wampus.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Wampus.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/parser__mock.ml.mock) > _build/default/bin/.wampus.eobjs/parser__mock.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/scanner.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Scanner.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/ast.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Ast.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/codegen.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Codegen.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/sast.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Sast.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/semant.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Semant.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I bin/.wampus.eobjs/byte -no-alias-deps -opaque -o bin/.wampus.eobjs/byte/dune__exe.cmo -c -impl bin/.wampus.eobjs/dune__exe.ml-gen)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o lib/.wampus.objs/native/wampus.cmx -c -impl lib/wampus.ml-gen)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/wampus.cmxa lib/.wampus.objs/native/wampus.cmx)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -shared -linkall -I lib -o lib/wampus.cmxs lib/wampus.cmxa)

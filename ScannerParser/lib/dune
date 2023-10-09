@@ -1,4 +1,4 @@
 (library
- (name microc)
+ (name wampus)
  (libraries llvm llvm.analysis))
 
