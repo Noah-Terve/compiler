@@ -1,4 +1,8 @@
-(* Ocamllex scanner for MicroC *)
+(* 
+    Authors: Neil Powers, Christopher Sasanuma, Haijun Si, Noah Tervalon
+*)
+
+(* Ocamllex scanner for Wampus *)
 
 { open Parser }
 
@@ -17,7 +21,6 @@ rule token = parse
 | "switch" { SWITCH }
 | "type"   { TYPE }
 | "char"   { CHAR }
-| "function" { FUNCTION }
 | "not"    { NOT }
 | "case"   { CASE }
 | "string" { STRING }
@@ -31,7 +34,11 @@ rule token = parse
 (* TODO *)
 (* \ table sequence *)
 (* Data structures: Sets, tuples, arrays *)
-(* Assert?, ^?, <> for initializing sets? *)
+| "set" { SET }
+| "&"  { INTERSECT}
+| "|"  { UNION }
+| "tuple" { TUPLE }
+| "list" { LIST }
 
 (* MicroC *)
 | '('      { LPAREN }
@@ -76,3 +83,10 @@ rule token = parse
 and comment = parse
   "*/" { token lexbuf }
 | _    { comment lexbuf }
+
+and char = parse
+  '\'' { token lexbuf }
+| '\\'[] as c { char lexbux}
+| '\\'['0'-'9']['0'-'9']['0'-'9']''
+| _ as c { LITERAL(char_of_string c)}
+

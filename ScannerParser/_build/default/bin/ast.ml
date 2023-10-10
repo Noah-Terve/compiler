@@ -1,7 +1,7 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
-          And | Or
+          And | Or | Mod
 
 type uop = Neg | Not
 
@@ -27,6 +27,8 @@ type stmt =
   | If of expr * stmt * stmt
   | For of expr * expr * expr * stmt
   | While of expr * stmt
+  (* add our case, switch, elseif statements here *)
+  | Switch of expr * stmt_list
 
 type func_decl = {
     typ : typ;
@@ -53,6 +55,8 @@ let string_of_op = function
   | Geq -> ">="
   | And -> "&&"
   | Or -> "||"
+  (* add here *)
+  | Mod -> "%"
 
 let string_of_uop = function
     Neg -> "-"

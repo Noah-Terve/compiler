@@ -77,6 +77,7 @@ vdecl:
 case_list:
   case_list case { $2 :: $1 }
 
+/* How would something like this be created*/
 case:
     CASE LITERAL COLON expr SEMI {}
   | DEFAULT COLON expr SEMI {}
