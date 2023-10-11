@@ -64,6 +64,28 @@ typ:
   | VOID  { Void  }
   // Edit here for additional types
   | CHAR  { Char }
+  | SET   { Set(Void) }
+  | TUPLE { Tuple ([]) }
+  | group_typ { $1 }
+
+group_typ:
+   TUPLE OF LPAREN group_typ_list RPAREN { Tuple (List.rev $4) }
+  | SET OF INT          { Set (Int)     }
+  | SET OF BOOL         { Set (Bool)    }
+  | SET OF STRING       { Set (String)  }
+  | SET OF group_typ    { Set ($3)      }
+
+group_typ_list:
+    INT           { [Int]     }
+  | BOOL          { [Bool]    }
+  | STRING        { [String]  }
+  | group_typ     { [$1]      }
+  | group_typ_list COMMA INT        { Int :: $1 }
+  | group_typ_list COMMA BOOL       { Bool :: $1 }
+  | group_typ_list COMMA STRING     { String :: $1 }
+  /* group type list containing a type of groups*/
+  | group_typ_list COMMA group_typ  { $3 :: $1 }
+
 
 vdecl_list:
     /* nothing */    { [] }
@@ -77,6 +99,7 @@ vdecl:
 case_list:
   case_list case { $2 :: $1 }
 
+/* How would something like this be created*/
 case:
     CASE LITERAL COLON expr SEMI {}
   | DEFAULT COLON expr SEMI {}

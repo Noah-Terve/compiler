@@ -1,11 +1,10 @@
+(executable
+ (public_name wampus)
+ (name wampus)
+ (libraries wampus))
 
-(rule
- (target scanner.ml)
- (deps scanner.mll)
- (action
-  (chdir
-   %{workspace_root}
-   (run %{bin:ocamllex} -q -o %{target} %{deps}))))
+
+(ocamllex scanner)
 
 (menhir
   (modules parser))
@@ -14,8 +13,3 @@
  (dev
   (flags
    (:standard -warn-error -A))))
-
-(executable
- (public_name wampus)
- (name wampus)
- (libraries wampus))

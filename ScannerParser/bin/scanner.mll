@@ -86,9 +86,9 @@ and comment = parse
   "*/" { token lexbuf }
 | _    { comment lexbuf }
 
-and char = parse
+(* and char = parse
   '\'' { token lexbuf }
 | '\\'[] as c { char lexbux}
 | '\\'['0'-'9']['0'-'9']['0'-'9']''
-| _ as c { LITERAL(char_of_string c)}
+| _ as c { LITERAL(char_of_string c)} *)
 
