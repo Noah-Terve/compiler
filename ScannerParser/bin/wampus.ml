@@ -5,7 +5,7 @@
 type action = Ast | Sast | LLVM_IR | Compile
 
 let () = 
-  let action = ref Compile in
+  let action = ref Ast in
   let set_action a () = action := a in
   let speclist = [
     ("-a", Arg.Unit (set_action Ast), "Print the AST");

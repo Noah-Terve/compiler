@@ -32,6 +32,7 @@ open Ast
 %token <int> LITERAL
 %token <bool> BLIT
 %token <string> ID FLIT
+%token <string> STRING
 %token EOF
 
 %start program
@@ -93,6 +94,7 @@ typ:
   | BOOL  { Bool  }
   | FLOAT { Float }
   | VOID  { Void  }
+  | STRING { String }
 //   // Edit here for additional types
 //   | CHAR  { Char }
 //   | SET   { Set(Void) }
@@ -156,6 +158,7 @@ expr:
     LITERAL          { Literal($1)            }
   | FLIT	     { Fliteral($1)           }
   | BLIT             { BoolLit($1)            }
+  | STRING           { StringLit($1)          }
   | ID               { Id($1)                 }
   | expr PLUS   expr { Binop($1, Add,   $3)   }
   | expr MINUS  expr { Binop($1, Sub,   $3)   }
