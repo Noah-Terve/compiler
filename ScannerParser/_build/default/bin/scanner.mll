@@ -17,11 +17,9 @@ rule token = parse
 (* | "include" { INCLUDE } *)
 | "and"    { AND }
 | "or"     { OR }
-| "type"   { TYPE }
+(* | "type"   { TYPE } *)
 (* | "char"   { CHAR } *)
 | "not"    { NOT }
-| "case"   { CASE }
-| "string" { STRING }
 (* | "template" { TEMPLATE } *)
 (* | "isin"   { ISIN } *)
 | "in"     { IN }
@@ -32,13 +30,13 @@ rule token = parse
 (* TODO *)
 (* \ table sequence *)
 (* Data structures: Sets, tuples, arrays *)
-| "set" { SET }
+(* | "set" { SET }
 | "&"  { INTERSECT}
 | "|"  { UNION }
 | "tuple" { TUPLE }
 | "list" { LIST }
 | "<"    { LARROW }
-| ">"    { RARROW }
+| ">"    { RARROW } *)
 
 (* MicroC *)
 | '('      { LPAREN }

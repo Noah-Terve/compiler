@@ -8,10 +8,11 @@ open Ast
    - [ ]  list
    - [ ]  set
     set <int> chris = <1, 2, 3, 4>
-    set <int> chris = <>;
     set <int> chris;
   - [ ]  struct
     struct will be a list containing tuples
+
+    
   - [ ]  template
     template will be the same but with types
 
@@ -25,7 +26,7 @@ open Ast
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID UNION INTERSECT
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE
-%token TYPE FUNCTION CASE STRUCT ISIN SET LIST STRING TUPLE
+// %token TYPE  CASE STRUCT ISIN SET LIST STRING TUPLE
 // float, char, and string?
 %token <char> CHAR
 %token <int> LITERAL
@@ -44,7 +45,7 @@ open Ast
 %left EQ NEQ
 %left LT GT LEQ GEQ
 %left PLUS MINUS
-%left TIMES DIVIDE
+%left TIMES DIVIDE MOD
 %right NOT
 
 %%
@@ -171,9 +172,9 @@ expr:
   // adding more expression operators
   | expr MOD    expr { Binop ($1, Mod, $3)}
   // | ID PLUS ASSIGN expr { Assign( $1, Binop ($1, Add, $3))}
-  | expr INTERSECT expr {Binop ($1, Intersect, $3) }
-  | expr UNION expr     {Binop ($1, Union, $3) }
-  | expr ISIN expr      {Binop ($1, Isin, $3 ) }
+  // | expr INTERSECT expr {Binop ($1, Intersect, $3) }
+  // | expr UNION expr     {Binop ($1, Union, $3) }
+  // | expr ISIN expr      {Binop ($1, Isin, $3 ) }
 
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }

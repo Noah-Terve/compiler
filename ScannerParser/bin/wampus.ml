@@ -4,7 +4,7 @@
 
 type action = Ast | Sast | LLVM_IR | Compile
 
-let () =
+let () = 
   let action = ref Compile in
   let set_action a () = action := a in
   let speclist = [
