@@ -39,6 +39,8 @@ rule token = parse
 | "|"  { UNION }
 | "tuple" { TUPLE }
 | "list" { LIST }
+| "<"    { LARROW }
+| ">"    { RARROW }
 
 (* MicroC *)
 | '('      { LPAREN }
