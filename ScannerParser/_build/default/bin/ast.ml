@@ -1,7 +1,7 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
-          And | Or | Mod
+          And | Or | Mod | Isin | Union | Intersect
 
 type uop = Neg | Not
 
@@ -28,7 +28,6 @@ type stmt =
   | For of expr * expr * expr * stmt
   | While of expr * stmt
   (* add our case, switch, elseif statements here *)
-  | Switch of expr * stmt_list
 
 type func_decl = {
     typ : typ;

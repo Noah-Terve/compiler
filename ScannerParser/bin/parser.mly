@@ -25,7 +25,7 @@ open Ast
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID UNION INTERSECT
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE
-%token TYPE FUNCTION CASE STRUCT
+%token TYPE FUNCTION CASE STRUCT ISIN SET LIST STRING TUPLE
 // float, char, and string?
 %token <char> CHAR
 %token <int> LITERAL
@@ -73,52 +73,54 @@ formal_list:
     typ ID                   { [($1,$2)]     }
   | formal_list COMMA typ ID { ($3,$4) :: $1 }
 
-struct_list:
-  struct                      {List.rev $1}
+// struct_list:
+//   struct                      {List.rev $1}
 
-struct:
-    typ ID                   { [($1,$2)]     }
-  | struct SEMI typ ID       { ($3,$4) :: $1 }
+// struct:
+//     typ ID                   { [($1,$2)]     }
+//   | struct SEMI typ ID       { ($3,$4) :: $1 }
   // need a way to assign member varib
   // assignment
   // | struct DOT ID ASSIGN expr { }
+
+// typ_list:
+//     typ { [$1] }
+//   | typ_list COMMA typ { $3 :: $1}
 
 typ:
     INT   { Int   }
   | BOOL  { Bool  }
   | FLOAT { Float }
   | VOID  { Void  }
-  // Edit here for additional types
-  | CHAR  { Char }
-  | SET   { Set(Void) }
-  | TUPLE { Tuple ([]) }
-  | group_typ { $1 }
+//   // Edit here for additional types
+//   | CHAR  { Char }
+//   | SET   { Set(Void) }
+//   | TUPLE { Tuple ([]) }
+//   | group_typ { $1 }
 
-typ_list
-  typ { [$1] }
-  typ_list COMMA typ { $3 :: $1}
 
-group_typ:
-   TUPLE LPAREN group_typ_list RPAREN { Tuple (List.rev $4) }
-  | SET LARROW INT RARROW         { Set (Int)     }
-  | SET LARROW BOOL RARROW        { Set (Bool)    }
-  | SET LARROW STRING RARROW      { Set (String)  }
-  | SET LARROW group_typ          { Set ($3)      }
-  | LIST LBRACK INT RBRACK        { List (Int)    }
-  | LIST LBRACK BOOL RBRACK       { List (Bool)   }
-  | LIST LBRACK STRING RBRACK     { List (String) }
-  | LIST LBRACK group_typ RBRACK  { List ($3)     }
 
-group_typ_list:
-    INT           { [Int]     }
-  | BOOL          { [Bool]    }
-  | STRING        { [String]  }
-  | group_typ     { [$1]      }
-  | group_typ_list COMMA INT        { Int :: $1 }
-  | group_typ_list COMMA BOOL       { Bool :: $1 }
-  | group_typ_list COMMA STRING     { String :: $1 }
-  /* group type list containing a type of groups*/
-  | group_typ_list COMMA group_typ  { $3 :: $1 }
+// group_typ:
+//    TUPLE LPAREN group_typ_list RPAREN { Tuple (List.rev $4) }
+//   | SET LARROW INT RARROW         { Set (Int)     }
+//   | SET LARROW BOOL RARROW        { Set (Bool)    }
+//   | SET LARROW STRING RARROW      { Set (String)  }
+//   | SET LARROW group_typ          { Set ($3)      }
+//   | LIST LBRACK INT RBRACK        { List (Int)    }
+//   | LIST LBRACK BOOL RBRACK       { List (Bool)   }
+//   | LIST LBRACK STRING RBRACK     { List (String) }
+//   | LIST LBRACK group_typ RBRACK  { List ($3)     }
+
+// group_typ_list:
+//     INT           { [Int]     }
+//   | BOOL          { [Bool]    }
+//   | STRING        { [String]  }
+//   | group_typ     { [$1]      }
+//   | group_typ_list COMMA INT        { Int :: $1 }
+//   | group_typ_list COMMA BOOL       { Bool :: $1 }
+//   | group_typ_list COMMA STRING     { String :: $1 }
+//   /* group type list containing a type of groups*/
+//   | group_typ_list COMMA group_typ  { $3 :: $1 }
 
 
 
@@ -168,7 +170,7 @@ expr:
   | expr OR     expr { Binop($1, Or,    $3)   }
   // adding more expression operators
   | expr MOD    expr { Binop ($1, Mod, $3)}
-  | ID ADD ASSIGN expr { Assign( $1, Binop ($1, Add, $3))}
+  // | ID PLUS ASSIGN expr { Assign( $1, Binop ($1, Add, $3))}
   | expr INTERSECT expr {Binop ($1, Intersect, $3) }
   | expr UNION expr     {Binop ($1, Union, $3) }
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }

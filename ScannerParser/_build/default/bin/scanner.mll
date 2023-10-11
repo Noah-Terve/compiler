@@ -14,18 +14,16 @@ rule token = parse
 | "/*"     { comment lexbuf }           (* Comments *)
 (* Our edits *)
 
-| "include" { INCLUDE }
+(* | "include" { INCLUDE } *)
 | "and"    { AND }
 | "or"     { OR }
-| "elseif" { ELSEIF }
-| "switch" { SWITCH }
 | "type"   { TYPE }
-| "char"   { CHAR }
+(* | "char"   { CHAR } *)
 | "not"    { NOT }
 | "case"   { CASE }
 | "string" { STRING }
-| "template" { TEMPLATE }
-| "isin"   { ISIN }
+(* | "template" { TEMPLATE } *)
+(* | "isin"   { ISIN } *)
 | "in"     { IN }
 | "%"      { MOD }
 | "["      { LBRACK }

@@ -1,10 +1,10 @@
-# dune build
+# dune exec wampus
 # OCAMLPARAM: unset
 # Shared cache: disabled
 # Workspace root: "/Users/haijun/Desktop/Academics/Fall
 # 2023/107/Wampus/ScannerParser"
 # Auto-detected concurrency: 8
-$ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n5prp5bqxcqrt00000gn/T/dune_3e405c_output
+$ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n5prp5bqxcqrt00000gn/T/dune_b41a71_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -115,9 +115,3 @@ $ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n
 #      ; windows_unicode = false
 #      }
 #  }
-$ (cd _build/.sandbox/47b36209cd8bf62206e013e752339918/default && /Users/haijun/.opam/5.0.0/bin/menhir bin/parser.mly --base bin/parser --infer-write-query bin/parser__mock.ml.mock)
-> File "bin/parser.mly", line 105, characters 4-11:
-> Error: DEFAULT is undefined.
-[1]
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamllex -q -o bin/scanner.ml bin/scanner.mll)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/scanner.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Scanner.impl.d
