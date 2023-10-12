@@ -9,6 +9,10 @@
 let digit = ['0' - '9']
 let digits = digit+
 
+let char_chars = [' ' - '&' '(' - '[' ']' - '~']
+let string_chars = [' ' - '!' '#' - '[' ']' - '~']
+let escaped_seq = '\\' (['"' '\'' '\\' 'n' 't' 'r' 'b'] | digit digit digit)
+
 rule token = parse
   [' ' '\t' '\r' '\n'] { token lexbuf } (* Whitespace *)
 | "/*"     { comment lexbuf }           (* Comments *)
@@ -27,6 +31,10 @@ rule token = parse
 | "["      { LBRACK }
 | "]"      { RBRACK }
 | ":"      { COLON }
+| "List"   { LIST }
+(* | "'" char_chars "'" as lxm { CHAR(lxm.[1]) } *)
+| '"' string_chars* '"' as lxm { STRING(lxm) }
+(* | '"'      { read_string lexbuf } *)
 (* TODO *)
 (* \ table sequence *)
 (* Data structures: Sets, tuples, arrays *)
@@ -78,8 +86,22 @@ rule token = parse
 (* Remove *)
 | "void"   { VOID }
 
+(* and read_string buf = parse
+    '"' { STRING (Buffer.contents buf) }
+  | '\\' '"' { Buffer.add_char buf '"'; read_string buf lexbuf }
+  | '\\' '\'' { Buffer.add_char buf '\''; read_string buf lexbuf }
+  | '\\' '\\' { Buffer.add_char buf '\\'; read_string buf lexbuf }
+  | '\\' 'n' { Buffer.add_char buf '\n'; read_string buf lexbuf }
+  | '\\' 't' { Buffer.add_char buf '\t'; read_string buf lexbuf }
+  | '\\' 'r' { Buffer.add_char buf '\r'; read_string buf lexbuf }
+  | '\\' 'b' { Buffer.add_char buf '\b'; read_string buf lexbuf }
+  (* Case for \ddd *)
+  | '\\' ['0'-'9']['0'-'9']['0'-'9'] { Buffer.add_char buf (char_of_int (int_of_string ("0" ^ (Lexing.lexeme lexbuf)))); read_string buf lexbuf } *)
+
+
 and comment = parse
   "*/" { token lexbuf }
+| eof  { raise (Failure "Comment not closed") }
 | _    { comment lexbuf }
 
 (* and char = parse

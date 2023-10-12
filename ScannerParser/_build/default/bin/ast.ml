@@ -5,7 +5,7 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Float | Void | List of typ
+type typ = Int | Bool | Float | Void | String | List of typ
 
 type bind = typ * string
 
@@ -13,11 +13,14 @@ type expr =
     Literal of int
   | Fliteral of string
   | BoolLit of bool
+  | CharLit of char
+  | StringLit of string
   | Id of string
   | Binop of expr * op * expr
   | Unop of uop * expr
   | Assign of string * expr
   | Call of string * expr list
+  | ListExplicit of expr list
   | Noexpr
 
 type stmt =
@@ -69,6 +72,7 @@ let rec string_of_expr = function
   | Fliteral(l) -> l
   | BoolLit(true) -> "true"
   | BoolLit(false) -> "false"
+  | StringLit(s) -> s
   | Id(s) -> s
   | Binop(e1, o, e2) ->
       string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
@@ -91,11 +95,13 @@ let rec string_of_stmt = function
       string_of_expr e3  ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
 
-let string_of_typ = function
+let rec string_of_typ = function
     Int -> "int"
   | Bool -> "bool"
   | Float -> "float"
   | Void -> "void"
+  | String -> "string"
+  | List(t) -> "List [" ^ string_of_typ t ^ "]"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 

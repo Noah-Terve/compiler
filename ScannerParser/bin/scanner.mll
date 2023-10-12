@@ -31,6 +31,7 @@ rule token = parse
 | "["      { LBRACK }
 | "]"      { RBRACK }
 | ":"      { COLON }
+| "List"   { LIST }
 (* | "'" char_chars "'" as lxm { CHAR(lxm.[1]) } *)
 | '"' string_chars* '"' as lxm { STRING(lxm) }
 (* | '"'      { read_string lexbuf } *)

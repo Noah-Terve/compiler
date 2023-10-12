@@ -98,26 +98,23 @@ typ:
   | BOOL  { Bool  }
   | FLOAT { Float }
   | VOID  { Void  }
-  | STRING { String }
-  | LIST  { List(Void)}
+  // | STRING { String }
 //   // Edit here for additional types
 //   | CHAR  { Char }
-//   | SET   { Set(Void) }
-//   | TUPLE { Tuple ([]) }
-//   | group_typ { $1 }
+  | group_typ { $1 }
 
 
 
-// group_typ:
-//    TUPLE LPAREN group_typ_list RPAREN { Tuple (List.rev $4) }
+group_typ:
+    
 //   | SET LARROW INT RARROW         { Set (Int)     }
 //   | SET LARROW BOOL RARROW        { Set (Bool)    }
 //   | SET LARROW STRING RARROW      { Set (String)  }
 //   | SET LARROW group_typ          { Set ($3)      }
-//   | LIST LBRACK INT RBRACK        { List (Int)    }
-//   | LIST LBRACK BOOL RBRACK       { List (Bool)   }
-//   | LIST LBRACK STRING RBRACK     { List (String) }
-//   | LIST LBRACK group_typ RBRACK  { List ($3)     }
+        LIST LBRACK INT RBRACK        { List (Int)    }
+     | LIST LBRACK BOOL RBRACK       { List (Bool)   }
+    //  | LIST LBRACK STRING RBRACK     { List (String) }
+     | LIST LBRACK group_typ RBRACK  { List ($3)     }
 
 // group_typ_list:
 //     INT           { [Int]     }
@@ -161,7 +158,7 @@ expr_opt:
 
 expr:
     LITERAL          { Literal($1)            }
-  | FLIT	     { Fliteral($1)           }
+  | FLIT	           { Fliteral($1)           }
   | BLIT             { BoolLit($1)            }
   | STRING           { StringLit($1)          }
   | ID               { Id($1)                 }
@@ -185,6 +182,8 @@ expr:
   | expr INTERSECT expr {Binop ($1, Intersect, $3) }
   | expr UNION expr     {Binop ($1, Union, $3) }
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }
+  // Building a list
+  | list_expr               { $1 }
 
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }
@@ -201,10 +200,10 @@ args_list:
     expr                    { [$1] }
   | args_list COMMA expr { $3 :: $1 }
 
-lists_opt:
-  /* nothing */ { [] }
-| args_list  { List.rev $1 }
 
-list:
-    expr            { [$1] }
-  | list COMMA expr { $3 :: $1 }
+list_list:
+    expr          { [$1] }
+  | list_list COMMA expr { $3 :: $1}
+
+list_expr:
+  LBRACK list_list RBRACK      {ListExplicit(List.rev $2)}
