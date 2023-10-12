@@ -200,3 +200,11 @@ args_opt:
 args_list:
     expr                    { [$1] }
   | args_list COMMA expr { $3 :: $1 }
+
+lists_opt:
+  /* nothing */ { [] }
+| args_list  { List.rev $1 }
+
+list:
+    expr            { [$1] }
+  | list COMMA expr { $3 :: $1 }

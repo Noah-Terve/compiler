@@ -1,10 +1,10 @@
-# dune build
+# dune exec wampus
 # OCAMLPARAM: unset
 # Shared cache: disabled
 # Workspace root: "/Users/haijun/Desktop/Academics/Fall
 # 2023/107/Wampus/ScannerParser"
 # Auto-detected concurrency: 8
-$ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n5prp5bqxcqrt00000gn/T/dune_a64832_output
+$ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n5prp5bqxcqrt00000gn/T/dune_c70e44_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -101,15 +101,14 @@ $ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n
 #      }
 #  ; instrument_with = []
 #  }
-$ (cd _build/.sandbox/3608f1baadcc208b3f3b014fbde22119/default && /Users/haijun/.opam/5.0.0/bin/menhir bin/parser.mly --base bin/parser --infer-write-query bin/parser__mock.ml.mock)
-> File "bin/parser.mly", line 31, characters 14-18:
+$ (cd _build/.sandbox/24f3087aaae760c4ca29168a44368430/default && /Users/haijun/.opam/5.0.0/bin/menhir bin/parser.mly --base bin/parser --infer-write-query bin/parser__mock.ml.mock)
+> Note: the nonterminal symbol list (from bin/parser.mly) is renamed bin_parser_list.
+> File "bin/parser.mly", line 32, characters 14-18:
 > Warning: the token CHAR is unused.
 > File "bin/parser.mly", line 28, characters 42-47:
 > Warning: the token COLON is unused.
 > File "bin/parser.mly", line 28, characters 35-37:
 > Warning: the token IN is unused.
-> File "bin/parser.mly", line 26, characters 58-67:
-> Warning: the token INTERSECT is unused.
 > File "bin/parser.mly", line 28, characters 21-27:
 > Warning: the token LARROW is unused.
 > File "bin/parser.mly", line 28, characters 7-13:
@@ -120,47 +119,41 @@ $ (cd _build/.sandbox/3608f1baadcc208b3f3b014fbde22119/default && /Users/haijun/
 > Warning: the token RBRACK is unused.
 > File "bin/parser.mly", line 28, characters 48-56:
 > Warning: the token TEMPLATE is unused.
-> File "bin/parser.mly", line 26, characters 52-57:
-> Warning: the token UNION is unused.
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamllex -q -o bin/scanner.ml bin/scanner.mll)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/wampus.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Wampus.impl.d
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I lib/.wampus.objs/byte -no-alias-deps -opaque -o lib/.wampus.objs/byte/wampus.cmo -c -impl lib/wampus.ml-gen)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/parser__mock.ml.mock) > _build/default/bin/.wampus.eobjs/parser__mock.impl.d
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/scanner.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Scanner.impl.d
+> File "bin/parser.mly", line 205, characters 0-4:
+> Warning: symbol bin_parser_list is unreachable from any of the start symbol(s).
+> File "bin/parser.mly", line 201, characters 0-9:
+> Warning: symbol lists_opt is unreachable from any of the start symbol(s).
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/ast.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Ast.impl.d
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/codegen.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Codegen.impl.d
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/sast.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Sast.impl.d
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/semant.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Semant.impl.d
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/wampus.cma lib/.wampus.objs/byte/wampus.cmo)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I bin/.wampus.eobjs/byte -no-alias-deps -opaque -o bin/.wampus.eobjs/byte/dune__exe.cmo -c -impl bin/.wampus.eobjs/dune__exe.ml-gen)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/parser__mock.ml.mock) > _build/default/bin/.wampus.eobjs/parser__mock.impl.d
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Ast.cmo -c -impl bin/ast.ml)
-> File "bin/ast.ml", lines 44-58, characters 19-14:
-> 44 | ...................function
-> 45 |     Add -> "+"
-> 46 |   | Sub -> "-"
-> 47 |   | Mult -> "*"
-> 48 |   | Div -> "/"
-> ...
-> 55 |   | And -> "&&"
-> 56 |   | Or -> "||"
-> 57 |   (* add here *)
-> 58 |   | Mod -> "%"
+> File "bin/ast.ml", lines 94-98, characters 20-18:
+> 94 | ....................function
+> 95 |     Int -> "int"
+> 96 |   | Bool -> "bool"
+> 97 |   | Float -> "float"
+> 98 |   | Void -> "void"
 > Warning 8 [partial-match]: this pattern-matching is not exhaustive.
 > Here is an example of a case that is not matched:
-> (Isin|Union|Intersect)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o lib/.wampus.objs/native/wampus.cmx -c -impl lib/wampus.ml-gen)
-$ (cd _build/.sandbox/9e33badfe16efed929969e9749a73ee4/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -open Dune__exe -short-paths -i -impl bin/parser__mock.ml.mock) > _build/.sandbox/9e33badfe16efed929969e9749a73ee4/default/bin/parser__mock.mli.inferred
-$ (cd _build/.sandbox/c07564c1da15eecaf3ee954fcce61ec4/default && /Users/haijun/.opam/5.0.0/bin/menhir bin/parser.mly --base bin/parser --infer-read-reply bin/parser__mock.mli.inferred)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/wampus.cmxa lib/.wampus.objs/native/wampus.cmx)
+> List _
+$ (cd _build/.sandbox/4f58cb449ba5763d336712e5d68c968e/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -open Dune__exe -short-paths -i -impl bin/parser__mock.ml.mock) > _build/.sandbox/4f58cb449ba5763d336712e5d68c968e/default/bin/parser__mock.mli.inferred
+$ (cd _build/.sandbox/cd0640ed9aea3a3d32bd319d4203e2ab/default && /Users/haijun/.opam/5.0.0/bin/menhir bin/parser.mly --base bin/parser --infer-read-reply bin/parser__mock.mli.inferred)
+> Note: the nonterminal symbol list (from bin/parser.mly) is renamed bin_parser_list.
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -intf bin/parser.mli) > _build/default/bin/.wampus.eobjs/dune__exe__Parser.intf.d
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/parser.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Parser.impl.d
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -intf bin/wampus.mli) > _build/default/bin/.wampus.eobjs/dune__exe__Wampus.intf.d
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Parser.cmi -c -intf bin/parser.mli)
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Sast.cmo -c -impl bin/sast.ml)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Wampus.cmi -c -intf bin/wampus.mli)
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Scanner.cmo -c -impl bin/scanner.ml)
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Semant.cmo -c -impl bin/semant.ml)
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Codegen.cmo -c -impl bin/codegen.ml)
+> File "bin/codegen.ml", lines 37-41, characters 21-23:
+> 37 | .....................function
+> 38 |       A.Int   -> i32_t
+> 39 |     | A.Bool  -> i1_t
+> 40 |     | A.Float -> float_t
+> 41 |     | A.Void  -> void_t
+> Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+> Here is an example of a case that is not matched:
+> List _
 > File "bin/codegen.ml", line 54, characters 39-53:
 > 54 |       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
 >                                             ^^^^^^^^^^^^^^
@@ -220,28 +213,30 @@ $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@
 >                ^^^^^^^^^^^^
 > Alert deprecated: L.build_call
 > build_call is deprecated in LLVM 15, use build_call2 that takes an additional lltype argument instead. In LLVM 16, build_call is an alias for build_call2.
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o bin/.wampus.eobjs/native/dune__exe.cmx -c -impl bin/.wampus.eobjs/dune__exe.ml-gen)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Scanner.cmx -c -impl bin/scanner.ml)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Wampus.cmx -c -impl bin/wampus.ml)
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Ast.cmx -c -impl bin/ast.ml)
-> File "bin/ast.ml", lines 44-58, characters 19-14:
-> 44 | ...................function
-> 45 |     Add -> "+"
-> 46 |   | Sub -> "-"
-> 47 |   | Mult -> "*"
-> 48 |   | Div -> "/"
-> ...
-> 55 |   | And -> "&&"
-> 56 |   | Or -> "||"
-> 57 |   (* add here *)
-> 58 |   | Mod -> "%"
+> File "bin/ast.ml", lines 94-98, characters 20-18:
+> 94 | ....................function
+> 95 |     Int -> "int"
+> 96 |   | Bool -> "bool"
+> 97 |   | Float -> "float"
+> 98 |   | Void -> "void"
 > Warning 8 [partial-match]: this pattern-matching is not exhaustive.
 > Here is an example of a case that is not matched:
-> (Isin|Union|Intersect)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -shared -linkall -I lib -o lib/wampus.cmxs lib/wampus.cmxa)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Scanner.cmx -c -impl bin/scanner.ml)
+> List _
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Sast.cmx -c -impl bin/sast.ml)
-$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Wampus.cmx -c -impl bin/wampus.ml)
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Semant.cmx -c -impl bin/semant.ml)
 $ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Codegen.cmx -c -impl bin/codegen.ml)
+> File "bin/codegen.ml", lines 37-41, characters 21-23:
+> 37 | .....................function
+> 38 |       A.Int   -> i32_t
+> 39 |     | A.Bool  -> i1_t
+> 40 |     | A.Float -> float_t
+> 41 |     | A.Void  -> void_t
+> Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+> Here is an example of a case that is not matched:
+> List _
 > File "bin/codegen.ml", line 54, characters 39-53:
 > 54 |       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
 >                                             ^^^^^^^^^^^^^^

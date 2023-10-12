@@ -5,7 +5,7 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Float | Void
+type typ = Int | Bool | Float | Void | List of typ
 
 type bind = typ * string
 
@@ -56,6 +56,9 @@ let string_of_op = function
   | Or -> "||"
   (* add here *)
   | Mod -> "%"
+  | Intersect -> "&"
+  | Union -> "|"
+  | Isin -> "Isin"
 
 let string_of_uop = function
     Neg -> "-"
