@@ -23,9 +23,10 @@ open Ast
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN
 %token NOT EQ NEQ LT LEQ GT GEQ AND OR
-%token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID UNION INTERSECT
+%token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
 /* edits */
-%token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE
+%token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
+%token LIST
 // %token TYPE  CASE STRUCT ISIN SET LIST STRING TUPLE
 // float, char, and string?
 %token <char> CHAR
@@ -45,6 +46,9 @@ open Ast
 %left AND
 %left EQ NEQ
 %left LT GT LEQ GEQ
+%left ISIN
+%left UNION
+%left INTERSECT
 %left PLUS MINUS
 %left TIMES DIVIDE MOD
 %right NOT
@@ -95,6 +99,7 @@ typ:
   | FLOAT { Float }
   | VOID  { Void  }
   | STRING { String }
+  | LIST  { List(Void)}
 //   // Edit here for additional types
 //   | CHAR  { Char }
 //   | SET   { Set(Void) }
@@ -174,10 +179,12 @@ expr:
   | expr OR     expr { Binop($1, Or,    $3)   }
   // adding more expression operators
   | expr MOD    expr { Binop ($1, Mod, $3)}
+  // this is more complicated than I thought
   // | ID PLUS ASSIGN expr { Assign( $1, Binop ($1, Add, $3))}
-  // | expr INTERSECT expr {Binop ($1, Intersect, $3) }
-  // | expr UNION expr     {Binop ($1, Union, $3) }
-  // | expr ISIN expr      {Binop ($1, Isin, $3 ) }
+
+  | expr INTERSECT expr {Binop ($1, Intersect, $3) }
+  | expr UNION expr     {Binop ($1, Union, $3) }
+  | expr ISIN expr      {Binop ($1, Isin, $3 ) }
 
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }

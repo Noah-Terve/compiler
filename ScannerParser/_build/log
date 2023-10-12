@@ -1,10 +1,10 @@
-# dune exec wampus -- -a
+# dune build
 # OCAMLPARAM: unset
 # Shared cache: disabled
 # Workspace root: "/Users/haijun/Desktop/Academics/Fall
 # 2023/107/Wampus/ScannerParser"
 # Auto-detected concurrency: 8
-$ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n5prp5bqxcqrt00000gn/T/dune_a0fa67_output
+$ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n5prp5bqxcqrt00000gn/T/dune_a64832_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -19,23 +19,10 @@ $ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n
 #  ; ocamlopt = Ok External "/Users/haijun/.opam/5.0.0/bin/ocamlopt.opt"
 #  ; ocamldep = Ok External "/Users/haijun/.opam/5.0.0/bin/ocamldep.opt"
 #  ; ocamlmklib = Ok External "/Users/haijun/.opam/5.0.0/bin/ocamlmklib.opt"
-#  ; env =
+#  ; installed_env =
 #      map
-#        { "DUNE_OCAML_HARDCODED" :
-#            "/Users/haijun/.opam/5.0.0/lib/ocaml:/Users/haijun/.opam/5.0.0/lib"
-#        ; "DUNE_OCAML_STDLIB" : "/Users/haijun/.opam/5.0.0/lib/ocaml"
-#        ; "DUNE_SOURCEROOT" :
-#            "/Users/haijun/Desktop/Academics/Fall 2023/107/Wampus/ScannerParser"
-#        ; "INSIDE_DUNE" :
+#        { "INSIDE_DUNE" :
 #            "/Users/haijun/Desktop/Academics/Fall 2023/107/Wampus/ScannerParser/_build/default"
-#        ; "MANPATH" :
-#            "/Users/haijun/Desktop/Academics/Fall 2023/107/Wampus/ScannerParser/_build/install/default/man"
-#        ; "OCAMLFIND_IGNORE_DUPS_IN" :
-#            "/Users/haijun/Desktop/Academics/Fall 2023/107/Wampus/ScannerParser/_build/install/default/lib"
-#        ; "OCAMLPATH" :
-#            "/Users/haijun/Desktop/Academics/Fall 2023/107/Wampus/ScannerParser/_build/install/default/lib"
-#        ; "OCAMLTOP_INCLUDE_PATH" :
-#            "/Users/haijun/Desktop/Academics/Fall 2023/107/Wampus/ScannerParser/_build/install/default/lib/toplevel"
 #        ; "OCAML_COLOR" : "always"
 #        ; "OPAMCOLOR" : "always"
 #        }
@@ -43,8 +30,6 @@ $ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n
 #      [ External "/Users/haijun/.opam/5.0.0/lib/ocaml"
 #      ; External "/Users/haijun/.opam/5.0.0/lib"
 #      ]
-#  ; natdynlink_supported = true
-#  ; supports_shared_libraries = true
 #  ; ocaml_config =
 #      { version = "5.0.0"
 #      ; standard_library_default = "/Users/haijun/.opam/5.0.0/lib/ocaml"
@@ -114,4 +99,208 @@ $ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n
 #      ; supports_shared_libraries = true
 #      ; windows_unicode = false
 #      }
+#  ; instrument_with = []
 #  }
+$ (cd _build/.sandbox/3608f1baadcc208b3f3b014fbde22119/default && /Users/haijun/.opam/5.0.0/bin/menhir bin/parser.mly --base bin/parser --infer-write-query bin/parser__mock.ml.mock)
+> File "bin/parser.mly", line 31, characters 14-18:
+> Warning: the token CHAR is unused.
+> File "bin/parser.mly", line 28, characters 42-47:
+> Warning: the token COLON is unused.
+> File "bin/parser.mly", line 28, characters 35-37:
+> Warning: the token IN is unused.
+> File "bin/parser.mly", line 26, characters 58-67:
+> Warning: the token INTERSECT is unused.
+> File "bin/parser.mly", line 28, characters 21-27:
+> Warning: the token LARROW is unused.
+> File "bin/parser.mly", line 28, characters 7-13:
+> Warning: the token LBRACK is unused.
+> File "bin/parser.mly", line 28, characters 28-34:
+> Warning: the token RARROW is unused.
+> File "bin/parser.mly", line 28, characters 14-20:
+> Warning: the token RBRACK is unused.
+> File "bin/parser.mly", line 28, characters 48-56:
+> Warning: the token TEMPLATE is unused.
+> File "bin/parser.mly", line 26, characters 52-57:
+> Warning: the token UNION is unused.
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamllex -q -o bin/scanner.ml bin/scanner.mll)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/wampus.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Wampus.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I lib/.wampus.objs/byte -no-alias-deps -opaque -o lib/.wampus.objs/byte/wampus.cmo -c -impl lib/wampus.ml-gen)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/parser__mock.ml.mock) > _build/default/bin/.wampus.eobjs/parser__mock.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/scanner.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Scanner.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/ast.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Ast.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/codegen.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Codegen.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/sast.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Sast.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/semant.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Semant.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/wampus.cma lib/.wampus.objs/byte/wampus.cmo)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I bin/.wampus.eobjs/byte -no-alias-deps -opaque -o bin/.wampus.eobjs/byte/dune__exe.cmo -c -impl bin/.wampus.eobjs/dune__exe.ml-gen)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Ast.cmo -c -impl bin/ast.ml)
+> File "bin/ast.ml", lines 44-58, characters 19-14:
+> 44 | ...................function
+> 45 |     Add -> "+"
+> 46 |   | Sub -> "-"
+> 47 |   | Mult -> "*"
+> 48 |   | Div -> "/"
+> ...
+> 55 |   | And -> "&&"
+> 56 |   | Or -> "||"
+> 57 |   (* add here *)
+> 58 |   | Mod -> "%"
+> Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+> Here is an example of a case that is not matched:
+> (Isin|Union|Intersect)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o lib/.wampus.objs/native/wampus.cmx -c -impl lib/wampus.ml-gen)
+$ (cd _build/.sandbox/9e33badfe16efed929969e9749a73ee4/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -open Dune__exe -short-paths -i -impl bin/parser__mock.ml.mock) > _build/.sandbox/9e33badfe16efed929969e9749a73ee4/default/bin/parser__mock.mli.inferred
+$ (cd _build/.sandbox/c07564c1da15eecaf3ee954fcce61ec4/default && /Users/haijun/.opam/5.0.0/bin/menhir bin/parser.mly --base bin/parser --infer-read-reply bin/parser__mock.mli.inferred)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o lib/wampus.cmxa lib/.wampus.objs/native/wampus.cmx)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -intf bin/parser.mli) > _build/default/bin/.wampus.eobjs/dune__exe__Parser.intf.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/parser.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Parser.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -intf bin/wampus.mli) > _build/default/bin/.wampus.eobjs/dune__exe__Wampus.intf.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Parser.cmi -c -intf bin/parser.mli)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Sast.cmo -c -impl bin/sast.ml)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Wampus.cmi -c -intf bin/wampus.mli)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Scanner.cmo -c -impl bin/scanner.ml)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Semant.cmo -c -impl bin/semant.ml)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I bin/.wampus.eobjs/byte -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/byte/dune__exe__Codegen.cmo -c -impl bin/codegen.ml)
+> File "bin/codegen.ml", line 54, characters 39-53:
+> 54 |       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
+>                                             ^^^^^^^^^^^^^^
+> Alert deprecated: L.pointer_type
+> pointer_type is deprecated in LLVM 15, use pointer_type2 that constructs an opaque pointer. In LLVM 16, pointer_type is an alias for pointer_type2.
+> File "bin/codegen.ml", line 115, characters 17-29:
+> 115 |       | SId s -> L.build_load (lookup s) s builder
+>                        ^^^^^^^^^^^^
+> Alert deprecated: L.build_load
+> build_load is deprecated in LLVM 15, use build_load2 that takes an additional lltype argument instead. In LLVM 16, build_load is an alias for
+>    build_load2.
+> File "bin/codegen.ml", lines 122-135, characters 23-4:
+> 122 | .......................(match op with 
+> 123 | 	    A.Add     -> L.build_fadd
+> 124 | 	  | A.Sub     -> L.build_fsub
+> 125 | 	  | A.Mult    -> L.build_fmul
+> 126 | 	  | A.Div     -> L.build_fdiv 
+> ...
+> 132 | 	  | A.Geq     -> L.build_fcmp L.Fcmp.Oge
+> 133 | 	  | A.And | A.Or ->
+> 134 | 	      raise (Failure "internal error: semant should have rejected and/or on float")
+> 135 | 	  ).......................
+> Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+> Here is an example of a case that is not matched:
+> (Mod|Isin|Union|Intersect)
+> File "bin/codegen.ml", lines 136-149, characters 8-4:
+> 136 | ........(match op with
+> 137 | 	  | A.Add     -> L.build_add
+> 138 | 	  | A.Sub     -> L.build_sub
+> 139 | 	  | A.Mult    -> L.build_mul
+> 140 |           | A.Div     -> L.build_sdiv
+> ...
+> 146 | 	  | A.Leq     -> L.build_icmp L.Icmp.Sle
+> 147 | 	  | A.Greater -> L.build_icmp L.Icmp.Sgt
+> 148 | 	  | A.Geq     -> L.build_icmp L.Icmp.Sge
+> 149 | 	  )......................
+> Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+> Here is an example of a case that is not matched:
+> (Mod|Isin|Union|Intersect)
+> File "bin/codegen.ml", line 158, characters 3-15:
+> 158 | 	  L.build_call printf_func [| int_format_str ; (expr builder e) |]
+>       	  ^^^^^^^^^^^^
+> Alert deprecated: L.build_call
+> build_call is deprecated in LLVM 15, use build_call2 that takes an additional lltype argument instead. In LLVM 16, build_call is an alias for build_call2.
+> File "bin/codegen.ml", line 161, characters 3-15:
+> 161 | 	  L.build_call printbig_func [| (expr builder e) |] "printbig" builder
+>       	  ^^^^^^^^^^^^
+> Alert deprecated: L.build_call
+> build_call is deprecated in LLVM 15, use build_call2 that takes an additional lltype argument instead. In LLVM 16, build_call is an alias for build_call2.
+> File "bin/codegen.ml", line 163, characters 3-15:
+> 163 | 	  L.build_call printf_func [| float_format_str ; (expr builder e) |]
+>       	  ^^^^^^^^^^^^
+> Alert deprecated: L.build_call
+> build_call is deprecated in LLVM 15, use build_call2 that takes an additional lltype argument instead. In LLVM 16, build_call is an alias for build_call2.
+> File "bin/codegen.ml", line 171, characters 9-21:
+> 171 |          L.build_call fdef (Array.of_list llargs) result builder
+>                ^^^^^^^^^^^^
+> Alert deprecated: L.build_call
+> build_call is deprecated in LLVM 15, use build_call2 that takes an additional lltype argument instead. In LLVM 16, build_call is an alias for build_call2.
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o bin/.wampus.eobjs/native/dune__exe.cmx -c -impl bin/.wampus.eobjs/dune__exe.ml-gen)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Ast.cmx -c -impl bin/ast.ml)
+> File "bin/ast.ml", lines 44-58, characters 19-14:
+> 44 | ...................function
+> 45 |     Add -> "+"
+> 46 |   | Sub -> "-"
+> 47 |   | Mult -> "*"
+> 48 |   | Div -> "/"
+> ...
+> 55 |   | And -> "&&"
+> 56 |   | Or -> "||"
+> 57 |   (* add here *)
+> 58 |   | Mod -> "%"
+> Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+> Here is an example of a case that is not matched:
+> (Isin|Union|Intersect)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -shared -linkall -I lib -o lib/wampus.cmxs lib/wampus.cmxa)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Scanner.cmx -c -impl bin/scanner.ml)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Sast.cmx -c -impl bin/sast.ml)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Wampus.cmx -c -impl bin/wampus.ml)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Semant.cmx -c -impl bin/semant.ml)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Codegen.cmx -c -impl bin/codegen.ml)
+> File "bin/codegen.ml", line 54, characters 39-53:
+> 54 |       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
+>                                             ^^^^^^^^^^^^^^
+> Alert deprecated: L.pointer_type
+> pointer_type is deprecated in LLVM 15, use pointer_type2 that constructs an opaque pointer. In LLVM 16, pointer_type is an alias for pointer_type2.
+> File "bin/codegen.ml", line 115, characters 17-29:
+> 115 |       | SId s -> L.build_load (lookup s) s builder
+>                        ^^^^^^^^^^^^
+> Alert deprecated: L.build_load
+> build_load is deprecated in LLVM 15, use build_load2 that takes an additional lltype argument instead. In LLVM 16, build_load is an alias for
+>    build_load2.
+> File "bin/codegen.ml", lines 122-135, characters 23-4:
+> 122 | .......................(match op with 
+> 123 | 	    A.Add     -> L.build_fadd
+> 124 | 	  | A.Sub     -> L.build_fsub
+> 125 | 	  | A.Mult    -> L.build_fmul
+> 126 | 	  | A.Div     -> L.build_fdiv 
+> ...
+> 132 | 	  | A.Geq     -> L.build_fcmp L.Fcmp.Oge
+> 133 | 	  | A.And | A.Or ->
+> 134 | 	      raise (Failure "internal error: semant should have rejected and/or on float")
+> 135 | 	  ).......................
+> Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+> Here is an example of a case that is not matched:
+> (Mod|Isin|Union|Intersect)
+> File "bin/codegen.ml", lines 136-149, characters 8-4:
+> 136 | ........(match op with
+> 137 | 	  | A.Add     -> L.build_add
+> 138 | 	  | A.Sub     -> L.build_sub
+> 139 | 	  | A.Mult    -> L.build_mul
+> 140 |           | A.Div     -> L.build_sdiv
+> ...
+> 146 | 	  | A.Leq     -> L.build_icmp L.Icmp.Sle
+> 147 | 	  | A.Greater -> L.build_icmp L.Icmp.Sgt
+> 148 | 	  | A.Geq     -> L.build_icmp L.Icmp.Sge
+> 149 | 	  )......................
+> Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+> Here is an example of a case that is not matched:
+> (Mod|Isin|Union|Intersect)
+> File "bin/codegen.ml", line 158, characters 3-15:
+> 158 | 	  L.build_call printf_func [| int_format_str ; (expr builder e) |]
+>       	  ^^^^^^^^^^^^
+> Alert deprecated: L.build_call
+> build_call is deprecated in LLVM 15, use build_call2 that takes an additional lltype argument instead. In LLVM 16, build_call is an alias for build_call2.
+> File "bin/codegen.ml", line 161, characters 3-15:
+> 161 | 	  L.build_call printbig_func [| (expr builder e) |] "printbig" builder
+>       	  ^^^^^^^^^^^^
+> Alert deprecated: L.build_call
+> build_call is deprecated in LLVM 15, use build_call2 that takes an additional lltype argument instead. In LLVM 16, build_call is an alias for build_call2.
+> File "bin/codegen.ml", line 163, characters 3-15:
+> 163 | 	  L.build_call printf_func [| float_format_str ; (expr builder e) |]
+>       	  ^^^^^^^^^^^^
+> Alert deprecated: L.build_call
+> build_call is deprecated in LLVM 15, use build_call2 that takes an additional lltype argument instead. In LLVM 16, build_call is an alias for build_call2.
+> File "bin/codegen.ml", line 171, characters 9-21:
+> 171 |          L.build_call fdef (Array.of_list llargs) result builder
+>                ^^^^^^^^^^^^
+> Alert deprecated: L.build_call
+> build_call is deprecated in LLVM 15, use build_call2 that takes an additional lltype argument instead. In LLVM 16, build_call is an alias for build_call2.
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Parser.cmx -c -impl bin/parser.ml)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -o bin/wampus.exe /Users/haijun/.opam/5.0.0/lib/llvm/shared/llvm_shared.cmxa -I /Users/haijun/.opam/5.0.0/lib/llvm/shared /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared/llvm_analysis_shared.cmxa -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared lib/wampus.cmxa bin/.wampus.eobjs/native/dune__exe.cmx bin/.wampus.eobjs/native/dune__exe__Ast.cmx bin/.wampus.eobjs/native/dune__exe__Sast.cmx bin/.wampus.eobjs/native/dune__exe__Codegen.cmx bin/.wampus.eobjs/native/dune__exe__Parser.cmx bin/.wampus.eobjs/native/dune__exe__Scanner.cmx bin/.wampus.eobjs/native/dune__exe__Semant.cmx bin/.wampus.eobjs/native/dune__exe__Wampus.cmx)
+> ld: warning: ignoring duplicate libraries: '-lLLVM-15', '-lc++'

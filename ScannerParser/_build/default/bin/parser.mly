@@ -45,7 +45,7 @@ open Ast
 %left EQ NEQ
 %left LT GT LEQ GEQ
 %left PLUS MINUS
-%left TIMES DIVIDE
+%left TIMES DIVIDE MOD
 %right NOT
 
 %%
@@ -170,7 +170,7 @@ expr:
   | expr AND    expr { Binop($1, And,   $3)   }
   | expr OR     expr { Binop($1, Or,    $3)   }
   // adding more expression operators
-  // | expr MOD    expr { Binop ($1, Mod, $3)}
+  | expr MOD    expr { Binop ($1, Mod, $3)}
   // | ID PLUS ASSIGN expr { Assign( $1, Binop ($1, Add, $3))}
   // | expr INTERSECT expr {Binop ($1, Intersect, $3) }
   // | expr UNION expr     {Binop ($1, Union, $3) }
