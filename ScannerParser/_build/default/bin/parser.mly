@@ -26,7 +26,7 @@ open Ast
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
-%token LIST
+%token LIST SET
 // %token TYPE  CASE STRUCT ISIN SET LIST STRING TUPLE
 // float, char, and string?
 %token <char> CHAR
@@ -107,14 +107,14 @@ typ:
 
 group_typ:
     
-//   | SET LARROW INT RARROW         { Set (Int)     }
-//   | SET LARROW BOOL RARROW        { Set (Bool)    }
-//   | SET LARROW STRING RARROW      { Set (String)  }
-//   | SET LARROW group_typ          { Set ($3)      }
-        LIST LBRACK INT RBRACK        { List (Int)    }
-     | LIST LBRACK BOOL RBRACK       { List (Bool)   }
+  //     SET LARROW INT RARROW         { Set (Int)     }
+  //   | SET LARROW BOOL RARROW        { Set (Bool)    }
+  // // | SET LARROW STRING RARROW      { Set (String)  }
+  //   | SET LARROW group_typ RARROW        { Set ($3)      }
+      LIST LARROW INT RARROW        { List (Int)    }
+    | LIST LARROW BOOL RARROW       { List (Bool)   }
     //  | LIST LBRACK STRING RBRACK     { List (String) }
-     | LIST LBRACK group_typ RBRACK  { List ($3)     }
+    | LIST LARROW group_typ RARROW  { List ($3)     }
 
 // group_typ_list:
 //     INT           { [Int]     }
@@ -184,6 +184,7 @@ expr:
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }
   // Building a list
   | list_expr               { $1 }
+  // | set_expr                { $1 }
 
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }
@@ -207,3 +208,4 @@ list_list:
 
 list_expr:
   LBRACK list_list RBRACK      {ListExplicit(List.rev $2)}
+

@@ -30,8 +30,11 @@ rule token = parse
 | "%"      { MOD }
 | "["      { LBRACK }
 | "]"      { RBRACK }
+| "<"      { LARROW }
+| ">"      { RARROW }
 | ":"      { COLON }
 | "List"   { LIST }
+| "Set"    { SET }
 (* | "'" char_chars "'" as lxm { CHAR(lxm.[1]) } *)
 | '"' string_chars* '"' as lxm { STRING(lxm) }
 (* | '"'      { read_string lexbuf } *)
