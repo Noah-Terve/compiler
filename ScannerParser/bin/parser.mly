@@ -64,12 +64,11 @@ decls:
  | decls fdecl { (fst $1, ($2 :: snd $1)) }
 
 fdecl:
-   typ ID LPAREN formals_opt RPAREN LBRACE vdecl_list stmt_list RBRACE
-     { { typ = $1;
-	 fname = $2;
-	 formals = List.rev $4;
-	 locals = List.rev $7; 
-	 body = List.rev $8 } }
+   typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
+      {{ typ = $1; 
+        fname = $2;
+        formals = List.rev $4;
+        body = List.rev $7 }}
 
 formals_opt:
     /* nothing */ { [] }
@@ -132,10 +131,6 @@ group_typ:
 //   | group_typ_list COMMA group_typ  { $3 :: $1 }
 
 
-
-vdecl_list:
-    /* nothing */    { [] }
-  | vdecl_list vdecl { $2 :: $1 }
 
 vdecl:
     typ ID SEMI { ($1, $2) }

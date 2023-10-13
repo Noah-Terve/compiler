@@ -98,6 +98,7 @@ let rec string_of_expr = function
 | ListExplicit(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
 | SetExplicit (el) -> "{" ^ String.concat ", " (List.map string_of_expr el) ^ "}"
 | Noexpr -> ""
+
 (* let string_of_bind = function
     BindDec(t, id) -> string_of_typ t ^ " " ^ id
   | BindAssign(t, id, e) -> string_of_typ t ^ " " ^ id ^ " = " ^
@@ -127,9 +128,7 @@ let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 let string_of_fdecl fdecl =
   string_of_typ fdecl.typ ^ " " ^
   fdecl.fname ^ "(" ^ String.concat ", " (List.map snd fdecl.formals) ^
-  ")\n{\n" ^
-  String.concat "" (List.map string_of_vdecl fdecl.locals) ^
-  String.concat "" (List.map string_of_stmt fdecl.body) ^
+  ")\n{\n" ^ String.concat "" (List.map string_of_stmt fdecl.body) ^
   "}\n"
 
 let string_of_program (vars, funcs) =

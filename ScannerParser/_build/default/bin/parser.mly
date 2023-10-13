@@ -22,11 +22,11 @@ open Ast
 
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN
-%token NOT EQ NEQ LT LEQ GT GEQ AND OR
+%token NOT EQ NEQ LT LEQ GT GEQ AND OR TIMESEQ
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
-%token LIST SET TIMESEQ BREAK CONTINUE
+%token LIST SET BREAK CONTINUE
 // %token TYPE  CASE STRUCT ISIN SET LIST STRING TUPLE
 // float, char, and string?
 %token <char> CHAR
@@ -50,7 +50,7 @@ open Ast
 %left UNION
 %left INTERSECT
 %left PLUS MINUS
-%left TIMES DIVIDE MOD
+%left TIMES DIVIDE MOD TIMESEQ
 %right NOT
 
 %%
@@ -64,12 +64,11 @@ decls:
  | decls fdecl { (fst $1, ($2 :: snd $1)) }
 
 fdecl:
-   typ ID LPAREN formals_opt RPAREN LBRACE vdecl_list stmt_list RBRACE
-     { { typ = $1;
-	 fname = $2;
-	 formals = List.rev $4;
-	 locals = List.rev $7; 
-	 body = List.rev $8 } }
+   typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
+      {{ typ = $1; 
+        fname = $2;
+        formals = List.rev $4;
+        body = List.rev $7 }}
 
 formals_opt:
     /* nothing */ { [] }
@@ -97,7 +96,6 @@ typ:
     INT   { Int   }
   | BOOL  { Bool  }
   | FLOAT { Float }
-  | VOID  { Void  }
   // | STRING { String }
 //   // Edit here for additional types
 //   | CHAR  { Char }
@@ -133,10 +131,6 @@ group_typ:
 //   | group_typ_list COMMA group_typ  { $3 :: $1 }
 
 
-
-vdecl_list:
-    /* nothing */    { [] }
-  | vdecl_list vdecl { $2 :: $1 }
 
 vdecl:
     typ ID SEMI { ($1, $2) }
