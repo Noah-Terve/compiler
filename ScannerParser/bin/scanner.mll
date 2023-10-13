@@ -35,19 +35,18 @@ rule token = parse
 | ":"      { COLON }
 | "List"   { LIST }
 | "Set"    { SET }
+| "*="     { TIMESEQ }
 (* | "'" char_chars "'" as lxm { CHAR(lxm.[1]) } *)
 | '"' string_chars* '"' as lxm { STRING(lxm) }
 (* | '"'      { read_string lexbuf } *)
 (* TODO *)
 (* \ table sequence *)
 (* Data structures: Sets, tuples, arrays *)
-(* | "set" { SET }
+
 | "&"  { INTERSECT}
 | "|"  { UNION }
-| "tuple" { TUPLE }
-| "list" { LIST }
-| "<"    { LARROW }
-| ">"    { RARROW } *)
+| "isin" { ISIN }
+
 
 (* MicroC *)
 | '('      { LPAREN }

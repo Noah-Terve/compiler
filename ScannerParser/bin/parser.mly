@@ -26,7 +26,7 @@ open Ast
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
-%token LIST SET
+%token LIST SET TIMESEQ
 // %token TYPE  CASE STRUCT ISIN SET LIST STRING TUPLE
 // float, char, and string?
 %token <char> CHAR
@@ -76,8 +76,8 @@ formals_opt:
   | formal_list   { $1 }
 
 formal_list:
-    typ ID                   { [($1,$2)]     }
-  | formal_list COMMA typ ID { ($3,$4) :: $1 }
+    typ ID                   { [($1, $2)]     }
+  | formal_list COMMA typ ID { ($3, $4) :: $1 }
 
 // struct_list:
 //   struct                      {List.rev $1}
@@ -134,7 +134,8 @@ vdecl_list:
   | vdecl_list vdecl { $2 :: $1 }
 
 vdecl:
-   typ ID SEMI { ($1, $2) }
+    typ ID SEMI { ($1, $2) }
+  // | typ ID ASSIGN expr SEMI { BindAssign($1, $2, $4) }
 
 stmt_list:
     /* nothing */  { [] }
@@ -149,8 +150,10 @@ stmt:
   | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)        }
   | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
                                             { For($3, $5, $7, $9)   }
+  | FOR LPAREN expr IN expr RPAREN stmt     {}
   | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
   /* Wampus statements */
+  // | vdecl { DeclBind($1) }
 
 expr_opt:
     /* nothing */ { Noexpr }
@@ -178,17 +181,18 @@ expr:
   | expr MOD    expr { Binop ($1, Mod, $3)}
   // this is more complicated than I thought
   // | ID PLUS ASSIGN expr { Assign( $1, Binop ($1, Add, $3))}
-
+  | expr TIMESEQ expr { Binop ($1, Multeq, $3) }
   | expr INTERSECT expr {Binop ($1, Intersect, $3) }
   | expr UNION expr     {Binop ($1, Union, $3) }
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }
   // Building a list & set
   | list_expr               { $1 }
   | set_expr                { $1 }
-
+// do we need to do x binary operators
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }
   | ID ASSIGN expr   { Assign($1, $3)         }
+  // | typ ID ASSIGN expr    { }
   //  type assign ?
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
   | LPAREN expr RPAREN { $2                   }

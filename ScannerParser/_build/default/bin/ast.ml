@@ -1,13 +1,11 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
-          And | Or | Mod | Isin | Union | Intersect
+          And | Or | Mod | Isin | Union | Intersect | Multeq
 
 type uop = Neg | Not
 
 type typ = Int | Bool | Float | Void | String | List of typ | Set of typ
-
-type bind = typ * string
 
 type expr =
     Literal of int
@@ -24,6 +22,11 @@ type expr =
   | SetExplicit of expr list
   | Noexpr
 
+
+  type bind = typ * string
+      (* BindDec of typ * string *)
+    (* | BindAssign of typ * string * expr *)
+
 type stmt =
     Block of stmt list
   | Expr of expr
@@ -32,6 +35,7 @@ type stmt =
   | For of expr * expr * expr * stmt
   | While of expr * stmt
   (* add our case, switch, elseif statements here *)
+  (* | DeclBind of bind *)
 
 type func_decl = {
     typ : typ;
@@ -63,27 +67,40 @@ let string_of_op = function
   | Intersect -> "&"
   | Union -> "|"
   | Isin -> "Isin"
+  | Multeq -> "*="
 
 let string_of_uop = function
     Neg -> "-"
   | Not -> "!"
 
 let rec string_of_expr = function
-    Literal(l) -> string_of_int l
-  | Fliteral(l) -> l
-  | BoolLit(true) -> "true"
-  | BoolLit(false) -> "false"
-  | StringLit(s) -> s
-  | Id(s) -> s
-  | Binop(e1, o, e2) ->
-      string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
-  | Unop(o, e) -> string_of_uop o ^ string_of_expr e
-  | Assign(v, e) -> v ^ " = " ^ string_of_expr e
-  | Call(f, el) ->
-      f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
-  | ListExplicit(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
-  | SetExplicit (el) -> "{" ^ String.concat ", " (List.map string_of_expr el) ^ "}"
-  | Noexpr -> ""
+  Literal(l) -> string_of_int l
+| Fliteral(l) -> l
+| BoolLit(true) -> "true"
+| BoolLit(false) -> "false"
+| StringLit(s) -> s
+| Id(s) -> s
+| Binop(e1, o, e2) ->
+    string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
+| Unop(o, e) -> string_of_uop o ^ string_of_expr e
+| Assign(v, e) -> v ^ " = " ^ string_of_expr e
+| Call(f, el) ->
+    f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+| ListExplicit(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
+| SetExplicit (el) -> "{" ^ String.concat ", " (List.map string_of_expr el) ^ "}"
+| Noexpr -> ""
+  let rec string_of_typ = function
+  Int -> "int"
+| Bool -> "bool"
+| Float -> "float"
+| Void -> "void"
+| String -> "string"
+| List(t) -> "List <" ^ string_of_typ t ^ ">"
+| Set(t) -> "Set <" ^ string_of_typ t ^ ">"
+(* let string_of_bind = function
+    BindDec(t, id) -> string_of_typ t ^ " " ^ id
+  | BindAssign(t, id, e) -> string_of_typ t ^ " " ^ id ^ " = " ^
+  string_of_expr e *)
 
 let rec string_of_stmt = function
     Block(stmts) ->
@@ -97,15 +114,8 @@ let rec string_of_stmt = function
       "for (" ^ string_of_expr e1  ^ " ; " ^ string_of_expr e2 ^ " ; " ^
       string_of_expr e3  ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
-
-let rec string_of_typ = function
-    Int -> "int"
-  | Bool -> "bool"
-  | Float -> "float"
-  | Void -> "void"
-  | String -> "string"
-  | List(t) -> "List <" ^ string_of_typ t ^ ">"
-  | Set(t) -> "Set <" ^ string_of_typ t ^ ">"
+  (* | DeclBind(b) -> string_of_bind b ^ ";\n" *)
+(* let string_of_vdecl (b) = string_of_bind b ^ ";\n" *)
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 
