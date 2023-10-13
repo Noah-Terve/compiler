@@ -21,7 +21,7 @@ type expr =
   | Assign of string * expr
   | Call of string * expr list
   | ListExplicit of expr list
-  (* | SetExplicit of expr list *)
+  | SetExplicit of expr list
   | Noexpr
 
 type stmt =
@@ -82,7 +82,7 @@ let rec string_of_expr = function
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | ListExplicit(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
-  (* | SetExplicit (el) -> "{" ^ String.concat ", " (List.map string_of_expr el) ^ "}" *)
+  | SetExplicit (el) -> "{" ^ String.concat ", " (List.map string_of_expr el) ^ "}"
   | Noexpr -> ""
 
 let rec string_of_stmt = function
@@ -105,7 +105,7 @@ let rec string_of_typ = function
   | Void -> "void"
   | String -> "string"
   | List(t) -> "List <" ^ string_of_typ t ^ ">"
-  (* | Set(t) -> "Set <" ^ string_of_typ t ^ ">" *)
+  | Set(t) -> "Set <" ^ string_of_typ t ^ ">"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 

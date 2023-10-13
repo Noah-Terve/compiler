@@ -1,10 +1,10 @@
-# dune exec wampus tests/dataStructures/list-test.mc
+# dune exec wampus tests/dataStructures/set-test.mc
 # OCAMLPARAM: unset
 # Shared cache: disabled
 # Workspace root: "/Users/haijun/Desktop/Academics/Fall
 # 2023/107/Wampus/ScannerParser"
 # Auto-detected concurrency: 8
-$ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n5prp5bqxcqrt00000gn/T/dune_81b2c9_output
+$ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n5prp5bqxcqrt00000gn/T/dune_ae8cad_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -101,3 +101,19 @@ $ /Users/haijun/.opam/5.0.0/bin/ocamlc.opt -config > /var/folders/4b/mzk73zhn21n
 #      }
 #  ; instrument_with = []
 #  }
+$ (cd _build/.sandbox/e41e37bc77995663c3ed34d3d977bd8f/default && /Users/haijun/.opam/5.0.0/bin/menhir bin/parser.mly --base bin/parser --infer-write-query bin/parser__mock.ml.mock)
+> File "bin/parser.mly", line 32, characters 14-18:
+> Warning: the token CHAR is unused.
+> File "bin/parser.mly", line 28, characters 42-47:
+> Warning: the token COLON is unused.
+> File "bin/parser.mly", line 28, characters 35-37:
+> Warning: the token IN is unused.
+> File "bin/parser.mly", line 28, characters 48-56:
+> Warning: the token TEMPLATE is unused.
+$ (cd _build/.sandbox/70d8cce4a1027ea27d2c6d06ec15dc5d/default && /Users/haijun/.opam/5.0.0/bin/menhir bin/parser.mly --base bin/parser --infer-read-reply bin/parser__mock.mli.inferred)
+> Warning: one state has shift/reduce conflicts.
+> Warning: 10 shift/reduce conflicts were arbitrarily resolved.
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamldep.opt -modules -impl bin/parser.ml) > _build/default/bin/.wampus.eobjs/dune__exe__Parser.impl.d
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I bin/.wampus.eobjs/byte -I bin/.wampus.eobjs/native -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared -I /Users/haijun/.opam/5.0.0/lib/llvm/shared -I lib/.wampus.objs/byte -I lib/.wampus.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.wampus.eobjs/native/dune__exe__Parser.cmx -c -impl bin/parser.ml)
+$ (cd _build/default && /Users/haijun/.opam/5.0.0/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -o bin/wampus.exe /Users/haijun/.opam/5.0.0/lib/llvm/shared/llvm_shared.cmxa -I /Users/haijun/.opam/5.0.0/lib/llvm/shared /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared/llvm_analysis_shared.cmxa -I /Users/haijun/.opam/5.0.0/lib/llvm/analysis/shared lib/wampus.cmxa bin/.wampus.eobjs/native/dune__exe.cmx bin/.wampus.eobjs/native/dune__exe__Ast.cmx bin/.wampus.eobjs/native/dune__exe__Sast.cmx bin/.wampus.eobjs/native/dune__exe__Codegen.cmx bin/.wampus.eobjs/native/dune__exe__Parser.cmx bin/.wampus.eobjs/native/dune__exe__Scanner.cmx bin/.wampus.eobjs/native/dune__exe__Semant.cmx bin/.wampus.eobjs/native/dune__exe__Wampus.cmx)
+> ld: warning: ignoring duplicate libraries: '-lLLVM-15', '-lc++'

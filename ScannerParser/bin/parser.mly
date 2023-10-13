@@ -182,7 +182,7 @@ expr:
   | expr INTERSECT expr {Binop ($1, Intersect, $3) }
   | expr UNION expr     {Binop ($1, Union, $3) }
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }
-  // Building a list
+  // Building a list & set
   | list_expr               { $1 }
   | set_expr                { $1 }
 
@@ -207,12 +207,12 @@ list_list:
   | list_list COMMA expr { $3 :: $1}
 
 list_expr:
-  LBRACK list_list RBRACK      {ListExplicit(List.rev $2)}
+  LBRACK list_list RBRACK      { ListExplicit(List.rev $2) }
 
 
 set_list: 
-    expr { [ $1 ]}
+    expr { [$1] }
   | set_list COMMA expr { $3 :: $1 }
 
 set_expr:
-  RBRACE set_list LBRACE { SetExplicit( List.rev $2 )}
+  LBRACE set_list RBRACE { SetExplicit(List.rev $2 )}

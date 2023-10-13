@@ -107,11 +107,11 @@ typ:
 
 group_typ:
     
-  //     SET LARROW INT RARROW         { Set (Int)     }
-  //   | SET LARROW BOOL RARROW        { Set (Bool)    }
-  // // | SET LARROW STRING RARROW      { Set (String)  }
-  //   | SET LARROW group_typ RARROW        { Set ($3)      }
-      LIST LARROW INT RARROW        { List (Int)    }
+      SET LARROW INT RARROW         { Set (Int)     }
+    | SET LARROW BOOL RARROW        { Set (Bool)    }
+  // | SET LARROW STRING RARROW      { Set (String)  }
+    | SET LARROW group_typ RARROW        { Set ($3)      }
+    | LIST LARROW INT RARROW        { List (Int)    }
     | LIST LARROW BOOL RARROW       { List (Bool)   }
     //  | LIST LBRACK STRING RBRACK     { List (String) }
     | LIST LARROW group_typ RARROW  { List ($3)     }
@@ -182,9 +182,9 @@ expr:
   | expr INTERSECT expr {Binop ($1, Intersect, $3) }
   | expr UNION expr     {Binop ($1, Union, $3) }
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }
-  // Building a list
+  // Building a list & set
   | list_expr               { $1 }
-  // | set_expr                { $1 }
+  | set_expr                { $1 }
 
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }
@@ -207,5 +207,12 @@ list_list:
   | list_list COMMA expr { $3 :: $1}
 
 list_expr:
-  LBRACK list_list RBRACK      {ListExplicit(List.rev $2)}
+  LBRACK list_list RBRACK      { ListExplicit(List.rev $2) }
 
+
+set_list: 
+    expr { [$1] }
+  | set_list COMMA expr { $3 :: $1 }
+
+set_expr:
+  LBRACE set_list RBRACE { SetExplicit(List.rev $2 )}
