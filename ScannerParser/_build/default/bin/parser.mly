@@ -68,7 +68,7 @@ fdecl:
      { { typ = $1;
 	 fname = $2;
 	 formals = List.rev $4;
-	 locals = List.rev $7;
+	 locals = List.rev $7; 
 	 body = List.rev $8 } }
 
 formals_opt:
@@ -115,7 +115,7 @@ group_typ:
     | LIST LARROW BOOL RARROW       { List (Bool)   }
     //  | LIST LBRACK STRING RBRACK     { List (String) }
     | LIST LARROW group_typ RARROW  { List ($3)     }
-    
+
 //     | TEMPLATE LARROW template_typ RARROW { }
 
 // template_typ: 
@@ -156,8 +156,8 @@ stmt:
   | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
                                             { For($3, $5, $7, $9)   }
   | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
-  // | BREAK SEMI                              { Break }
-  // | CONTINUE SEMI                           { Continue }
+  | BREAK SEMI                              { Break }
+  | CONTINUE SEMI                           { Continue }
   /* Wampus statements */
   // | vdecl { DeclBind($1) }
 
@@ -191,6 +191,7 @@ expr:
   | expr INTERSECT expr {Binop ($1, Intersect, $3) }
   | expr UNION expr     {Binop ($1, Union, $3) }
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }
+  | typ ID ASSIGN expr                 { BindAssign ($1, $2, $4) }
   // Building a list & set
   | list_expr               { $1 }
   | set_expr                { $1 }

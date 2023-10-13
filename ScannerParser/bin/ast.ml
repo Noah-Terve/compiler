@@ -5,7 +5,7 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Float | Void | String | List of typ | Set of typ 
+type typ = Int | Bool | Float | Void | String | List of typ | Set of typ
 
 type expr =
     Literal of int
@@ -18,14 +18,13 @@ type expr =
   | Unop of uop * expr
   | Assign of string * expr
   | Call of string * expr list
+  | BindAssign of typ * string * expr
   | ListExplicit of expr list
   | SetExplicit of expr list
   | Noexpr
 
 
-  type bind = typ * string
-      (* BindDec of typ * string *)
-    (* | BindAssign of typ * string * expr *)
+type bind = typ * string
 
 type stmt =
     Block of stmt list
@@ -35,8 +34,8 @@ type stmt =
   | For of expr * expr * expr * stmt
   | While of expr * stmt
   (* add our case, switch, elseif statements here *)
-  (* | Continue
-  | Break *)
+  | Continue
+  | Break
 
 type func_decl = {
     typ : typ;
@@ -74,6 +73,14 @@ let string_of_uop = function
     Neg -> "-"
   | Not -> "!"
 
+  let rec string_of_typ = function
+  Int -> "int"
+| Bool -> "bool"
+| Float -> "float"
+| Void -> "void"
+| String -> "string"
+| List(t) -> "List <" ^ string_of_typ t ^ ">"
+| Set(t) -> "Set <" ^ string_of_typ t ^ ">"
 let rec string_of_expr = function
   Literal(l) -> string_of_int l
 | Fliteral(l) -> l
@@ -87,17 +94,10 @@ let rec string_of_expr = function
 | Assign(v, e) -> v ^ " = " ^ string_of_expr e
 | Call(f, el) ->
     f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+| BindAssign(t, id, e) -> string_of_typ t ^ id ^ " = " ^ string_of_expr e
 | ListExplicit(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
 | SetExplicit (el) -> "{" ^ String.concat ", " (List.map string_of_expr el) ^ "}"
 | Noexpr -> ""
-  let rec string_of_typ = function
-  Int -> "int"
-| Bool -> "bool"
-| Float -> "float"
-| Void -> "void"
-| String -> "string"
-| List(t) -> "List <" ^ string_of_typ t ^ ">"
-| Set(t) -> "Set <" ^ string_of_typ t ^ ">"
 (* let string_of_bind = function
     BindDec(t, id) -> string_of_typ t ^ " " ^ id
   | BindAssign(t, id, e) -> string_of_typ t ^ " " ^ id ^ " = " ^
@@ -115,6 +115,8 @@ let rec string_of_stmt = function
       "for (" ^ string_of_expr e1  ^ " ; " ^ string_of_expr e2 ^ " ; " ^
       string_of_expr e3  ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
+  | Break -> "break;"
+  | Continue -> "continue;"
   (* | Break -> "break;"
   | Continue -> "continue;" *)
   (* | DeclBind(b) -> string_of_bind b ^ ";\n" *)
