@@ -26,7 +26,7 @@ open Ast
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
-%token LIST SET TIMESEQ
+%token LIST SET TIMESEQ BREAK CONTINUE
 // %token TYPE  CASE STRUCT ISIN SET LIST STRING TUPLE
 // float, char, and string?
 %token <char> CHAR
@@ -115,6 +115,11 @@ group_typ:
     | LIST LARROW BOOL RARROW       { List (Bool)   }
     //  | LIST LBRACK STRING RBRACK     { List (String) }
     | LIST LARROW group_typ RARROW  { List ($3)     }
+    
+//     | TEMPLATE LARROW template_typ RARROW { }
+
+// template_typ: 
+//   |  { }
 
 // group_typ_list:
 //     INT           { [Int]     }
@@ -151,6 +156,8 @@ stmt:
   | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
                                             { For($3, $5, $7, $9)   }
   | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
+  // | BREAK SEMI                              { Break }
+  // | CONTINUE SEMI                           { Continue }
   /* Wampus statements */
   // | vdecl { DeclBind($1) }
 

@@ -5,7 +5,7 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Float | Void | String | List of typ | Set of typ
+type typ = Int | Bool | Float | Void | String | List of typ | Set of typ 
 
 type expr =
     Literal of int
@@ -35,7 +35,8 @@ type stmt =
   | For of expr * expr * expr * stmt
   | While of expr * stmt
   (* add our case, switch, elseif statements here *)
-  (* | DeclBind of bind *)
+  (* | Continue
+  | Break *)
 
 type func_decl = {
     typ : typ;
@@ -114,6 +115,8 @@ let rec string_of_stmt = function
       "for (" ^ string_of_expr e1  ^ " ; " ^ string_of_expr e2 ^ " ; " ^
       string_of_expr e3  ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
+  (* | Break -> "break;"
+  | Continue -> "continue;" *)
   (* | DeclBind(b) -> string_of_bind b ^ ";\n" *)
 (* let string_of_vdecl (b) = string_of_bind b ^ ";\n" *)
 

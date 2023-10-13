@@ -182,6 +182,8 @@ let check (globals, functions) =
             | s :: ss         -> check_stmt s :: check_stmt_list ss
             | []              -> []
           in SBlock(check_stmt_list sl)
+      (* | Break -> SBreak *)
+      (* | Continue -> SContinue *)
 
     in (* body of check_function *)
     { styp = func.typ;

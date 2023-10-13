@@ -21,6 +21,8 @@ type sstmt =
   | SIf of sexpr * sstmt * sstmt
   | SFor of sexpr * sexpr * sexpr * sstmt
   | SWhile of sexpr * sstmt
+  (* | SBreak *)
+  (* | SContinue *)
 
 type sfunc_decl = {
     styp : typ;
@@ -63,6 +65,8 @@ let rec string_of_sstmt = function
       "for (" ^ string_of_sexpr e1  ^ " ; " ^ string_of_sexpr e2 ^ " ; " ^
       string_of_sexpr e3  ^ ") " ^ string_of_sstmt s
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
+  (* | SBreak -> "break;" *)
+  (* | SContinue -> "continue;" *)
 
 let string_of_sfdecl fdecl =
   string_of_typ fdecl.styp ^ " " ^

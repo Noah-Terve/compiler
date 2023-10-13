@@ -24,8 +24,10 @@ rule token = parse
 (* | "type"   { TYPE } *)
 (* | "char"   { CHAR } *)
 | "not"    { NOT }
-(* | "template" { TEMPLATE } *)
+| "template" { TEMPLATE }
 (* | "isin"   { ISIN } *)
+| "break"  { BREAK }
+| "continue" {CONTINUE }
 | "in"     { IN }
 | "%"      { MOD }
 | "["      { LBRACK }
