@@ -186,6 +186,7 @@ expr:
   | expr UNION expr     {Binop ($1, Union, $3) }
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }
   | typ ID ASSIGN expr                 { BindAssign ($1, $2, $4) }
+  | typ ID                             { BindDec($1, $2) }  
   // Building a list & set
   | list_expr               { $1 }
   | set_expr                { $1 }
