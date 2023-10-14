@@ -41,16 +41,14 @@ open Ast
 
 %nonassoc NOELSE
 %nonassoc ELSE
-%right ASSIGN
+%right ASSIGN TIMESEQ
 %left OR
 %left AND
 %left EQ NEQ
 %left LT GT LEQ GEQ
 %left ISIN
-%left UNION
-%left INTERSECT
 %left PLUS MINUS
-%left TIMES DIVIDE MOD TIMESEQ
+%left TIMES DIVIDE MOD 
 %right NOT
 
 %%
@@ -142,12 +140,12 @@ stmt_list:
 
 stmt:
     expr SEMI                               { Expr $1               }
-  | RETURN expr_opt SEMI                    { Return $2             }
+  | RETURN expr SEMI                        { Return $2             }
   | LBRACE stmt_list RBRACE                 { Block(List.rev $2)    }
   /* elseif can be represented as a case list, also all of these would need {}? */
   | IF LPAREN expr RPAREN stmt %prec NOELSE { If($3, $5, Block([])) }
   | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)        }
-  | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
+  | FOR LPAREN expr SEMI expr SEMI expr RPAREN stmt
                                             { For($3, $5, $7, $9)   }
   | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
   | BREAK SEMI                              { Break }

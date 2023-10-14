@@ -7,6 +7,10 @@ type uop = Neg | Not
 
 type typ = Int | Bool | Float | Void | String | List of typ | Set of typ
 
+(* | Struct of string * (typ, id) list *)
+(* or optional *)
+
+
 type expr =
     Literal of int
   | Fliteral of string
@@ -22,6 +26,8 @@ type expr =
   | BindDec of typ * string
   | ListExplicit of expr list
   | SetExplicit of expr list
+  (* struct constructor of Id * typ list * string *)
+  (* struct constructor of Id * typ list * string * *)
   | Noexpr
 
 
