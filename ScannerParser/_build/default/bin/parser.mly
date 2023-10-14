@@ -54,13 +54,19 @@ open Ast
 %%
 
 program:
-  decls EOF { $1 }
+  decl_list EOF { List.rev $1 }
 
-decls:
-   /* nothing */ { ([], [])               }
- | decls vdecl { (($2 :: fst $1), snd $1) }
- | decls fdecl { (fst $1, ($2 :: snd $1)) }
-//  | decls sdecl { (($2 :: fst $1), snd $1) }
+decl_list: 
+    /* Nothing */ { [] }
+  | decl { [$1] }
+  // | decl_list decl { $2 :: $1 }
+
+
+decl:
+   /* nothing */
+   stmt_list { Stmt($1) }
+ | sdecl { SDecl($1) }
+ | fdecl { FDecl($1) }
 
 fdecl:
    typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
@@ -72,13 +78,13 @@ fdecl:
 sdecl:
     STRUCT ID LBRACE formal_list RBRACE
     {{ name = $2;
-      formals = List.rev $4;
+      sformals = List.rev $4;
       identifiers = [];
     }}
   | TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE formal_list RBRACE 
     {{
       name = $6;
-      formals = List. rev $8;
+      sformals = List. rev $8;
       identifiers = List.rev $3;
     }}
 
@@ -94,24 +100,6 @@ t_list:
     ID        { [$1] }
   | t_list COMMA ID { $3 :: $1 }
   
-
-
-
-  
-  
-
-
-
-
-// struct_list:
-//   struct                      {List.rev $1}
-
-// struct:
-//     typ ID                   { [($1,$2)]     }
-//   | struct SEMI typ ID       { ($3,$4) :: $1 }
-  // need a way to assign member varib
-  // assignment
-  // | struct DOT ID ASSIGN expr { }
 
 // typ_list:
 //     typ { [$1] }
@@ -133,7 +121,7 @@ group_typ:
       SET LARROW INT RARROW         { Set (Int)     }
     | SET LARROW BOOL RARROW        { Set (Bool)    }
   // | SET LARROW STRING RARROW      { Set (String)  }
-    | SET LARROW group_typ RARROW        { Set ($3)      }
+    | SET LARROW group_typ RARROW   { Set ($3)      }
     | LIST LARROW INT RARROW        { List (Int)    }
     | LIST LARROW BOOL RARROW       { List (Bool)   }
     //  | LIST LBRACK STRING RBRACK     { List (String) }
@@ -174,6 +162,7 @@ stmt:
   | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)        }
   | FOR LPAREN expr SEMI expr SEMI expr RPAREN stmt
                                             { For($3, $5, $7, $9)   }
+  // | FOR LPAREN expr IN expr RPAREN stmt     { ForEnhanced ($3, $5, $6)}
   | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
   | SEMI                                    { NullStatement }
   | BREAK SEMI                              { Break }

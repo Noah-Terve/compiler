@@ -42,27 +42,28 @@ type stmt =
   | Return of expr
   | If of expr * stmt * stmt
   | For of expr * expr * expr * stmt
+  (* | ForEnhanced of expr * expr * stmt *)
   | While of expr * stmt
   (* add our case, switch, elseif statements here *)
   | NullStatement
   | Continue
   | Break
-
-type func_decl = {
+and func_decl = {
     typ : typ;
     fname : string;
     formals : bind list;
     body : stmt list;
   }
-
-
-type struct_decl = {
+and struct_decl = {
   name: string;
-  formals: bind list;
+  sformals: bind list;
   identifiers: string list;
-}
+} and decl = 
+  | Stmt of stmt list
+  | SDecl of struct_decl
+  | FDecl of func_decl
 
-type program = bind list * func_decl list
+type program = decl list
 
 (* Pretty-printing functions *)
 
@@ -133,6 +134,7 @@ let rec string_of_stmt = function
   | For(e1, e2, e3, s) ->
       "for (" ^ string_of_expr e1  ^ " ; " ^ string_of_expr e2 ^ " ; " ^
       string_of_expr e3  ^ ") " ^ string_of_stmt s
+  (* | ForEnhanced (e1, e2, s) ->  "for ("^ string_of_expr e1 ^ " in " ^ string_of_expr e2 ^ ")" ^ string_of_stmt s *)
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
   | NullStatement -> ";\n"
   | Break -> "break;\n"
