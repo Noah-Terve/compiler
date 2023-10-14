@@ -41,6 +41,7 @@ type stmt =
   | For of expr * expr * expr * stmt
   | While of expr * stmt
   (* add our case, switch, elseif statements here *)
+  | NullStatement
   | Continue
   | Break
 
@@ -123,6 +124,7 @@ let rec string_of_stmt = function
       "for (" ^ string_of_expr e1  ^ " ; " ^ string_of_expr e2 ^ " ; " ^
       string_of_expr e3  ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
+  | NullStatement -> ";\n"
   | Break -> "break;\n"
   | Continue -> "continue;\n"
   (* | Break -> "break;"
