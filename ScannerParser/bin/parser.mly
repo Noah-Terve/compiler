@@ -180,23 +180,24 @@ expr:
   | expr MOD    expr { Binop ($1, Mod, $3)}
   // this is more complicated than I thought
   // | ID PLUS ASSIGN expr { Assign( $1, Binop ($1, Add, $3))}
-  | expr TIMESEQ expr { Binop ($1, Multeq, $3) }
-  | expr INTERSECT expr {Binop ($1, Intersect, $3) }
-  | expr UNION expr     {Binop ($1, Union, $3) }
+  | expr TIMESEQ expr   { Binop ($1, Multeq, $3) }
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }
-  | typ ID ASSIGN expr                 { BindAssign ($1, $2, $4) }
-  | typ ID                             { BindDec($1, $2) }  
+  | typ ID              { BindDec($1, $2) }  
   // Building a list & set
   | list_expr               { $1 }
   | set_expr                { $1 }
 // do we need to do x binary operators
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }
-  | ID ASSIGN expr   { Assign($1, $3)         }
+  | assign            { $1         }
   // | typ ID ASSIGN expr    { }
   //  type assign ?
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
   | LPAREN expr RPAREN { $2                   }
+
+assign:
+    typ ID ASSIGN expr { BindAssign ($1, $2, $4) }
+  | ID ASSIGN expr     { Assign ($1, $3) }
 
 args_opt:
     /* nothing */ { [] }

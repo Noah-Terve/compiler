@@ -41,16 +41,14 @@ open Ast
 
 %nonassoc NOELSE
 %nonassoc ELSE
-%right ASSIGN
+%right ASSIGN TIMESEQ
 %left OR
 %left AND
 %left EQ NEQ
 %left LT GT LEQ GEQ
 %left ISIN
-%left UNION
-%left INTERSECT
 %left PLUS MINUS
-%left TIMES DIVIDE MOD TIMESEQ
+%left TIMES DIVIDE MOD 
 %right NOT
 
 %%
@@ -142,14 +140,15 @@ stmt_list:
 
 stmt:
     expr SEMI                               { Expr $1               }
-  | RETURN expr_opt SEMI                    { Return $2             }
+  | RETURN expr SEMI                        { Return $2             }
   | LBRACE stmt_list RBRACE                 { Block(List.rev $2)    }
   /* elseif can be represented as a case list, also all of these would need {}? */
   | IF LPAREN expr RPAREN stmt %prec NOELSE { If($3, $5, Block([])) }
   | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)        }
-  | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
+  | FOR LPAREN expr SEMI expr SEMI expr RPAREN stmt
                                             { For($3, $5, $7, $9)   }
   | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
+  | SEMI                                    { NullStatement }
   | BREAK SEMI                              { Break }
   | CONTINUE SEMI                           { Continue }
   /* Wampus statements */
@@ -182,10 +181,7 @@ expr:
   // this is more complicated than I thought
   // | ID PLUS ASSIGN expr { Assign( $1, Binop ($1, Add, $3))}
   | expr TIMESEQ expr { Binop ($1, Multeq, $3) }
-  | expr INTERSECT expr {Binop ($1, Intersect, $3) }
-  | expr UNION expr     {Binop ($1, Union, $3) }
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }
-  | typ ID ASSIGN expr                 { BindAssign ($1, $2, $4) }
   | typ ID                             { BindDec($1, $2) }  
   // Building a list & set
   | list_expr               { $1 }
@@ -193,12 +189,15 @@ expr:
 // do we need to do x binary operators
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }
-  | ID ASSIGN expr   { Assign($1, $3)         }
+  | assign            { $1         }
   // | typ ID ASSIGN expr    { }
   //  type assign ?
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
   | LPAREN expr RPAREN { $2                   }
 
+assign:
+    typ ID ASSIGN expr { BindAssign ($1, $2, $4) }
+  | ID ASSIGN expr     { Assign ($1, $3) }
 args_opt:
     /* nothing */ { [] }
   | args_list  { List.rev $1 }

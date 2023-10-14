@@ -32,3 +32,654 @@ LBRACE set_list RBRACE
 LBRACE stmt_list RBRACE 
        stmt_list stmt // lookahead token appears because stmt can begin with STRING
        . 
+
+** Conflict (shift/reduce) in state 109.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list NOT expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 109, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+NOT expr 
+    expr . UNION expr 
+
+** In state 109, looking ahead at UNION, reducing production
+** expr -> NOT expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+NOT expr . 
+
+** Conflict (shift/reduce) in state 108.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list MINUS expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 108, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+MINUS expr 
+      expr . UNION expr 
+
+** In state 108, looking ahead at UNION, reducing production
+** expr -> MINUS expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+MINUS expr . 
+
+** Conflict (shift/reduce) in state 95.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list ID ASSIGN expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 95, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+ID ASSIGN expr 
+          expr . UNION expr 
+
+** In state 95, looking ahead at UNION, reducing production
+** expr -> ID ASSIGN expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+ID ASSIGN expr . 
+
+** Conflict (shift/reduce) in state 87.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr AND expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 87, looking ahead at UNION, reducing production
+** expr -> expr AND expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr AND expr . 
+
+** In state 87, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr AND expr 
+         expr . UNION expr 
+
+** Conflict (shift/reduce) in state 85.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr EQ expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 85, looking ahead at UNION, reducing production
+** expr -> expr EQ expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr EQ expr . 
+
+** In state 85, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr EQ expr 
+        expr . UNION expr 
+
+** Conflict (shift/reduce) in state 83.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr GEQ expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 83, looking ahead at UNION, reducing production
+** expr -> expr GEQ expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr GEQ expr . 
+
+** In state 83, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr GEQ expr 
+         expr . UNION expr 
+
+** Conflict (shift/reduce) in state 81.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr GT expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 81, looking ahead at UNION, reducing production
+** expr -> expr GT expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr GT expr . 
+
+** In state 81, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr GT expr 
+        expr . UNION expr 
+
+** Conflict (shift/reduce) in state 79.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr LEQ expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 79, looking ahead at UNION, reducing production
+** expr -> expr LEQ expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr LEQ expr . 
+
+** In state 79, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr LEQ expr 
+         expr . UNION expr 
+
+** Conflict (shift/reduce) in state 77.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr ISIN expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 77, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr ISIN expr 
+          expr . UNION expr 
+
+** In state 77, looking ahead at UNION, reducing production
+** expr -> expr ISIN expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr ISIN expr . 
+
+** Conflict (shift/reduce) in state 75.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr LT expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 75, looking ahead at UNION, reducing production
+** expr -> expr LT expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr LT expr . 
+
+** In state 75, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr LT expr 
+        expr . UNION expr 
+
+** Conflict (shift/reduce) in state 73.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr MINUS expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 73, looking ahead at UNION, reducing production
+** expr -> expr MINUS expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr MINUS expr . 
+
+** In state 73, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr MINUS expr 
+           expr . UNION expr 
+
+** Conflict (shift/reduce) in state 71.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr NEQ expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 71, looking ahead at UNION, reducing production
+** expr -> expr NEQ expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr NEQ expr . 
+
+** In state 71, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr NEQ expr 
+         expr . UNION expr 
+
+** Conflict (shift/reduce) in state 69.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr OR expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 69, looking ahead at UNION, reducing production
+** expr -> expr OR expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr OR expr . 
+
+** In state 69, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr OR expr 
+        expr . UNION expr 
+
+** Conflict (shift/reduce) in state 67.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr DIVIDE expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 67, looking ahead at UNION, reducing production
+** expr -> expr DIVIDE expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr DIVIDE expr . 
+
+** In state 67, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr DIVIDE expr 
+            expr . UNION expr 
+
+** Conflict (shift/reduce) in state 65.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr MOD expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 65, looking ahead at UNION, reducing production
+** expr -> expr MOD expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr MOD expr . 
+
+** In state 65, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr MOD expr 
+         expr . UNION expr 
+
+** Conflict (shift/reduce) in state 63.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr PLUS expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 63, looking ahead at UNION, reducing production
+** expr -> expr PLUS expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr PLUS expr . 
+
+** In state 63, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr PLUS expr 
+          expr . UNION expr 
+
+** Conflict (shift/reduce) in state 61.
+** Tokens involved: UNION TIMESEQ TIMES PLUS OR NEQ MOD MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDE AND
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr INTERSECT expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 61, looking ahead at UNION, reducing production
+** expr -> expr INTERSECT expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr INTERSECT expr . 
+
+** In state 61, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr INTERSECT expr 
+               expr . UNION expr 
+
+** Conflict (shift/reduce) in state 59.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr TIMES expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 59, looking ahead at UNION, reducing production
+** expr -> expr TIMES expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr TIMES expr . 
+
+** In state 59, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr TIMES expr 
+           expr . UNION expr 
+
+** Conflict (shift/reduce) in state 57.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr TIMESEQ expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 57, looking ahead at UNION, reducing production
+** expr -> expr TIMESEQ expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr TIMESEQ expr . 
+
+** In state 57, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr TIMESEQ expr 
+             expr . UNION expr 
+
+** Conflict (shift/reduce) in state 55.
+** Tokens involved: UNION TIMESEQ TIMES PLUS OR NEQ MOD MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDE AND
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list expr UNION expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 55, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+expr UNION expr 
+           expr . UNION expr 
+
+** In state 55, looking ahead at UNION, reducing production
+** expr -> expr UNION expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+expr UNION expr . 
+
+** Conflict (shift/reduce) in state 53.
+** Tokens involved: UNION INTERSECT
+** The following explanations concentrate on token UNION.
+** This state is reached from program after reading:
+
+decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list typ ID ASSIGN expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+decls EOF 
+decls fdecl 
+      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
+                                              stmt_list stmt 
+                                                        expr SEMI 
+                                                        (?)
+
+** In state 53, looking ahead at UNION, shifting is permitted
+** because of the following sub-derivation:
+
+typ ID ASSIGN expr 
+              expr . UNION expr 
+
+** In state 53, looking ahead at UNION, reducing production
+** expr -> typ ID ASSIGN expr
+** is permitted because of the following sub-derivation:
+
+expr UNION expr // lookahead token appears
+typ ID ASSIGN expr . 
