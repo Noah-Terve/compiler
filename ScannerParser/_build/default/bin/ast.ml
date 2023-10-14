@@ -6,8 +6,11 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
 type uop = Neg | Not
 
 type typ = Int | Bool | Float | Void | String | List of typ | Set of typ
-
+ 
 (* | Struct of string * (typ, id) list *)
+
+
+
 (* or optional *)
 
 
@@ -51,6 +54,13 @@ type func_decl = {
     formals : bind list;
     body : stmt list;
   }
+
+
+type struct_decl = {
+  name: string;
+  formals: bind list;
+  identifiers: string list;
+}
 
 type program = bind list * func_decl list
 
@@ -139,6 +149,9 @@ let string_of_fdecl fdecl =
   fdecl.fname ^ "(" ^ String.concat ", " (List.map snd fdecl.formals) ^
   ")\n{\n" ^ String.concat "" (List.map string_of_stmt fdecl.body) ^
   "}\n"
+  
+let string_of_sdecl sdecl = 
+  "struct " ^ sdecl.fname ^ " {" ^ String.concat  ";" (List.map snd sdecl.formals) ^"}\n"
 
 let string_of_program (vars, funcs) =
   String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^

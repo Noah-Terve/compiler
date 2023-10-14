@@ -26,7 +26,7 @@ open Ast
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
-%token LIST SET BREAK CONTINUE
+%token LIST SET BREAK CONTINUE STRUCT
 // %token TYPE  CASE STRUCT ISIN SET LIST STRING TUPLE
 // float, char, and string?
 %token <char> CHAR
@@ -60,6 +60,7 @@ decls:
    /* nothing */ { ([], [])               }
  | decls vdecl { (($2 :: fst $1), snd $1) }
  | decls fdecl { (fst $1, ($2 :: snd $1)) }
+//  | decls sdecl { (($2 :: fst $1), snd $1) }
 
 fdecl:
    typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
@@ -68,6 +69,19 @@ fdecl:
         formals = List.rev $4;
         body = List.rev $7 }}
 
+sdecl:
+    STRUCT ID LBRACE formal_list RBRACE
+    {{ name = $2;
+      formals = List.rev $4;
+      identifiers = [];
+    }}
+  | TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE formal_list RBRACE 
+    {{
+      name = $6;
+      formals = List. rev $8;
+      identifiers = List.rev $3;
+    }}
+
 formals_opt:
     /* nothing */ { [] }
   | formal_list   { $1 }
@@ -75,6 +89,19 @@ formals_opt:
 formal_list:
     typ ID                   { [($1, $2)]     }
   | formal_list COMMA typ ID { ($3, $4) :: $1 }
+
+t_list:
+    ID        { [$1] }
+  | t_list COMMA ID { $3 :: $1 }
+  
+
+
+
+  
+  
+
+
+
 
 // struct_list:
 //   struct                      {List.rev $1}
@@ -180,9 +207,9 @@ expr:
   | expr MOD    expr { Binop ($1, Mod, $3)}
   // this is more complicated than I thought
   // | ID PLUS ASSIGN expr { Assign( $1, Binop ($1, Add, $3))}
-  | expr TIMESEQ expr { Binop ($1, Multeq, $3) }
+  | expr TIMESEQ expr   { Binop ($1, Multeq, $3) }
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }
-  | typ ID                             { BindDec($1, $2) }  
+  | typ ID              { BindDec($1, $2) }  
   // Building a list & set
   | list_expr               { $1 }
   | set_expr                { $1 }
@@ -198,6 +225,7 @@ expr:
 assign:
     typ ID ASSIGN expr { BindAssign ($1, $2, $4) }
   | ID ASSIGN expr     { Assign ($1, $3) }
+
 args_opt:
     /* nothing */ { [] }
   | args_list  { List.rev $1 }

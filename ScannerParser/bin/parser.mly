@@ -26,7 +26,7 @@ open Ast
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
-%token LIST SET BREAK CONTINUE
+%token LIST SET BREAK CONTINUE STRUCT
 // %token TYPE  CASE STRUCT ISIN SET LIST STRING TUPLE
 // float, char, and string?
 %token <char> CHAR
@@ -54,12 +54,18 @@ open Ast
 %%
 
 program:
-  decls EOF { $1 }
+  unit_list EOF { List.rev $1 }
 
-decls:
-   /* nothing */ { ([], [])               }
- | decls vdecl { (($2 :: fst $1), snd $1) }
- | decls fdecl { (fst $1, ($2 :: snd $1)) }
+unit_list: 
+    /* Nothing */ { [] }
+    decl { [$1] }
+  | unit_list decl { $2 :: $1 }
+
+decl:
+   /* nothing */
+ | vdecl { $1 }
+ | fdecl { $1 }
+ | sdecl { $1 }
 
 fdecl:
    typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
@@ -68,6 +74,19 @@ fdecl:
         formals = List.rev $4;
         body = List.rev $7 }}
 
+sdecl:
+    STRUCT ID LBRACE formal_list RBRACE
+    {{ name = $2;
+      formals = List.rev $4;
+      identifiers = [];
+    }}
+  | TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE formal_list RBRACE 
+    {{
+      name = $6;
+      formals = List. rev $8;
+      identifiers = List.rev $3;
+    }}
+
 formals_opt:
     /* nothing */ { [] }
   | formal_list   { $1 }
@@ -75,6 +94,19 @@ formals_opt:
 formal_list:
     typ ID                   { [($1, $2)]     }
   | formal_list COMMA typ ID { ($3, $4) :: $1 }
+
+t_list:
+    ID        { [$1] }
+  | t_list COMMA ID { $3 :: $1 }
+  
+
+
+
+  
+  
+
+
+
 
 // struct_list:
 //   struct                      {List.rev $1}
