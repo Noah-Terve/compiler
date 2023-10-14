@@ -1,1 +1,1 @@
-bin/wampus.ml: Arg Ast Lexing Parser Scanner
+bin/wampus.ml: Arg Lexing Parser Scanner

@@ -48,6 +48,7 @@ type stmt =
   | NullStatement
   | Continue
   | Break
+  
 and func_decl = {
     typ : typ;
     fname : string;
@@ -155,6 +156,6 @@ let string_of_fdecl fdecl =
 let string_of_sdecl sdecl = 
   "struct " ^ sdecl.fname ^ " {" ^ String.concat  ";" (List.map snd sdecl.formals) ^"}\n"
 
-let string_of_program (vars, funcs) =
-  String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^
+let string_of_program (sdecls, funcs) =
+  String.concat "" (List.map string_of_sdecl sdecls ) ^ "\n" ^
   String.concat "\n" (List.map string_of_fdecl funcs)

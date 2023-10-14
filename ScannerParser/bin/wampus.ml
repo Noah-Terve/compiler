@@ -20,9 +20,12 @@ let () =
   Arg.parse speclist (fun filename -> channel := open_in filename) usage_msg;
   
   let lexbuf = Lexing.from_channel !channel in
-  let ast = Parser.program Scanner.token lexbuf in  
+  (* let () = Parser.program Scanner.token lexbuf *)
 
-  print_string (Ast.string_of_program ast) (*Delete this line and move to line 29 for semantic pass*)
+  let ast = Parser.program Scanner.token lexbuf in  
+  print_string("Hello")
+  (* let ast = Parser.program Scanner.token lexbuf in   *)
+  (* print_string (Ast.string_of_program ast) Delete this line and move to line 29 for semantic pass *)
 
 
   (* match !action with

@@ -59,7 +59,7 @@ program:
 decl_list: 
     /* Nothing */ { [] }
   | decl { [$1] }
-  // | decl_list decl { $2 :: $1 }
+  | decl_list decl { $2 :: $1 }
 
 
 decl:
@@ -150,7 +150,7 @@ vdecl:
   // | typ ID ASSIGN expr SEMI { BindAssign($1, $2, $4) }
 
 stmt_list:
-    /* nothing */  { [] }
+    // /* nothing */  { [NullStatement] }
   | stmt_list stmt { $2 :: $1 }
 
 stmt:
