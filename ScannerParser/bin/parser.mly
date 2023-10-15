@@ -23,12 +23,10 @@ open Ast
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN
 %token NOT EQ NEQ LT LEQ GT GEQ AND OR TIMESEQ
-%token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
+%token RETURN IF ELSE FOR WHILE INT BOOL FLOAT
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
 %token LIST SET BREAK CONTINUE STRUCT
-// %token TYPE  CASE STRUCT ISIN SET LIST STRING TUPLE
-// float, char, and string?
 %token <char> CHAR
 %token <int> LITERAL
 %token <bool> BLIT
@@ -107,19 +105,8 @@ formal_list:
     typ ID                   { [($1, $2)]     }
   | formal_list COMMA typ ID { ($3, $4) :: $1 }
 
-// struct_list:
-//   struct                      {List.rev $1}
 
-// struct:
-//     typ ID                   { [($1,$2)]     }
-//   | struct SEMI typ ID       { ($3,$4) :: $1 }
-  // need a way to assign member varib
-  // assignment
-  // | struct DOT ID ASSIGN expr { }
 
-// typ_list:
-//     typ { [$1] }
-//   | typ_list COMMA typ { $3 :: $1}
 
 typ:
     INT   { Int   }
@@ -144,27 +131,10 @@ group_typ:
     //  | LIST LBRACK STRING RBRACK     { List (String) }
     | LIST LARROW group_typ RARROW  { List ($3)     }
 
-//     | TEMPLATE LARROW template_typ RARROW { }
-
-// template_typ: 
-//   |  { }
-
-// group_typ_list:
-//     INT           { [Int]     }
-//   | BOOL          { [Bool]    }
-//   | STRING        { [String]  }
-//   | group_typ     { [$1]      }
-//   | group_typ_list COMMA INT        { Int :: $1 }
-//   | group_typ_list COMMA BOOL       { Bool :: $1 }
-//   | group_typ_list COMMA STRING     { String :: $1 }
-//   /* group type list containing a type of groups*/
-//   | group_typ_list COMMA group_typ  { $3 :: $1 }
 
 
 
-vdecl:
-    typ ID SEMI { ($1, $2) }
-  // | typ ID ASSIGN expr SEMI { BindAssign($1, $2, $4) }
+
 
 stmt_list:
     /* nothing */  { [] }
@@ -179,12 +149,11 @@ stmt:
   | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)        }
   | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
                                             { For($3, $5, $7, $9)   }
-  // | FOR LPAREN expr IN expr RPAREN stmt     { ForEnhanced ($3, $5, $7)}
+  | FOR LPAREN expr IN expr RPAREN stmt     { ForEnhanced ($3, $5, $7)}
   | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
   | BREAK SEMI                              { Break }
   | CONTINUE SEMI                           { Continue }
   /* Wampus statements */
-  // | vdecl { DeclBind($1) }
 
 expr_opt:
     /* nothing */ { Noexpr }
@@ -221,14 +190,12 @@ expr:
   // Building a list & set
   | list_expr               { $1 }
   | set_expr                { $1 }
-// do we need to do x binary operators
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
   | NOT expr         { Unop(Not, $2)          }
   | ID ASSIGN expr   { Assign($1, $3)         }
-  // | typ ID ASSIGN expr    { }
-  //  type assign ?
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
   | LPAREN expr RPAREN { $2                   }
+
 
 args_opt:
     /* nothing */ { [] }

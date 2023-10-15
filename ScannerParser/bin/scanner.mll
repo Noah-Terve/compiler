@@ -18,14 +18,11 @@ rule token = parse
 | "/*"     { comment lexbuf }           (* Comments *)
 (* Our edits *)
 
-(* | "include" { INCLUDE } *)
 | "and"    { AND }
 | "or"     { OR }
-(* | "type"   { TYPE } *)
 (* | "char"   { CHAR } *)
 | "not"    { NOT }
 | "template" { TEMPLATE }
-(* | "isin"   { ISIN } *)
 | "break"  { BREAK }
 | "continue" {CONTINUE }
 | "in"     { IN }
@@ -89,7 +86,6 @@ rule token = parse
 | eof { EOF }
 | _ as char { raise (Failure("illegal character " ^ Char.escaped char)) }
 (* Remove *)
-| "void"   { VOID }
 
 (* and read_string buf = parse
     '"' { STRING (Buffer.contents buf) }

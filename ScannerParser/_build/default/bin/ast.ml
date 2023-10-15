@@ -5,7 +5,7 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Float | Void | String | List of typ | Set of typ | Templated of string
+type typ = Int | Bool | Float | String | List of typ | Set of typ | Templated of string
 
 type expr =
     Literal of int
@@ -33,9 +33,8 @@ type stmt =
   | Return of expr
   | If of expr * stmt * stmt
   | For of expr * expr * expr * stmt
-  (* | ForEnhanced of expr * expr * stmt *)
+  | ForEnhanced of expr * expr * stmt
   | While of expr * stmt
-  (* add our case, switch, elseif statements here *)
   | Continue
   | Break
 
@@ -83,7 +82,6 @@ let string_of_uop = function
   Int -> "int"
 | Bool -> "bool"
 | Float -> "float"
-| Void -> "void"
 | String -> "string"
 | List(t) -> "List <" ^ string_of_typ t ^ ">"
 | Set(t) -> "Set <" ^ string_of_typ t ^ ">"
@@ -123,6 +121,8 @@ let rec string_of_stmt = function
   | For(e1, e2, e3, s) ->
       "for (" ^ string_of_expr e1  ^ " ; " ^ string_of_expr e2 ^ " ; " ^
       string_of_expr e3  ^ ") " ^ string_of_stmt s
+  | ForEnhanced (e1, e2, s) -> "for (" ^ string_of_expr e1 ^ " in " ^ 
+      string_of_expr e2 ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
   | Break -> "break;\n"
   | Continue -> "continue;\n"
@@ -130,8 +130,6 @@ let rec string_of_stmt = function
   | Continue -> "continue;" *)
   (* | DeclBind(b) -> string_of_bind b ^ ";\n" *)
 (* let string_of_vdecl (b) = string_of_bind b ^ ";\n" *)
-
-let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 
 let template = function
     [] -> ""
