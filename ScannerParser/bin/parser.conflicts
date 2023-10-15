@@ -1,5 +1,5 @@
 
-** Conflict (shift/reduce) in state 157.
+** Conflict (shift/reduce) in state 158.
 ** Tokens involved: SET LIST INT FLOAT BOOL
 ** The following explanations concentrate on token SET.
 ** This state is reached from program after reading:
@@ -13,7 +13,7 @@ program
 decl_list EOF 
 (?)
 
-** In state 157, looking ahead at SET, reducing production
+** In state 158, looking ahead at SET, reducing production
 ** decl -> stmt_list
 ** is permitted because of the following sub-derivation:
 
@@ -21,7 +21,7 @@ decl_list decl // lookahead token appears because decl can begin with SET
 decl // lookahead token is inherited
 stmt_list . 
 
-** In state 157, looking ahead at SET, shifting is permitted
+** In state 158, looking ahead at SET, shifting is permitted
 ** because of the following sub-derivation:
 
 decl 

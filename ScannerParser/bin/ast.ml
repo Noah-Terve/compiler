@@ -48,7 +48,7 @@ type stmt =
   | NullStatement
   | Continue
   | Break
-  
+
 and func_decl = {
     typ : typ;
     fname : string;

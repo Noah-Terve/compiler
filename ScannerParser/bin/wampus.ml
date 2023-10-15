@@ -2,10 +2,18 @@
    check the resulting AST and generate an SAST from it, generate LLVM IR,
    and dump the module *)
 
-type action = Ast | Sast | LLVM_IR | Compile
+(* type action = Ast | Sast | LLVM_IR | Compile *)
 
 let () = 
-  let action = ref Ast in
+  print_string "i am using this file";
+  let usage_msg = "usage: ./microc.native [file.mc]" in
+  let channel = ref stdin in
+  Arg.parse [] (fun file -> channel := open_in file) usage_msg;
+  let lexbuf = Lexing.from_channel !channel in
+  let ast = Parser.program Scanner.token lexbuf in
+  print_string (Ast.string_of_program ast)
+
+  (* let action = ref Ast in
   let set_action a () = action := a in
   let speclist = [
     ("-a", Arg.Unit (set_action Ast), "Print the AST");
@@ -22,20 +30,17 @@ let () =
   let lexbuf = Lexing.from_channel !channel in
   (* let () = Parser.program Scanner.token lexbuf *)
 
-  let ast = Parser.program Scanner.token lexbuf in  
-  print_string("Hello")
   (* let ast = Parser.program Scanner.token lexbuf in   *)
-  (* print_string (Ast.string_of_program ast) Delete this line and move to line 29 for semantic pass *)
+  (* print_string("Hello") *)
+  let ast = Parser.program Scanner.token lexbuf in
 
-
-  (* match !action with
-    Ast -> print_string (Ast.string_of_program ast) *)
-
-  (* | _ -> let sast = Semant.check ast in
+  (match !action with
+    Ast -> print_string (Ast.string_of_program ast)
+    | _ -> let sast = Semant.check ast in
     match !action with
       Ast     -> ()
     | Sast    -> print_string (Sast.string_of_sprogram sast)
     | LLVM_IR -> print_string (Llvm.string_of_llmodule (Codegen.translate sast))
     | Compile -> let m = Codegen.translate sast in
 	Llvm_analysis.assert_valid_module m;
-	print_string (Llvm.string_of_llmodule m) *)
+	print_string (Llvm.string_of_llmodule m)) *)

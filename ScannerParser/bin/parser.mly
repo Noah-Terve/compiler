@@ -26,7 +26,7 @@ open Ast
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
-%token LIST SET BREAK CONTINUE STRUCT
+%token LIST SET BREAK CONTINUE STRUCT FUNCTION
 // %token TYPE  CASE STRUCT ISIN SET LIST STRING TUPLE
 // float, char, and string?
 %token <char> CHAR
@@ -69,11 +69,11 @@ decl:
  | fdecl { FDecl($1) }
 
 fdecl:
-   typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
-      {{ typ = $1; 
-        fname = $2;
-        formals = List.rev $4;
-        body = List.rev $7 }}
+   FUNCTION typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
+      {{ typ = $2; 
+        fname = $3;
+        formals = List.rev $5;
+        body = List.rev $8 }}
 
 sdecl:
     STRUCT ID LBRACE formal_list RBRACE
@@ -127,8 +127,8 @@ group_typ:
     | LIST LARROW group_typ RARROW  { List ($3)     }
 
 
-vdecl:
-    typ ID SEMI { ($1, $2) }
+// vdecl:
+//     typ ID SEMI { ($1, $2) }
   // | typ ID ASSIGN expr SEMI { BindAssign($1, $2, $4) }
 
 stmt_list:
@@ -152,9 +152,9 @@ stmt:
   /* Wampus statements */
   // | vdecl { DeclBind($1) }
 
-expr_opt:
-    /* nothing */ { Noexpr }
-  | expr          { $1 }
+// expr_opt:
+//     /* nothing */ { Noexpr }
+//   | expr          { $1 }
 
 expr:
     LITERAL          { Literal($1)            }

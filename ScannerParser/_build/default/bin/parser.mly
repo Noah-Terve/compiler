@@ -26,7 +26,7 @@ open Ast
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
-%token LIST SET BREAK CONTINUE STRUCT
+%token LIST SET BREAK CONTINUE STRUCT FUNCTION
 // %token TYPE  CASE STRUCT ISIN SET LIST STRING TUPLE
 // float, char, and string?
 %token <char> CHAR
@@ -57,7 +57,7 @@ program:
   decl_list EOF { List.rev $1 }
 
 decl_list: 
-    /* Nothing */ { [] }
+    // /* Nothing */ { [] }
   | decl { [$1] }
   | decl_list decl { $2 :: $1 }
 
@@ -69,11 +69,11 @@ decl:
  | fdecl { FDecl($1) }
 
 fdecl:
-   typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
-      {{ typ = $1; 
-        fname = $2;
-        formals = List.rev $4;
-        body = List.rev $7 }}
+   FUNCTION typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
+      {{ typ = $2; 
+        fname = $3;
+        formals = List.rev $5;
+        body = List.rev $8 }}
 
 sdecl:
     STRUCT ID LBRACE formal_list RBRACE
@@ -117,7 +117,6 @@ typ:
 
 
 group_typ:
-    
       SET LARROW INT RARROW         { Set (Int)     }
     | SET LARROW BOOL RARROW        { Set (Bool)    }
   // | SET LARROW STRING RARROW      { Set (String)  }
@@ -127,26 +126,9 @@ group_typ:
     //  | LIST LBRACK STRING RBRACK     { List (String) }
     | LIST LARROW group_typ RARROW  { List ($3)     }
 
-//     | TEMPLATE LARROW template_typ RARROW { }
 
-// template_typ: 
-//   |  { }
-
-// group_typ_list:
-//     INT           { [Int]     }
-//   | BOOL          { [Bool]    }
-//   | STRING        { [String]  }
-//   | group_typ     { [$1]      }
-//   | group_typ_list COMMA INT        { Int :: $1 }
-//   | group_typ_list COMMA BOOL       { Bool :: $1 }
-//   | group_typ_list COMMA STRING     { String :: $1 }
-//   /* group type list containing a type of groups*/
-//   | group_typ_list COMMA group_typ  { $3 :: $1 }
-
-
-
-vdecl:
-    typ ID SEMI { ($1, $2) }
+// vdecl:
+//     typ ID SEMI { ($1, $2) }
   // | typ ID ASSIGN expr SEMI { BindAssign($1, $2, $4) }
 
 stmt_list:
@@ -170,9 +152,9 @@ stmt:
   /* Wampus statements */
   // | vdecl { DeclBind($1) }
 
-expr_opt:
-    /* nothing */ { Noexpr }
-  | expr          { $1 }
+// expr_opt:
+//     /* nothing */ { Noexpr }
+//   | expr          { $1 }
 
 expr:
     LITERAL          { Literal($1)            }
@@ -210,6 +192,7 @@ expr:
   //  type assign ?
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
   | LPAREN expr RPAREN { $2                   }
+
 
 assign:
     typ ID ASSIGN expr { BindAssign ($1, $2, $4) }
