@@ -1,4 +1,0 @@
-(library
- (name wampus)
- (libraries llvm llvm.analysis))
-
