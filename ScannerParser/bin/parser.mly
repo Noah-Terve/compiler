@@ -69,16 +69,35 @@ fdecl:
       {{ typ = $1; 
         fname = $2;
         formals = List.rev $4;
-        body = List.rev $7 }}
+        body = List.rev $7;
+        fun_t_list = []; }}
+    | TEMPLATE LARROW t_list RARROW typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
+    {{ typ = $5; 
+        fname = $6;
+        formals = List.rev $8;
+        body = List.rev $11;
+        fun_t_list = List.rev $3; }}
 sdecl:
   STRUCT ID LBRACE struct_formal_list RBRACE SEMI
   {{ name = $2;
-    formals = List.rev $4;
+    sformals = List.rev $4;
+    t_list = [];
+  }}
+  | TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE struct_formal_list RBRACE SEMI
+  {{
+    name = $6;
+    sformals = List.rev $8;
+    t_list = List.rev $3;
   }}
 
 struct_formal_list:
     typ ID SEMI                  { [($1, $2)]     }
   | struct_formal_list typ ID SEMI { ($2, $3) :: $1 }
+
+t_list:
+    ID { [$1] }
+  | t_list COMMA ID { $3 :: $1 }
+
 
 formals_opt:
     /* nothing */ { [] }
@@ -109,6 +128,7 @@ typ:
   // | STRING { String }
 //   // Edit here for additional types
 //   | CHAR  { Char }
+  | ID { Templated ($1)}
   | group_typ { $1 }
 
 
@@ -159,6 +179,7 @@ stmt:
   | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)        }
   | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
                                             { For($3, $5, $7, $9)   }
+  // | FOR LPAREN expr IN expr RPAREN stmt     { ForEnhanced ($3, $5, $7)}
   | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
   | BREAK SEMI                              { Break }
   | CONTINUE SEMI                           { Continue }

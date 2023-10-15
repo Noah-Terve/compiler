@@ -5,7 +5,7 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Float | Void | String | List of typ | Set of typ
+type typ = Int | Bool | Float | Void | String | List of typ | Set of typ | Templated of string
 
 type expr =
     Literal of int
@@ -33,6 +33,7 @@ type stmt =
   | Return of expr
   | If of expr * stmt * stmt
   | For of expr * expr * expr * stmt
+  (* | ForEnhanced of expr * expr * stmt *)
   | While of expr * stmt
   (* add our case, switch, elseif statements here *)
   | Continue
@@ -43,10 +44,12 @@ type func_decl = {
     fname : string;
     formals : bind list;
     body : stmt list;
+    fun_t_list : string list;
   }
 type struct_decl = {
   name : string;
-  formals : bind list;
+  sformals : bind list;
+  t_list : string list;
 }
 type program = stmt list * (func_decl list * struct_decl list)
 
@@ -84,6 +87,7 @@ let string_of_uop = function
 | String -> "string"
 | List(t) -> "List <" ^ string_of_typ t ^ ">"
 | Set(t) -> "Set <" ^ string_of_typ t ^ ">"
+| Templated(t) -> t
 let rec string_of_expr = function
   Literal(l) -> string_of_int l
 | Fliteral(l) -> l
@@ -129,14 +133,19 @@ let rec string_of_stmt = function
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 
+let template = function
+    [] -> ""
+    | types -> "template <" ^ String.concat ", " (List.map (fun s -> s) types) ^ ">\n"
+
 let string_of_fdecl fdecl =
+  (template fdecl.fun_t_list) ^
   string_of_typ fdecl.typ ^ " " ^
-  fdecl.fname ^ "(" ^ String.concat ", " (List.map snd fdecl.formals) ^
+  fdecl.fname ^ "(" ^ String.concat ", " (List.map (fun (t, s) -> string_of_typ t ^ " " ^ s) fdecl.formals) ^
   ")\n{\n" ^ String.concat "" (List.map string_of_stmt fdecl.body) ^
   "}\n"
 
 let string_of_sdecl sdecl = 
-  "Struct " ^ sdecl.name ^ "{ " ^ String.concat "; " (List.map (fun (t, s) -> string_of_typ t ^ " " ^ s) sdecl.formals) ^ ";};\n"
+  (template sdecl.t_list) ^ "struct " ^ sdecl.name ^ "{ " ^ String.concat "; " (List.map (fun (t, s) -> string_of_typ t ^ " " ^ s) sdecl.sformals) ^ ";};\n"
 
 let string_of_program (stmts, (funcs, structs)) =
   String.concat "" (List.map string_of_stmt stmts) ^ "\n" ^
