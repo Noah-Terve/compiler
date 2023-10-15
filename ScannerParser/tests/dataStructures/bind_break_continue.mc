@@ -1,0 +1,9 @@
+int main()
+{
+    int a = 5;
+    int a;
+    break;
+    continue;
+    int a;
+    b = 5;
+}
