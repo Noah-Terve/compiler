@@ -2,7 +2,7 @@
    check the resulting AST and generate an SAST from it, generate LLVM IR,
    and dump the module *)
 
-type action = Ast | Sast | LLVM_IR | Compile
+(* type action = Ast | Sast | LLVM_IR | Compile *)
 
 let () = 
   print_string "i am using this file";
@@ -11,7 +11,8 @@ let () =
   Arg.parse [] (fun file -> channel := open_in file) usage_msg;
   let lexbuf = Lexing.from_channel !channel in
   let ast = Parser.program Scanner.token lexbuf in
-  print_string (Ast.string_of_program ast)
+  print_string "hello"
+  (* print_string (Ast.string_of_program ast) *)
 
   (* let action = ref Ast in
   let set_action a () = action := a in

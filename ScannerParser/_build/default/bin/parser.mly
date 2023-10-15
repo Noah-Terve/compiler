@@ -57,10 +57,8 @@ program:
   decl_list EOF { List.rev $1 }
 
 decl_list: 
-    // /* Nothing */ { [] }
-  | decl { [$1] }
+    decl { [$1] }
   | decl_list decl { $2 :: $1 }
-
 
 decl:
    /* nothing */
@@ -70,27 +68,16 @@ decl:
 
 fdecl:
    FUNCTION typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
-      {{ typ = $2; 
-        fname = $3;
-        formals = List.rev $5;
-        body = List.rev $8 }}
+      { Func($2, $3, $5, $8) }
 
 sdecl:
-    STRUCT ID LBRACE formal_list RBRACE
-    {{ name = $2;
-      sformals = List.rev $4;
-      identifiers = [];
-    }}
-  | TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE formal_list RBRACE 
-    {{
-      name = $6;
-      sformals = List. rev $8;
-      identifiers = List.rev $3;
-    }}
+    STRUCT ID LBRACE formal_list RBRACE  { Struct($2, $4, []) }
+  | TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE formals_opt RBRACE 
+    { Struct($6, $8, $3) }
 
 formals_opt:
     /* nothing */ { [] }
-  | formal_list   { $1 }
+  | formal_list   { List.rev $1 }
 
 formal_list:
     typ ID                   { [($1, $2)]     }
@@ -152,9 +139,9 @@ stmt:
   /* Wampus statements */
   // | vdecl { DeclBind($1) }
 
-// expr_opt:
-//     /* nothing */ { Noexpr }
-//   | expr          { $1 }
+expr_opt:
+    /* nothing */ { Noexpr }
+  | expr          { $1 }
 
 expr:
     LITERAL          { Literal($1)            }

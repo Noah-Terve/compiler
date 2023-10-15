@@ -49,18 +49,12 @@ type stmt =
   | Continue
   | Break
 
-and func_decl = {
-    typ : typ;
-    fname : string;
-    formals : bind list;
-    body : stmt list;
-  }
-and struct_decl = {
-  name: string;
-  sformals: bind list;
-  identifiers: string list;
-} and decl = 
-  | Stmt of stmt list
+and func_decl = 
+    Func of typ * string * bind list * stmt list
+and struct_decl =
+    Struct of string * bind list * string list
+and decl = 
+    Stmt of stmt list
   | SDecl of struct_decl
   | FDecl of func_decl
 
@@ -147,15 +141,22 @@ let rec string_of_stmt = function
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 
-let string_of_fdecl fdecl =
-  string_of_typ fdecl.typ ^ " " ^
-  fdecl.fname ^ "(" ^ String.concat ", " (List.map snd fdecl.formals) ^
-  ")\n{\n" ^ String.concat "" (List.map string_of_stmt fdecl.body) ^
+let rec string_of_fdecl = function
+  Func(t, s, b_list, s_list) -> string_of_typ t ^ " " ^
+  s ^ "(" ^ String.concat ", " (List.map snd b_list) ^
+  ")\n{\n" ^ String.concat "" (List.map string_of_stmt s_list) ^
   "}\n"
   
-let string_of_sdecl sdecl = 
-  "struct " ^ sdecl.fname ^ " {" ^ String.concat  ";" (List.map snd sdecl.formals) ^"}\n"
+let rec string_of_sdecl = function
+  Struct (s, f_list, _) -> "struct " ^ s ^ " {" ^ String.concat  ";" (List.map snd f_list) ^"}\n" 
 
-let string_of_program (sdecls, funcs) =
-  String.concat "" (List.map string_of_sdecl sdecls ) ^ "\n" ^
-  String.concat "\n" (List.map string_of_fdecl funcs)
+let rec string_of_decl = function
+    Stmt(slist) -> String.concat "" (List.map string_of_stmt slist)
+  | SDecl(s) ->  string_of_sdecl s
+  | FDecl (f) -> string_of_fdecl f
+
+let string_of_program (decl_list) =
+   String.concat "" (List.map string_of_decl decl_list) ^ "\n"
+
+  (* String.concat "" (List.map string_of_sdecl sdecls ) ^ "\n" ^
+  String.concat "\n" (List.map string_of_fdecl funcs) *)
