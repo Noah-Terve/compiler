@@ -18,6 +18,7 @@ type expr =
   | Unop of uop * expr
   | Assign of string * expr
   | Call of string * expr list
+  | TemplatedCall of string * typ list * expr list
   | BindAssign of typ * string * expr
   | BindDec of typ * string
   | ListExplicit of expr list
@@ -99,6 +100,8 @@ let rec string_of_expr = function
 | Assign(v, e) -> v ^ " = " ^ string_of_expr e
 | Call(f, el) ->
     f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+| TemplatedCall(f, tl, el) ->
+    f ^ "<" ^ String.concat ", "(List.map string_of_typ tl) ^ ">  (" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 | BindAssign(t, id, e) -> string_of_typ t ^ " "^ id ^ " = " ^ string_of_expr e
 | BindDec (t, id) -> string_of_typ t ^ " " ^ id
 | ListExplicit(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"

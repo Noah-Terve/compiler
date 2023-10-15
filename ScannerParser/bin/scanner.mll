@@ -32,8 +32,8 @@ rule token = parse
 | "<"      { LARROW }
 | ">"      { RARROW }
 | ":"      { COLON }
-| "List"   { LIST }
-| "Set"    { SET }
+| "list"   { LIST }
+| "set"    { SET }
 | "*="     { TIMESEQ }
 | "struct" { STRUCT }
 (* | "'" char_chars "'" as lxm { CHAR(lxm.[1]) } *)

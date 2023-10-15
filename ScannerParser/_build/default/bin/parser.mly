@@ -124,10 +124,12 @@ group_typ:
     
       SET LARROW INT RARROW         { Set (Int)     }
     | SET LARROW BOOL RARROW        { Set (Bool)    }
+    | SET LARROW ID RARROW          { Set (Templated($3))}
   // | SET LARROW STRING RARROW      { Set (String)  }
     | SET LARROW group_typ RARROW        { Set ($3)      }
     | LIST LARROW INT RARROW        { List (Int)    }
     | LIST LARROW BOOL RARROW       { List (Bool)   }
+    | LIST LARROW ID RARROW         { List (Templated($3)) }
     //  | LIST LBRACK STRING RBRACK     { List (String) }
     | LIST LARROW group_typ RARROW  { List ($3)     }
 
@@ -194,9 +196,13 @@ expr:
   | NOT expr         { Unop(Not, $2)          }
   | ID ASSIGN expr   { Assign($1, $3)         }
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
+  // Function Templating
+  | ID LARROW typ_list RARROW LPAREN args_opt RPAREN { TemplatedCall ($1, List.rev $3, $6) }
   | LPAREN expr RPAREN { $2                   }
 
-
+typ_list:
+    typ { [$1] }
+  | typ_list COMMA typ { $3 :: $1}
 args_opt:
     /* nothing */ { [] }
   | args_list  { List.rev $1 }
