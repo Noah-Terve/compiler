@@ -10,3 +10,4 @@ int main()
     b = 5;
 }
 
+int f = 5;

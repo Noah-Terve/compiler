@@ -1,22 +1,20 @@
 
-** Conflict (shift/reduce) in state 116.
+** Conflict (shift/reduce) in state 104.
 ** Tokens involved: STRING SET NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT ID FLOAT FLIT BOOL BLIT
 ** The following explanations concentrate on token STRING.
 ** This state is reached from program after reading:
 
-decls typ ID LPAREN formals_opt RPAREN LBRACE stmt_list LBRACE
+decls LBRACE
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
 decls EOF 
-decls fdecl 
-      typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE 
-                                              stmt_list stmt 
-                                                        (?)
+decls stmt 
+      (?)
 
-** In state 116, looking ahead at STRING, shifting is permitted
+** In state 104, looking ahead at STRING, shifting is permitted
 ** because of the following sub-derivation:
 
 expr SEMI 
@@ -25,7 +23,7 @@ LBRACE set_list RBRACE
        expr 
        . STRING 
 
-** In state 116, looking ahead at STRING, reducing production
+** In state 104, looking ahead at STRING, reducing production
 ** stmt_list ->
 ** is permitted because of the following sub-derivation:
 

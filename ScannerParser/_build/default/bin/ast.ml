@@ -44,8 +44,11 @@ type func_decl = {
     formals : bind list;
     body : stmt list;
   }
-
-type program = stmt list * func_decl list
+type struct_decl = {
+  name : string;
+  formals : bind list;
+}
+type program = stmt list * (func_decl list * struct_decl list)
 
 (* Pretty-printing functions *)
 
@@ -132,6 +135,10 @@ let string_of_fdecl fdecl =
   ")\n{\n" ^ String.concat "" (List.map string_of_stmt fdecl.body) ^
   "}\n"
 
-let string_of_program (stmts, funcs) =
+let string_of_sdecl sdecl = 
+  "Struct " ^ sdecl.name ^ "{ " ^ String.concat "; " (List.map (fun (t, s) -> string_of_typ t ^ " " ^ s) sdecl.formals) ^ ";};\n"
+
+let string_of_program (stmts, (funcs, structs)) =
   String.concat "" (List.map string_of_stmt stmts) ^ "\n" ^
-  String.concat "\n" (List.map string_of_fdecl funcs)
+  String.concat "\n" (List.map string_of_fdecl funcs) ^ "\n" ^
+  String.concat "\n" (List.map string_of_sdecl structs)

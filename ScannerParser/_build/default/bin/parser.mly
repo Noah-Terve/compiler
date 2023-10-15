@@ -26,7 +26,7 @@ open Ast
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
-%token LIST SET BREAK CONTINUE
+%token LIST SET BREAK CONTINUE STRUCT
 // %token TYPE  CASE STRUCT ISIN SET LIST STRING TUPLE
 // float, char, and string?
 %token <char> CHAR
@@ -59,10 +59,10 @@ program:
   decls EOF { $1 }
 
 decls:
-   /* nothing */ { ([], [])               }
- | decls stmt { (($2 :: fst $1), snd $1) }
- | decls fdecl { (fst $1, ($2 :: snd $1)) }
-//  | decls sdecl { (fst $1, snd $1, )}
+   /* nothing */ { ([], ([], []))               }
+ | decls stmt { (($2 :: fst $1), (fst (snd $1), snd (snd $1))) }
+ | decls fdecl { (fst $1, (($2 :: fst (snd $1)), snd (snd $1))) }
+ | decls sdecl { (fst $1, (fst (snd $1), ($2 :: snd (snd $1)))) }
 
 fdecl:
    typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
@@ -70,6 +70,15 @@ fdecl:
         fname = $2;
         formals = List.rev $4;
         body = List.rev $7 }}
+sdecl:
+  STRUCT ID LBRACE struct_formal_list RBRACE SEMI
+  {{ name = $2;
+    formals = List.rev $4;
+  }}
+
+struct_formal_list:
+    typ ID SEMI                  { [($1, $2)]     }
+  | struct_formal_list typ ID SEMI { ($2, $3) :: $1 }
 
 formals_opt:
     /* nothing */ { [] }
