@@ -26,7 +26,7 @@ open Ast
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT STRING
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
-%token LIST SET BREAK CONTINUE STRUCT DOT
+%token LIST SET BREAK CONTINUE STRUCT DOT TAGS
 %token <char> CHAR
 %token <int> LITERAL
 %token <bool> BLIT
@@ -37,7 +37,7 @@ open Ast
 %start program
 %type <Ast.program> program
 
-%nonassoc NOELSE NOBRACKET
+%nonassoc NOELSE
 %nonassoc ELSE
 %right ASSIGN 
 %right UNIONEQ 
@@ -203,23 +203,16 @@ expr:
   | typ ID                             { BindDec($1, $2) }  
   // Struct dot assign and templating struct
   | ID DOT ID ASSIGN expr              { BindDot ($1, $3, $5) }
-  | templated_expr                          { $1 }
+  | LPAREN expr RPAREN                 { $2            }
+  | templated_expr                     { $1            }
   // Building a list & set
-  | list_expr               { $1 }
-  | set_expr                { $1 }
-  | MINUS expr %prec NOT { Unop(Neg, $2)      }
-  | NOT expr         { Unop(Not, $2)          }
-  | ID ASSIGN expr   { Assign($1, $3)         }
-  | ID LPAREN args_opt RPAREN { Call($1, $3)  }
-  | paren_expr       { $1            } 
-
-paren_expr:
-    LPAREN expr RPAREN        { $2            }
-  | LPAREN expr_list RPAREN   { LiteralList(List.rev $2)     }
-
-expr_list:
-    expr                      { [$1] }
-  | expr_list COMMA expr      { $3 :: $1 }
+  | LBRACK list_list RBRACK      { ListExplicit(List.rev $2)       }
+  | LBRACE set_list RBRACE       { SetExplicit(List.rev $2 )       }
+  | TAGS struct_list TAGS        { StructExplicit(List.rev $2)     }
+  | MINUS expr %prec NOT         { Unop(Neg, $2)      }
+  | NOT expr                     { Unop(Not, $2)          }
+  | ID ASSIGN expr               { Assign($1, $3)         }
+  | ID LPAREN args_opt RPAREN    { Call($1, $3)  }
 
 templated_expr:
     ID LARROW typ_list RARROW ID                     { BindTemplatedDec ($1, $3, $5) }
@@ -242,13 +235,10 @@ list_list:
     expr          { [$1] }
   | list_list COMMA expr { $3 :: $1}
 
-list_expr:
-  LBRACK list_list RBRACK      { ListExplicit(List.rev $2) }
-
+struct_list:
+    expr                        { [$1] }
+  | struct_list COMMA expr      { $3 :: $1 }
 
 set_list: 
     expr { [$1] }
   | set_list COMMA expr { $3 :: $1 }
-
-set_expr:
-  LBRACE set_list RBRACE { SetExplicit(List.rev $2 )}

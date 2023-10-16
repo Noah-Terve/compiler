@@ -89,6 +89,7 @@ rule token = parse
 | "bool"   { BOOL }
 | "float"  { FLOAT }
 | "string" { STRING }
+| "#"      { TAGS }
 
 (* Literals *)
 | "true"   { BLIT(true)  }
