@@ -1,0 +1,4 @@
+template <1, bool, string, int, bool> struct dog {
+    int a;
+    bool b;
+};
