@@ -139,8 +139,7 @@ group_typ:
 
 
 stmt_list:
-    /* nothing */  { [] }
-  | stmt_list stmt { $2 :: $1 }
+  stmt_list stmt { $2 :: $1 }
 
 stmt:
     expr SEMI                               { Expr $1               }
@@ -166,7 +165,7 @@ expr:
   | FLIT	           { Fliteral($1)           }
   | BLIT             { BoolLit($1)            }
   | SLIT             { StringLit($1)          }
-  | ID %prec NOBRACKET              { Id($1)                 }
+  | ID               { Id($1)                 }
   | expr PLUS   expr { Binop($1, Add,   $3)   }
   | expr MINUS  expr { Binop($1, Sub,   $3)   }
   | expr TIMES  expr { Binop($1, Mult,  $3)   }
@@ -206,11 +205,12 @@ expr:
   | NOT expr         { Unop(Not, $2)          }
   | ID ASSIGN expr   { Assign($1, $3)         }
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
-  | LPAREN expr RPAREN { $2                   }
+  // | LPAREN expr_list RPAREN   { $2            }
+  | LPAREN expr RPAREN        { $2            }
 
 templated_expr:
     ID LARROW typ_list RARROW ID                     { BindTemplatedDec ($1, $3, $5) }
-  | ID LARROW typ_list RARROW ID ASSIGN expr         { BindTemplatedAssign ($1, $3, $5, $7)}
+  // | ID LARROW typ_list RARROW ID ASSIGN expr         { BindTemplatedAssign ($1, $3, $5, $7)}
   | ID LARROW typ_list RARROW LPAREN args_opt RPAREN { TemplatedCall ($1, List.rev $3, $6) } 
 
 typ_list:

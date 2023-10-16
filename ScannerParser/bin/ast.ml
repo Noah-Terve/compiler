@@ -24,7 +24,7 @@ type expr =
   | BindDec of typ * string
   | BindDot of string * string * expr
   | BindTemplatedDec of string * typ list * string
-  | BindTemplatedAssign of string * typ list * string * expr
+  (* | BindTemplatedAssign of string * typ list * string * expr *)
   | ListExplicit of expr list
   | SetExplicit of expr list
   | Noexpr
@@ -116,7 +116,7 @@ let rec string_of_expr = function
 | BindDec (t, id) -> string_of_typ t ^ " " ^ id
 | BindDot (id, id1, e) -> id ^ "."^ id1 ^ " = " ^ string_of_expr e
 | BindTemplatedDec (struct_id, t_list, id) ->  struct_id ^ " <" ^ String.concat "," (List.map string_of_typ t_list) ^ "> " ^ id
-| BindTemplatedAssign ()
+(* | BindTemplatedAssign () *)
 | ListExplicit(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
 | SetExplicit (el) -> "{" ^ String.concat ", " (List.map string_of_expr el) ^ "}"
 | Noexpr -> ""
