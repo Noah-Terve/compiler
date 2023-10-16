@@ -206,11 +206,11 @@ expr:
   | NOT expr         { Unop(Not, $2)          }
   | ID ASSIGN expr   { Assign($1, $3)         }
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
-  // Function Templating
   | LPAREN expr RPAREN { $2                   }
 
 templated_expr:
     ID LARROW typ_list RARROW ID                     { BindTemplatedDec ($1, $3, $5) }
+  | ID LARROW typ_list RARROW ID ASSIGN expr         { BindTemplatedAssign ($1, $3, $5, $7)}
   | ID LARROW typ_list RARROW LPAREN args_opt RPAREN { TemplatedCall ($1, List.rev $3, $6) } 
 
 typ_list:
