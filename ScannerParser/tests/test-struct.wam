@@ -2,3 +2,8 @@ a <int> b;
 a.x = 5;
 dog d = #"charlie", 4, 7#;
 dog <int> d = #4, "charlie", 5#;
+
+struct dog {
+    int a;
+    int b;
+};

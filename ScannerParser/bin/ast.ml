@@ -163,9 +163,9 @@ let string_of_fdecl fdecl =
   "}\n"
 
 let string_of_sdecl sdecl = 
-  (template sdecl.t_list) ^ "struct " ^ sdecl.name ^ "{ " ^ String.concat "; " (List.map (fun (t, s) -> string_of_typ t ^ " " ^ s) sdecl.sformals) ^ ";};\n"
+  (template sdecl.t_list) ^ "struct " ^ sdecl.name ^ " { " ^ String.concat "; " (List.map (fun (t, s) -> string_of_typ t ^ " " ^ s) sdecl.sformals) ^ ";};\n"
 
 let string_of_program (stmts, (funcs, structs)) =
-  String.concat "" (List.map string_of_stmt stmts) ^ "\n" ^
-  String.concat "\n" (List.map string_of_fdecl funcs) ^ "\n" ^
+  String.concat "" (List.map string_of_stmt stmts)  ^
+  String.concat "\n" (List.map string_of_fdecl funcs) ^
   String.concat "\n" (List.map string_of_sdecl structs)
