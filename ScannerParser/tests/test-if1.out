@@ -1,0 +1,4 @@
+if (int x = 4 != int z = 5)
+{
+print("Not equal");
+}
