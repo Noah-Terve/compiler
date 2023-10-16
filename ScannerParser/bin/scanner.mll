@@ -40,8 +40,8 @@ rule token = parse
 | "set"    { SET }
 | "*="     { TIMESEQ }
 | "/="     { DIVIDEEQ }
-| "&="     { ANDEQ }
-| "|="     { OREQ }
+| "&="     { INTERSECTEQ }
+| "|="     { UNIONEQ }
 | "%="     { MODEQ }
 | "-="     { MINUSEQ }
 | "+="     { PLUSEQ }

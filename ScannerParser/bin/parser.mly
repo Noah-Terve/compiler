@@ -22,7 +22,7 @@ open Ast
 
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN
-%token NOT EQ NEQ LT LEQ GT GEQ AND OR TIMESEQ DIVIDEEQ ANDEQ OREQ MODEQ MINUSEQ PLUSEQ
+%token NOT EQ NEQ LT LEQ GT GEQ AND OR TIMESEQ DIVIDEEQ INTERSECTEQ UNIONEQ MODEQ MINUSEQ PLUSEQ
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT STRING
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
@@ -39,16 +39,20 @@ open Ast
 
 %nonassoc NOELSE NOBRACKET
 %nonassoc ELSE
-%right ASSIGN
-%left OR
-%left AND
+%right ASSIGN 
+%right UNIONEQ 
+%right INTERSECTEQ
+%right PLUSEQ MINUSEQ 
+%right TIMESEQ DIVIDEEQ 
+%left OR 
+%left AND 
 %left EQ NEQ
 %left LT GT LEQ GEQ
 %left ISIN
 %left UNION
 %left INTERSECT
-%left PLUS MINUS PLUSEQ MINUSEQ
-%left TIMES DIVIDE MOD TIMESEQ DIVIDEEQ ANDEQ
+%left PLUS MINUS 
+%left TIMES DIVIDE MOD 
 %right NOT
 
 %%
@@ -184,8 +188,8 @@ expr:
   // | ID PLUS ASSIGN expr { Assign( $1, Binop ($1, Add, $3))}
   | expr DIVIDEEQ expr { Binop ($1, Diveq, $3)}
   | expr TIMESEQ expr { Binop ($1, Multeq, $3) }
-  | expr ANDEQ expr { Binop ($1, Andeq, $3)}
-  | expr OREQ expr { Binop ($1, Oreq, $3)}
+  | expr INTERSECTEQ expr { Binop ($1, Intersecteq, $3)}
+  | expr UNIONEQ expr { Binop ($1, Unioneq, $3)}
   | expr MODEQ expr { Binop ($1, Modeq, $3)}
   | expr MINUSEQ expr { Binop ($1, Minuseq, $3)}
   | expr PLUSEQ expr {Binop ($1, Pluseq, $3)}
