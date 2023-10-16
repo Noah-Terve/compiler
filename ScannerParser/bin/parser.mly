@@ -183,6 +183,7 @@ expr:
   | expr MOD    expr { Binop ($1, Mod, $3)}
   // this is more complicated than I thought
   // | ID PLUS ASSIGN expr { Assign( $1, Binop ($1, Add, $3))}
+  | expr DIVIDEEQ expr { Binop ($1, Diveq, $3)}
   | expr TIMESEQ expr { Binop ($1, Multeq, $3) }
   | expr INTERSECT expr {Binop ($1, Intersect, $3) }
   | expr UNION expr     {Binop ($1, Union, $3) }
