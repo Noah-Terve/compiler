@@ -4,23 +4,6 @@
 open Ast
 %}
 
-/* - [ ]  tuple
-   - [ ]  list
-   - [ ]  set
-    set <int> chris = <1, 2, 3, 4>
-    set <int> chris;
-  - [ ]  struct
-    struct will be a list containing tuples
-
-    
-  - [ ]  template
-    template will be the same but with types
-
-  - [ ]  issue */
-      // two different meanings <>, <=, >=
-
-
-
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN
 %token NOT EQ NEQ LT LEQ GT GEQ AND OR TIMESEQ DIVIDEEQ INTERSECTEQ UNIONEQ MODEQ MINUSEQ PLUSEQ
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT STRING
@@ -109,9 +92,6 @@ formal_list:
     typ ID                   { [($1, $2)]     }
   | formal_list COMMA typ ID { ($3, $4) :: $1 }
 
-
-
-
 typ:
     INT   { Int   }
   | BOOL  { Bool  }
@@ -137,11 +117,6 @@ group_typ:
     //  | LIST LBRACK STRING RBRACK     { List (String) }
     | LIST LARROW group_typ RARROW  { List ($3)     }
 
-
-
-
-
-
 stmt_list:
     stmt { [$1] }
   | stmt_list stmt { $2 :: $1 }
@@ -155,12 +130,12 @@ stmt:
   | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)        }
   | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
                                             { For($3, $5, $7, $9)   }
+  /* Wampus statements */
   | FOR LPAREN expr IN expr RPAREN stmt     { ForEnhanced ($3, $5, $7)}
   | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
   | BREAK SEMI                              { Break }
   | CONTINUE SEMI                           { Continue }
   | SEMI                                    { NullStatement }
-  /* Wampus statements */
 
 expr_opt:
     /* nothing */ { Noexpr }
