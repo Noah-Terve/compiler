@@ -23,7 +23,7 @@ open Ast
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN
 %token NOT EQ NEQ LT LEQ GT GEQ AND OR TIMESEQ
-%token RETURN IF ELSE FOR WHILE INT BOOL FLOAT
+%token RETURN IF ELSE FOR WHILE INT BOOL FLOAT STRING
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
 %token LIST SET BREAK CONTINUE STRUCT
@@ -31,7 +31,7 @@ open Ast
 %token <int> LITERAL
 %token <bool> BLIT
 %token <string> ID FLIT
-%token <string> STRING
+%token <string> SLIT
 %token EOF
 
 %start program
@@ -112,7 +112,7 @@ typ:
     INT   { Int   }
   | BOOL  { Bool  }
   | FLOAT { Float }
-  // | STRING { String }
+  | STRING { String }
 //   // Edit here for additional types
 //   | CHAR  { Char }
   | ID { Templated ($1)}
@@ -165,7 +165,7 @@ expr:
     LITERAL          { Literal($1)            }
   | FLIT	           { Fliteral($1)           }
   | BLIT             { BoolLit($1)            }
-  | STRING           { StringLit($1)          }
+  | SLIT             { StringLit($1)          }
   | ID               { Id($1)                 }
   | expr PLUS   expr { Binop($1, Add,   $3)   }
   | expr MINUS  expr { Binop($1, Sub,   $3)   }

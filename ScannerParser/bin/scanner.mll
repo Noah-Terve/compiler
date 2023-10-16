@@ -9,9 +9,12 @@
 let digit = ['0' - '9']
 let digits = digit+
 
-let char_chars = [' ' - '&' '(' - '[' ']' - '~']
-let string_chars = [' ' - '!' '#' - '[' ']' - '~']
-let escaped_seq = '\\' (['"' '\'' '\\' 'n' 't' 'r' 'b'] | digit digit digit)
+(* A character is any printable character except  *)
+
+let simple_char = [' ' - '!' '#' - '&' '(' - '[' ']' - '~']
+let escaped_char = ['\\' '"' '\'' 'n' 't' 'r' 'b']
+let wampus_char = simple_char | '\\' escaped_char
+(* let escaped_seq = '\\' (['"' '\'' '\\' 'n' 't' 'r' 'b'] | digit digit digit) *)
 
 rule token = parse
   [' ' '\t' '\r' '\n'] { token lexbuf } (* Whitespace *)
@@ -24,7 +27,7 @@ rule token = parse
 | "not"    { NOT }
 | "template" { TEMPLATE }
 | "break"  { BREAK }
-| "continue" {CONTINUE }
+| "continue" { CONTINUE }
 | "in"     { IN }
 | "%"      { MOD }
 | "["      { LBRACK }
@@ -37,7 +40,6 @@ rule token = parse
 | "*="     { TIMESEQ }
 | "struct" { STRUCT }
 (* | "'" char_chars "'" as lxm { CHAR(lxm.[1]) } *)
-| '"' string_chars* '"' as lxm { STRING(lxm) }
 (* | '"'      { read_string lexbuf } *)
 (* TODO *)
 (* \ table sequence *)
@@ -78,16 +80,26 @@ rule token = parse
 | "int"    { INT }
 | "bool"   { BOOL }
 | "float"  { FLOAT }
+| "string" { STRING }
+
+(* Literals *)
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }
 | digits as lxm { LITERAL(int_of_string lxm) }
 | digits '.'  digit* as lxm { FLIT(lxm) }
+| '\"' (wampus_char* as lxm) '\"' { SLIT(lxm)}
+
 | ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }
 | eof { EOF }
 | _ as char { raise (Failure("illegal character " ^ Char.escaped char)) }
 (* Remove *)
 
 (* and read_string buf = parse
+    [^'"' '\'' '\\' '\n' '\r' '\t' '\b']+
+        { read_string (buf ^ Lexing.lexeme lexbuf) lexbuf }
+  | '\\' _ as escape {
+      
+  }
     '"' { STRING (Buffer.contents buf) }
   | '\\' '"' { Buffer.add_char buf '"'; read_string buf lexbuf }
   | '\\' '\'' { Buffer.add_char buf '\''; read_string buf lexbuf }
