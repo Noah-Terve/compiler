@@ -12,8 +12,10 @@ let digits = digit+
 (* A character is any printable character except  *)
 
 let simple_char = [' ' - '!' '#' - '&' '(' - '[' ']' - '~']
-let escaped_char = ['\\' '"' '\'' 'n' 't' 'r' 'b']
+let escaped_char = ['\\' '"' '\'' 'n' 't' 'r' 'b' '0'-'9']
 let wampus_char = simple_char | '\\' escaped_char
+
+
 (* let escaped_seq = '\\' (['"' '\'' '\\' 'n' 't' 'r' 'b'] | digit digit digit) *)
 
 rule token = parse
@@ -96,7 +98,8 @@ rule token = parse
 | "false"  { BLIT(false) }
 | digits as lxm { LITERAL(int_of_string lxm) }
 | digits '.'  digit* as lxm { FLIT(lxm) }
-| '\"' (wampus_char* as lxm) '\"' { SLIT(lxm)}
+| '\"' (wampus_char* as s) '\"' { SLIT(Scanf.unescaped s) }
+| "'" (wampus_char as c) "'" { CLIT((Scanf.unescaped c).[0])}
 
 | ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }
 | eof { EOF }

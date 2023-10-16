@@ -6,13 +6,14 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Float | String | List of typ | Set of typ | Templated of string
+type typ = Int | Bool | Float | String | Char
+         | List of typ | Set of typ | Templated of string
 
 type expr =
     Literal of int
   | Fliteral of string
   | BoolLit of bool
-  (* | CharLit of char *)
+  | CharLit of char
   | StringLit of string
   | Id of string
   | Binop of expr * op * expr
@@ -96,6 +97,7 @@ let string_of_uop = function
 | Bool -> "bool"
 | Float -> "float"
 | String -> "string"
+| Char -> "char"
 | List(t) -> "List <" ^ string_of_typ t ^ ">"
 | Set(t) -> "Set <" ^ string_of_typ t ^ ">"
 | Templated(t) -> t
@@ -104,7 +106,8 @@ let rec string_of_expr = function
 | Fliteral(l) -> l
 | BoolLit(true) -> "true"
 | BoolLit(false) -> "false"
-| StringLit(s) -> "\"" ^ s ^ "\""
+| StringLit(s) -> "\"" ^ String.escaped s ^ "\""
+| CharLit(c) -> "'" ^ Char.escaped c ^ "'"
 | Id(s) -> s
 | Binop(e1, o, e2) ->
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
