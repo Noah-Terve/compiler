@@ -58,9 +58,9 @@ program:
 
 decls:
    /* nothing */ { ([], ([], []))               }
- | decls stmt { (($2 :: fst $1), (fst (snd $1), snd (snd $1))) }
- | decls fdecl { (fst $1, (($2 :: fst (snd $1)), snd (snd $1))) }
- | decls sdecl { (fst $1, (fst (snd $1), ($2 :: snd (snd $1)))) }
+ | decls stmt { ((fst $1 @ [$2]), (fst (snd $1), snd (snd $1))) }
+ | decls fdecl { (fst $1, ((fst (snd $1) @ [$2] ), snd (snd $1))) }
+ | decls sdecl { (fst $1, (fst (snd $1), (snd (snd $1) @ [$2]))) }
 
 fdecl:
    typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
