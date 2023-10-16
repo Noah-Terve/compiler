@@ -1,7 +1,7 @@
 
 
 # Files included for testing
-TESTS = id-expr \
+TESTS = id-expr func struct\
         string1 string2 string3
 FAILS = unknown-character \
         string1 string2

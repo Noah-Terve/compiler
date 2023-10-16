@@ -26,7 +26,7 @@ open Ast
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT STRING
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
-%token LIST SET BREAK CONTINUE STRUCT
+%token LIST SET BREAK CONTINUE STRUCT DOT
 %token <char> CHAR
 %token <int> LITERAL
 %token <bool> BLIT
@@ -189,6 +189,7 @@ expr:
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }
   | typ ID ASSIGN expr                 { BindAssign ($1, $2, $4) }
   | typ ID                             { BindDec($1, $2) }  
+  | ID DOT ID ASSIGN expr              { BindDot ($1, $3, $5) }
   // Building a list & set
   | list_expr               { $1 }
   | set_expr                { $1 }

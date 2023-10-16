@@ -34,6 +34,7 @@ rule token = parse
 | "]"      { RBRACK }
 | "<"      { LARROW }
 | ">"      { RARROW }
+| "."      { DOT }
 | ":"      { COLON }
 | "list"   { LIST }
 | "set"    { SET }
