@@ -3,3 +3,4 @@
 parser.conflicts
 parser.automaton
 ScannerParser/testall.log
+ScannerParser/toplevel.opam

@@ -147,7 +147,12 @@ if [ $# -ge 1 ]
 then
     files=$@
 else
-    files="tests/test-*.wam tests/fail-*.wam"
+    # Find all test-*.wam and fail-*.wam files in tests/
+    # files="tests/test-*.wam tests/fail-*.wam"
+
+    # Files include any test-*.wam and fail-*.wam file in tests/ or any
+    # of its subdirectories.
+    files=`find tests -name 'test-*.wam' -o -name 'fail-*.wam'`
 fi
 
 for file in $files
