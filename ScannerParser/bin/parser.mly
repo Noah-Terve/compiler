@@ -189,7 +189,9 @@ expr:
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }
   | typ ID ASSIGN expr                 { BindAssign ($1, $2, $4) }
   | typ ID                             { BindDec($1, $2) }  
+  // Struct dot assign and templating struct
   | ID DOT ID ASSIGN expr              { BindDot ($1, $3, $5) }
+  | typ LARROW typ_list RARROW         { BindTemplatedDec ($1, $3) }
   // Building a list & set
   | list_expr               { $1 }
   | set_expr                { $1 }
