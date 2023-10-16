@@ -159,6 +159,7 @@ stmt:
   | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
   | BREAK SEMI                              { Break }
   | CONTINUE SEMI                           { Continue }
+  | SEMI                                    { NullStatement }
   /* Wampus statements */
 
 expr_opt:
@@ -214,15 +215,15 @@ expr:
 
 paren_expr:
     LPAREN expr RPAREN        { $2            }
-  // | LPAREN expr_list RPAREN   { List.rev $2            }
+  | LPAREN expr_list RPAREN   { LiteralList(List.rev $2)     }
 
-// expr_list:
-//     expr
-//   | expr_list expr
+expr_list:
+    expr                      { [$1] }
+  | expr_list COMMA expr      { $3 :: $1 }
 
 templated_expr:
     ID LARROW typ_list RARROW ID                     { BindTemplatedDec ($1, $3, $5) }
-  // | ID LARROW typ_list RARROW ID ASSIGN expr         { BindTemplatedAssign ($1, $3, $5, $7)}
+  | ID LARROW typ_list RARROW ID ASSIGN expr         { BindTemplatedAssign ($1, $3, $5, $7)}
   | ID LARROW typ_list RARROW LPAREN args_opt RPAREN { TemplatedCall ($1, List.rev $3, $6) } 
 
 typ_list:

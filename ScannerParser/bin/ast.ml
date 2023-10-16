@@ -24,9 +24,10 @@ type expr =
   | BindDec of typ * string
   | BindDot of string * string * expr
   | BindTemplatedDec of string * typ list * string
-  (* | BindTemplatedAssign of string * typ list * string * expr *)
+  | BindTemplatedAssign of string * typ list * string * expr
   | ListExplicit of expr list
   | SetExplicit of expr list
+  | LiteralList of expr list
   | Noexpr
 
 
@@ -42,6 +43,7 @@ type stmt =
   | While of expr * stmt
   | Continue
   | Break
+  | NullStatement
 
 type func_decl = {
     typ : typ;
@@ -114,11 +116,12 @@ let rec string_of_expr = function
     f ^ "<" ^ String.concat ", "(List.map string_of_typ tl) ^ ">  (" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 | BindAssign(t, id, e) -> string_of_typ t ^ " "^ id ^ " = " ^ string_of_expr e
 | BindDec (t, id) -> string_of_typ t ^ " " ^ id
-| BindDot (id, id1, e) -> id ^ "."^ id1 ^ " = " ^ string_of_expr e
+| BindDot (struct_id, id1, e) -> struct_id ^ "."^ id1 ^ " = " ^ string_of_expr e
 | BindTemplatedDec (struct_id, t_list, id) ->  struct_id ^ " <" ^ String.concat "," (List.map string_of_typ t_list) ^ "> " ^ id
-(* | BindTemplatedAssign () *)
+| BindTemplatedAssign (struct_id, t_list, id, e) -> struct_id ^ " <" ^ String.concat "," (List.map string_of_typ t_list) ^ "> " ^ id ^ " = " ^ string_of_expr e
 | ListExplicit(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
 | SetExplicit (el) -> "{" ^ String.concat ", " (List.map string_of_expr el) ^ "}"
+| LiteralList (el) -> "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 | Noexpr -> ""
 
 (* let string_of_bind = function
@@ -142,6 +145,7 @@ let rec string_of_stmt = function
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
   | Break -> "break;\n"
   | Continue -> "continue;\n"
+  | NullStatement -> ";\n"
   (* | Break -> "break;"
   | Continue -> "continue;" *)
   (* | DeclBind(b) -> string_of_bind b ^ ";\n" *)
