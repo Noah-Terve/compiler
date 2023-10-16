@@ -5,10 +5,10 @@ open Ast
 %}
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN
-%token NOT EQ NEQ LT LEQ GT GEQ AND OR TIMESEQ DIVIDEEQ INTERSECTEQ UNIONEQ MODEQ MINUSEQ PLUSEQ
+%token NOT EQ NEQ LEQ GEQ AND OR TIMESEQ DIVIDEEQ INTERSECTEQ UNIONEQ MODEQ MINUSEQ PLUSEQ
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT STRING CHAR
 /* edits */
-%token LBRACK RBRACK LARROW RARROW IN MOD TEMPLATE UNION INTERSECT ISIN
+%token LBRACK RBRACK LT GT LARROW RARROW IN MOD TEMPLATE UNION INTERSECT ISIN
 %token LIST SET BREAK CONTINUE STRUCT DOT TAGS
 %token <int> LITERAL
 %token <bool> BLIT
@@ -162,10 +162,7 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,   $3)   }
   | expr AND    expr { Binop($1, And,   $3)   }
   | expr OR     expr { Binop($1, Or,    $3)   }
-  // adding more expression operators
   | expr MOD    expr { Binop ($1, Mod, $3)}
-  // this is more complicated than I thought
-  // | ID PLUS ASSIGN expr { Assign( $1, Binop ($1, Add, $3))}
   | expr DIVIDEEQ expr { Binop ($1, Diveq, $3)}
   | expr TIMESEQ expr { Binop ($1, Multeq, $3) }
   | expr INTERSECTEQ expr { Binop ($1, Intersecteq, $3)}
@@ -173,7 +170,6 @@ expr:
   | expr MODEQ expr { Binop ($1, Modeq, $3)}
   | expr MINUSEQ expr { Binop ($1, Minuseq, $3)}
   | expr PLUSEQ expr {Binop ($1, Pluseq, $3)}
-
   | expr INTERSECT expr {Binop ($1, Intersect, $3) }
   | expr UNION expr     {Binop ($1, Union, $3) }
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }

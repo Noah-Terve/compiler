@@ -73,9 +73,9 @@ rule token = parse
 | '='      { ASSIGN }
 | "=="     { EQ }
 | "!="     { NEQ }
-| '<'      { LT }
+| "lt"      { LT }
 | "<="     { LEQ }
-| ">"      { GT }
+| "gt"      { GT }
 | ">="     { GEQ }
 (* change or & and *)
 | "&&"     { AND }
