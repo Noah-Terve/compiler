@@ -1,1 +1,16 @@
-Wampus
+The Wampus Compiler
+
+Christopher Sasanuma - Christopher.Sasanuma@tufts.edu
+Haijun Si - Haijun.Si@tufts.edu
+Neil Powers - Neil.Powers@tufts.edu
+Noah Tervalon - noah.tervalon@tufts.edu
+
+To compile and execute our compiler you can run the following:
+    -> dune exec toplevel [program_name]
+
+To run our test script you can run the following. Running with -h will give
+the help list, and the .wam files are whatever files you want to test. Running
+with no options and no test files will test all of our cases:
+    -> testall.sh [options] [.wam files]
+
+Syntax we still need to add to our compiler:
