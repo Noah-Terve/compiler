@@ -2,7 +2,7 @@
    check the resulting AST and generate an SAST from it, generate LLVM IR,
    and dump the module *)
 
-type action = Ast | Sast | LLVM_IR | Compile
+(* type action = Ast | Sast | LLVM_IR | Compile
 
 let () = 
   let action = ref Ast in
@@ -22,7 +22,7 @@ let () =
   let lexbuf = Lexing.from_channel !channel in
   let ast = Parser.program Scanner.token lexbuf in  
 
-  print_string (Ast.string_of_program ast) (*Delete this line and move to line 29 for semantic pass*)
+  print_string (Ast.string_of_program ast) Delete this line and move to line 29 for semantic pass *)
 
 
   (* match !action with
