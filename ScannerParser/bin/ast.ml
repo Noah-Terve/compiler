@@ -1,7 +1,7 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
-          And | Or | Mod | Isin | Union | Intersect | Multeq
+          And | Or | Mod | Isin | Union | Intersect | Multeq | Diveq
 
 type uop = Neg | Not
 
@@ -75,6 +75,7 @@ let string_of_op = function
   | Union -> "|"
   | Isin -> "Isin"
   | Multeq -> "*="
+  | Diveq -> "/="
 
 let string_of_uop = function
     Neg -> "-"
