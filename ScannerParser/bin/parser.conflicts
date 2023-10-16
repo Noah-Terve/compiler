@@ -1,6 +1,6 @@
 
-** Conflict (shift/reduce) in state 114.
-** Tokens involved: STRING SET NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT ID FLOAT FLIT BOOL BLIT
+** Conflict (shift/reduce) in state 125.
+** Tokens involved: STRING SLIT SET NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT ID FLOAT FLIT BOOL BLIT
 ** The following explanations concentrate on token STRING.
 ** This state is reached from program after reading:
 
@@ -14,19 +14,20 @@ decls EOF
 decls stmt 
       (?)
 
-** In state 114, looking ahead at STRING, shifting is permitted
-** because of the following sub-derivation:
-
-expr SEMI 
-set_expr 
-LBRACE set_list RBRACE 
-       expr 
-       . STRING 
-
-** In state 114, looking ahead at STRING, reducing production
+** In state 125, looking ahead at STRING, reducing production
 ** stmt_list ->
 ** is permitted because of the following sub-derivation:
 
 LBRACE stmt_list RBRACE 
        stmt_list stmt // lookahead token appears because stmt can begin with STRING
        . 
+
+** In state 125, looking ahead at STRING, shifting is permitted
+** because of the following sub-derivation:
+
+expr SEMI 
+set_expr 
+LBRACE set_list RBRACE 
+       expr 
+       typ ID ASSIGN expr 
+       . STRING 
