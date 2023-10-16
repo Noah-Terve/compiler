@@ -1,0 +1,6 @@
+template <T, T1, T2, int> int print(T a, T1 b) {
+    print(a); 
+    print(b);
+
+    return 1; 
+} 
