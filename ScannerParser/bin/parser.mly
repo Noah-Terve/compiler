@@ -182,8 +182,8 @@ expr:
   | LPAREN expr RPAREN                 { $2            }
   | templated_expr                     { $1            }
   // Building a list & set
-  | LBRACK list_list RBRACK      { ListExplicit(List.rev $2)       }
-  | LBRACE set_list RBRACE       { SetExplicit(List.rev $2 )       }
+  | LBRACK list_opt RBRACK      { ListExplicit(List.rev $2)       }
+  | LBRACE set_opt RBRACE       { SetExplicit(List.rev $2 )       }
   | TAGS struct_list TAGS        { StructExplicit(List.rev $2)     }
   | MINUS expr %prec NOT         { Unop(Neg, $2)      }
   | NOT expr                     { Unop(Not, $2)          }
@@ -206,15 +206,24 @@ args_list:
     expr                    { [$1] }
   | args_list COMMA expr { $3 :: $1 }
 
+list_opt:
+  /* Nothing */ {[]}
+  | list_list   { $1 }
 
 list_list:
     expr          { [$1] }
   | list_list COMMA expr { $3 :: $1}
 
-struct_list:
-    expr                        { [$1] }
-  | struct_list COMMA expr      { $3 :: $1 }
+set_opt:
+  /* Nothing */ {[]}
+  | set_list   { $1 }
 
 set_list: 
     expr { [$1] }
   | set_list COMMA expr { $3 :: $1 }
+  
+struct_list:
+    expr                        { [$1] }
+  | struct_list COMMA expr      { $3 :: $1 }
+
+

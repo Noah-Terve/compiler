@@ -98,8 +98,8 @@ let string_of_uop = function
 | Float -> "float"
 | String -> "string"
 | Char -> "char"
-| List(t) -> "List <" ^ string_of_typ t ^ ">"
-| Set(t) -> "Set <" ^ string_of_typ t ^ ">"
+| List(t) -> "list <" ^ string_of_typ t ^ ">"
+| Set(t) -> "set <" ^ string_of_typ t ^ ">"
 | Templated(t) -> t
 let rec string_of_expr = function
   Literal(l) -> string_of_int l
