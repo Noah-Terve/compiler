@@ -1,7 +1,8 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
-          And | Or | Mod | Isin | Union | Intersect | Multeq | Diveq
+          And | Or | Mod | Isin | Union | Intersect | Multeq | Diveq | Andeq |
+          Oreq | Modeq | Pluseq | Minuseq
 
 type uop = Neg | Not
 
@@ -77,6 +78,11 @@ let string_of_op = function
   | Isin -> "Isin"
   | Multeq -> "*="
   | Diveq -> "/="
+  | Pluseq -> "+="
+  | Minuseq -> "-="
+  | Andeq -> "&="
+  | Oreq -> "|="
+  | Modeq -> "%="
 
 let string_of_uop = function
     Neg -> "-"

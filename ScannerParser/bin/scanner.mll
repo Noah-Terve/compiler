@@ -40,6 +40,11 @@ rule token = parse
 | "set"    { SET }
 | "*="     { TIMESEQ }
 | "/="     { DIVIDEEQ }
+| "&="     { ANDEQ }
+| "|="     { OREQ }
+| "%="     { MODEQ }
+| "-="     { MINUSEQ }
+| "+="     { PLUSEQ }
 
 | "struct" { STRUCT }
 (* | "'" char_chars "'" as lxm { CHAR(lxm.[1]) } *)
