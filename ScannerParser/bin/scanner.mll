@@ -39,6 +39,8 @@ rule token = parse
 | "list"   { LIST }
 | "set"    { SET }
 | "*="     { TIMESEQ }
+| "/="     { DIVIDEEQ }
+
 | "struct" { STRUCT }
 (* | "'" char_chars "'" as lxm { CHAR(lxm.[1]) } *)
 (* | '"'      { read_string lexbuf } *)

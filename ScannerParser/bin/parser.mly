@@ -22,7 +22,7 @@ open Ast
 
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN
-%token NOT EQ NEQ LT LEQ GT GEQ AND OR TIMESEQ
+%token NOT EQ NEQ LT LEQ GT GEQ AND OR TIMESEQ DIVIDEEQ
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT STRING
 /* edits */
 %token LBRACK RBRACK LARROW RARROW IN MOD COLON TEMPLATE UNION INTERSECT ISIN
@@ -48,7 +48,7 @@ open Ast
 %left UNION
 %left INTERSECT
 %left PLUS MINUS
-%left TIMES DIVIDE MOD TIMESEQ
+%left TIMES DIVIDE MOD TIMESEQ DIVIDEEQ
 %right NOT
 
 %%
@@ -191,7 +191,7 @@ expr:
   | typ ID                             { BindDec($1, $2) }  
   // Struct dot assign and templating struct
   | ID DOT ID ASSIGN expr              { BindDot ($1, $3, $5) }
-  | typ LARROW typ_list RARROW         { BindTemplatedDec ($1, $3) }
+  // | typ LARROW typ_list RARROW         { BindTemplatedDec ($1, $3) }
   // Building a list & set
   | list_expr               { $1 }
   | set_expr                { $1 }
