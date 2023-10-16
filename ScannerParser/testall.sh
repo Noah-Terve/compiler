@@ -1,13 +1,12 @@
 #!/bin/sh
 
-# Regression testing script for Wampus
+# Regression testing script for Wampus toplevel
 # Step through a list of files
 #  Compile, run, and check the output of each expected-to-work test
 #  Compile and check the error of each expected-to-fail test
 
-# Path to the wampus compiler.  Usually "./wampus.native"
 # Try "_build/wampus.native" if ocamlbuild was unable to create a symbolic link.
-WAMPUS="wampus"
+WAMPUS="toplevel"
 #WAMPUS="_build/wampus.native"
 
 # Set time limit for all operations
@@ -38,8 +37,6 @@ SignalError() {
 # Compare <outfile> <reffile> <difffile>
 # Compares the outfile with reffile.  Differences, if any, written to difffile
 Compare() {
-    echo "comparing $1 to $2 and saving to $3"
-
     generatedfiles="$generatedfiles $3"
     echo diff -b $1 $2 ">" $3 1>&2
     diff -b "$1" "$2" > "$3" 2>&1 || {

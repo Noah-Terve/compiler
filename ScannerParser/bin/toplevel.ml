@@ -1,4 +1,3 @@
-let () = print_string "i am using this file";
 let usage_msg = "usage: ./microc.native [file.mc]" in
 let channel = ref stdin in
 Arg.parse [] (fun file -> channel := open_in file) usage_msg;

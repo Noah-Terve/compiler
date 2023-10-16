@@ -1,7 +1,7 @@
 (executable
- (public_name wampus)
- (name wampus)
- (libraries wampus))
+ (public_name toplevel)
+ (name toplevel)
+ (libraries toplevel))
 
 
 (ocamllex scanner)

@@ -1,4 +1,4 @@
 (library
- (name wampus)
+ (name toplevel)
  (libraries llvm llvm.analysis))
 
