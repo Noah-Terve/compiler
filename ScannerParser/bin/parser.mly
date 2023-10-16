@@ -43,7 +43,7 @@ open Ast
 %right UNIONEQ 
 %right INTERSECTEQ
 %right PLUSEQ MINUSEQ 
-%right TIMESEQ DIVIDEEQ 
+%right TIMESEQ DIVIDEEQ MODEQ
 %left OR 
 %left AND 
 %left EQ NEQ
