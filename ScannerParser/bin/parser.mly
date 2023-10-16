@@ -109,12 +109,14 @@ group_typ:
       SET LARROW INT RARROW         { Set (Int)     }
     | SET LARROW BOOL RARROW        { Set (Bool)    }
     | SET LARROW ID RARROW          { Set (Templated($3))}
-  // | SET LARROW STRING RARROW      { Set (String)  }
+    | SET LARROW STRING RARROW      { Set (String)  }
+    | SET LARROW CHAR RARROW        { Set (Char)}
     | SET LARROW group_typ RARROW        { Set ($3)      }
     | LIST LARROW INT RARROW        { List (Int)    }
     | LIST LARROW BOOL RARROW       { List (Bool)   }
     | LIST LARROW ID RARROW         { List (Templated($3)) }
-    //  | LIST LBRACK STRING RBRACK     { List (String) }
+    | LIST LARROW STRING RARROW      { List (String)  }
+    | LIST LARROW CHAR RARROW        { List (Char)}
     | LIST LARROW group_typ RARROW  { List ($3)     }
 
 stmt_list:
@@ -221,7 +223,7 @@ set_opt:
 set_list: 
     expr { [$1] }
   | set_list COMMA expr { $3 :: $1 }
-  
+
 struct_list:
     expr                        { [$1] }
   | struct_list COMMA expr      { $3 :: $1 }
