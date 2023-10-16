@@ -37,7 +37,6 @@ rule token = parse
 | "<"      { LARROW }
 | ">"      { RARROW }
 | "."      { DOT }
-| ":"      { COLON }
 | "list"   { LIST }
 | "set"    { SET }
 | "*="     { TIMESEQ }
