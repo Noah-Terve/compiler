@@ -1,5 +1,5 @@
 
-** Conflict (shift/reduce) in state 130.
+** Conflict (shift/reduce) in state 131.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -15,20 +15,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 130, looking ahead at OREQ, shifting is permitted
+** In state 131, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 NOT expr 
     expr . OREQ expr 
 
-** In state 130, looking ahead at OREQ, reducing production
+** In state 131, looking ahead at OREQ, reducing production
 ** expr -> NOT expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 NOT expr . 
 
-** Conflict (shift/reduce) in state 129.
+** Conflict (shift/reduce) in state 130.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -44,20 +44,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 129, looking ahead at OREQ, shifting is permitted
+** In state 130, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 MINUS expr 
       expr . OREQ expr 
 
-** In state 129, looking ahead at OREQ, reducing production
+** In state 130, looking ahead at OREQ, reducing production
 ** expr -> MINUS expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 MINUS expr . 
 
-** Conflict (shift/reduce) in state 116.
+** Conflict (shift/reduce) in state 117.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -73,20 +73,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 116, looking ahead at OREQ, shifting is permitted
+** In state 117, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 ID ASSIGN expr 
           expr . OREQ expr 
 
-** In state 116, looking ahead at OREQ, reducing production
+** In state 117, looking ahead at OREQ, reducing production
 ** expr -> ID ASSIGN expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 ID ASSIGN expr . 
 
-** Conflict (shift/reduce) in state 114.
+** Conflict (shift/reduce) in state 115.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -102,20 +102,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 114, looking ahead at OREQ, shifting is permitted
+** In state 115, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 ID DOT ID ASSIGN expr 
                  expr . OREQ expr 
 
-** In state 114, looking ahead at OREQ, reducing production
+** In state 115, looking ahead at OREQ, reducing production
 ** expr -> ID DOT ID ASSIGN expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 ID DOT ID ASSIGN expr . 
 
-** Conflict (shift/reduce) in state 93.
+** Conflict (shift/reduce) in state 94.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -131,20 +131,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 93, looking ahead at OREQ, reducing production
+** In state 94, looking ahead at OREQ, reducing production
 ** expr -> expr AND expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr AND expr . 
 
-** In state 93, looking ahead at OREQ, shifting is permitted
+** In state 94, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr AND expr 
          expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 91.
+** Conflict (shift/reduce) in state 92.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -160,20 +160,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 91, looking ahead at OREQ, reducing production
+** In state 92, looking ahead at OREQ, reducing production
 ** expr -> expr EQ expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr EQ expr . 
 
-** In state 91, looking ahead at OREQ, shifting is permitted
+** In state 92, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr EQ expr 
         expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 89.
+** Conflict (shift/reduce) in state 90.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -189,20 +189,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 89, looking ahead at OREQ, reducing production
+** In state 90, looking ahead at OREQ, reducing production
 ** expr -> expr GEQ expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr GEQ expr . 
 
-** In state 89, looking ahead at OREQ, shifting is permitted
+** In state 90, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr GEQ expr 
          expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 87.
+** Conflict (shift/reduce) in state 88.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -218,20 +218,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 87, looking ahead at OREQ, reducing production
+** In state 88, looking ahead at OREQ, reducing production
 ** expr -> expr GT expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr GT expr . 
 
-** In state 87, looking ahead at OREQ, shifting is permitted
+** In state 88, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr GT expr 
         expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 85.
+** Conflict (shift/reduce) in state 86.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -247,20 +247,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 85, looking ahead at OREQ, reducing production
+** In state 86, looking ahead at OREQ, reducing production
 ** expr -> expr LEQ expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr LEQ expr . 
 
-** In state 85, looking ahead at OREQ, shifting is permitted
+** In state 86, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr LEQ expr 
          expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 83.
+** Conflict (shift/reduce) in state 84.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -276,20 +276,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 83, looking ahead at OREQ, shifting is permitted
+** In state 84, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr INTERSECT expr 
                expr . OREQ expr 
 
-** In state 83, looking ahead at OREQ, reducing production
+** In state 84, looking ahead at OREQ, reducing production
 ** expr -> expr INTERSECT expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr INTERSECT expr . 
 
-** Conflict (shift/reduce) in state 81.
+** Conflict (shift/reduce) in state 82.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -305,20 +305,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 81, looking ahead at OREQ, shifting is permitted
+** In state 82, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr ISIN expr 
           expr . OREQ expr 
 
-** In state 81, looking ahead at OREQ, reducing production
+** In state 82, looking ahead at OREQ, reducing production
 ** expr -> expr ISIN expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr ISIN expr . 
 
-** Conflict (shift/reduce) in state 79.
+** Conflict (shift/reduce) in state 80.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -334,20 +334,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 79, looking ahead at OREQ, reducing production
+** In state 80, looking ahead at OREQ, reducing production
 ** expr -> expr LT expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr LT expr . 
 
-** In state 79, looking ahead at OREQ, shifting is permitted
+** In state 80, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr LT expr 
         expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 77.
+** Conflict (shift/reduce) in state 78.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -363,20 +363,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 77, looking ahead at OREQ, reducing production
+** In state 78, looking ahead at OREQ, reducing production
 ** expr -> expr MINUS expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr MINUS expr . 
 
-** In state 77, looking ahead at OREQ, shifting is permitted
+** In state 78, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr MINUS expr 
            expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 75.
+** Conflict (shift/reduce) in state 76.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -392,20 +392,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 75, looking ahead at OREQ, shifting is permitted
+** In state 76, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr MINUSEQ expr 
              expr . OREQ expr 
 
-** In state 75, looking ahead at OREQ, reducing production
+** In state 76, looking ahead at OREQ, reducing production
 ** expr -> expr MINUSEQ expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr MINUSEQ expr . 
 
-** Conflict (shift/reduce) in state 73.
+** Conflict (shift/reduce) in state 74.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -421,20 +421,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 73, looking ahead at OREQ, reducing production
+** In state 74, looking ahead at OREQ, reducing production
 ** expr -> expr NEQ expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr NEQ expr . 
 
-** In state 73, looking ahead at OREQ, shifting is permitted
+** In state 74, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr NEQ expr 
          expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 71.
+** Conflict (shift/reduce) in state 72.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -450,20 +450,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 71, looking ahead at OREQ, reducing production
+** In state 72, looking ahead at OREQ, reducing production
 ** expr -> expr OR expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr OR expr . 
 
-** In state 71, looking ahead at OREQ, shifting is permitted
+** In state 72, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr OR expr 
         expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 69.
+** Conflict (shift/reduce) in state 70.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -479,20 +479,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 69, looking ahead at OREQ, reducing production
+** In state 70, looking ahead at OREQ, reducing production
 ** expr -> expr PLUS expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr PLUS expr . 
 
-** In state 69, looking ahead at OREQ, shifting is permitted
+** In state 70, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr PLUS expr 
           expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 67.
+** Conflict (shift/reduce) in state 68.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -508,20 +508,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 67, looking ahead at OREQ, reducing production
+** In state 68, looking ahead at OREQ, reducing production
 ** expr -> expr ANDEQ expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr ANDEQ expr . 
 
-** In state 67, looking ahead at OREQ, shifting is permitted
+** In state 68, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr ANDEQ expr 
            expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 65.
+** Conflict (shift/reduce) in state 66.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -537,20 +537,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 65, looking ahead at OREQ, reducing production
+** In state 66, looking ahead at OREQ, reducing production
 ** expr -> expr DIVIDE expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr DIVIDE expr . 
 
-** In state 65, looking ahead at OREQ, shifting is permitted
+** In state 66, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr DIVIDE expr 
             expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 63.
+** Conflict (shift/reduce) in state 64.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -566,20 +566,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 63, looking ahead at OREQ, reducing production
+** In state 64, looking ahead at OREQ, reducing production
 ** expr -> expr DIVIDEEQ expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr DIVIDEEQ expr . 
 
-** In state 63, looking ahead at OREQ, shifting is permitted
+** In state 64, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr DIVIDEEQ expr 
               expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 61.
+** Conflict (shift/reduce) in state 62.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -595,20 +595,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 61, looking ahead at OREQ, reducing production
+** In state 62, looking ahead at OREQ, reducing production
 ** expr -> expr MOD expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr MOD expr . 
 
-** In state 61, looking ahead at OREQ, shifting is permitted
+** In state 62, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr MOD expr 
          expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 59.
+** Conflict (shift/reduce) in state 60.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -624,20 +624,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 59, looking ahead at OREQ, shifting is permitted
+** In state 60, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr PLUSEQ expr 
             expr . OREQ expr 
 
-** In state 59, looking ahead at OREQ, reducing production
+** In state 60, looking ahead at OREQ, reducing production
 ** expr -> expr PLUSEQ expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr PLUSEQ expr . 
 
-** Conflict (shift/reduce) in state 57.
+** Conflict (shift/reduce) in state 58.
 ** Tokens involved: UNION TIMESEQ TIMES PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND
 ** The following explanations concentrate on token UNION.
 ** This state is reached from program after reading:
@@ -653,20 +653,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 57, looking ahead at UNION, reducing production
+** In state 58, looking ahead at UNION, reducing production
 ** expr -> expr MODEQ expr
 ** is permitted because of the following sub-derivation:
 
 expr UNION expr // lookahead token appears
 expr MODEQ expr . 
 
-** In state 57, looking ahead at UNION, shifting is permitted
+** In state 58, looking ahead at UNION, shifting is permitted
 ** because of the following sub-derivation:
 
 expr MODEQ expr 
            expr . UNION expr 
 
-** Conflict (shift/reduce) in state 55.
+** Conflict (shift/reduce) in state 56.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -682,20 +682,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 55, looking ahead at OREQ, reducing production
+** In state 56, looking ahead at OREQ, reducing production
 ** expr -> expr TIMES expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr TIMES expr . 
 
-** In state 55, looking ahead at OREQ, shifting is permitted
+** In state 56, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr TIMES expr 
            expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 53.
+** Conflict (shift/reduce) in state 54.
 ** Tokens involved: UNION TIMESEQ TIMES PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND
 ** The following explanations concentrate on token UNION.
 ** This state is reached from program after reading:
@@ -711,20 +711,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 53, looking ahead at UNION, reducing production
+** In state 54, looking ahead at UNION, reducing production
 ** expr -> expr OREQ expr
 ** is permitted because of the following sub-derivation:
 
 expr UNION expr // lookahead token appears
 expr OREQ expr . 
 
-** In state 53, looking ahead at UNION, shifting is permitted
+** In state 54, looking ahead at UNION, shifting is permitted
 ** because of the following sub-derivation:
 
 expr OREQ expr 
           expr . UNION expr 
 
-** Conflict (shift/reduce) in state 51.
+** Conflict (shift/reduce) in state 52.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -740,20 +740,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 51, looking ahead at OREQ, reducing production
+** In state 52, looking ahead at OREQ, reducing production
 ** expr -> expr TIMESEQ expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr TIMESEQ expr . 
 
-** In state 51, looking ahead at OREQ, shifting is permitted
+** In state 52, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr TIMESEQ expr 
              expr . OREQ expr 
 
-** Conflict (shift/reduce) in state 49.
+** Conflict (shift/reduce) in state 50.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -769,20 +769,20 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 49, looking ahead at OREQ, shifting is permitted
+** In state 50, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 expr UNION expr 
            expr . OREQ expr 
 
-** In state 49, looking ahead at OREQ, reducing production
+** In state 50, looking ahead at OREQ, reducing production
 ** expr -> expr UNION expr
 ** is permitted because of the following sub-derivation:
 
 expr OREQ expr // lookahead token appears
 expr UNION expr . 
 
-** Conflict (shift/reduce) in state 47.
+** Conflict (shift/reduce) in state 48.
 ** Tokens involved: OREQ MODEQ
 ** The following explanations concentrate on token OREQ.
 ** This state is reached from program after reading:
@@ -798,13 +798,13 @@ decls stmt
       expr SEMI 
       (?)
 
-** In state 47, looking ahead at OREQ, shifting is permitted
+** In state 48, looking ahead at OREQ, shifting is permitted
 ** because of the following sub-derivation:
 
 typ ID ASSIGN expr 
               expr . OREQ expr 
 
-** In state 47, looking ahead at OREQ, reducing production
+** In state 48, looking ahead at OREQ, reducing production
 ** expr -> typ ID ASSIGN expr
 ** is permitted because of the following sub-derivation:
 

@@ -143,7 +143,8 @@ group_typ:
 
 
 stmt_list:
-  stmt_list stmt { $2 :: $1 }
+    stmt { [$1] }
+  | stmt_list stmt { $2 :: $1 }
 
 stmt:
     expr SEMI                               { Expr $1               }
@@ -209,8 +210,15 @@ expr:
   | NOT expr         { Unop(Not, $2)          }
   | ID ASSIGN expr   { Assign($1, $3)         }
   | ID LPAREN args_opt RPAREN { Call($1, $3)  }
-  // | LPAREN expr_list RPAREN   { $2            }
-  | LPAREN expr RPAREN        { $2            }
+  | paren_expr       { $1            } 
+
+paren_expr:
+    LPAREN expr RPAREN        { $2            }
+  // | LPAREN expr_list RPAREN   { List.rev $2            }
+
+// expr_list:
+//     expr
+//   | expr_list expr
 
 templated_expr:
     ID LARROW typ_list RARROW ID                     { BindTemplatedDec ($1, $3, $5) }

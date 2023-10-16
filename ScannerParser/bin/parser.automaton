@@ -30,39 +30,40 @@ decls -> decls . sdecl [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS 
 program -> decls . EOF [ # ]
 ## Transitions:
 -- On WHILE shift to state 3
--- On TEMPLATE shift to state 169
--- On STRUCT shift to state 202
+-- On TEMPLATE shift to state 172
+-- On STRUCT shift to state 205
 -- On STRING shift to state 5
 -- On SLIT shift to state 6
 -- On SET shift to state 7
--- On RETURN shift to state 133
+-- On RETURN shift to state 134
 -- On NOT shift to state 27
 -- On MINUS shift to state 28
 -- On LPAREN shift to state 29
 -- On LITERAL shift to state 30
 -- On LIST shift to state 9
 -- On LBRACK shift to state 31
--- On LBRACE shift to state 137
+-- On LBRACE shift to state 138
 -- On INT shift to state 33
--- On IF shift to state 140
+-- On IF shift to state 139
 -- On ID shift to state 34
--- On FOR shift to state 144
+-- On FOR shift to state 143
 -- On FLOAT shift to state 36
 -- On FLIT shift to state 37
--- On EOF shift to state 208
--- On CONTINUE shift to state 152
--- On BREAK shift to state 154
+-- On EOF shift to state 211
+-- On CONTINUE shift to state 151
+-- On BREAK shift to state 153
 -- On BOOL shift to state 38
 -- On BLIT shift to state 39
--- On typ shift to state 209
+-- On typ shift to state 212
 -- On templated_expr shift to state 43
--- On stmt shift to state 217
+-- On stmt shift to state 220
 -- On set_expr shift to state 44
--- On sdecl shift to state 218
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On fdecl shift to state 219
--- On expr shift to state 157
+-- On sdecl shift to state 221
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On fdecl shift to state 222
+-- On expr shift to state 156
 ## Reductions:
 
 State 3:
@@ -99,9 +100,10 @@ stmt -> WHILE LPAREN . expr RPAREN stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET 
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 131
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 132
 ## Reductions:
 
 State 5:
@@ -359,9 +361,10 @@ expr -> NOT . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS O
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 130
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 131
 ## Reductions:
 
 State 28:
@@ -389,16 +392,17 @@ expr -> MINUS . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 129
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 130
 ## Reductions:
 
 State 29:
 ## Known stack suffix:
 ## LPAREN
 ## LR(1) items:
-expr -> LPAREN . expr RPAREN [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+paren_expr -> LPAREN . expr RPAREN [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
 -- On STRING shift to state 5
 -- On SLIT shift to state 6
@@ -419,9 +423,10 @@ expr -> LPAREN . expr RPAREN [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLU
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 127
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 128
 ## Reductions:
 
 State 30:
@@ -459,10 +464,11 @@ list_expr -> LBRACK . list_list RBRACK [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK 
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_list shift to state 122
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 126
+-- On paren_expr shift to state 45
+-- On list_list shift to state 123
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 127
 ## Reductions:
 
 State 32:
@@ -489,11 +495,12 @@ set_expr -> LBRACE . set_list RBRACE [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RB
 -- On BLIT shift to state 39
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
--- On set_list shift to state 117
+-- On set_list shift to state 118
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 121
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 122
 ## Reductions:
 
 State 33:
@@ -519,9 +526,9 @@ templated_expr -> ID . LARROW typ_list RARROW LPAREN args_opt RPAREN [ UNION TIM
 typ -> ID . [ ID ]
 ## Transitions:
 -- On LPAREN shift to state 35
--- On LARROW shift to state 100
--- On DOT shift to state 111
--- On ASSIGN shift to state 115
+-- On LARROW shift to state 101
+-- On DOT shift to state 112
+-- On ASSIGN shift to state 116
 ## Reductions:
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production expr -> ID
@@ -553,11 +560,12 @@ expr -> ID LPAREN . args_opt RPAREN [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBR
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 94
--- On args_opt shift to state 95
--- On args_list shift to state 97
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 95
+-- On args_opt shift to state 96
+-- On args_list shift to state 98
 ## Reductions:
 -- On RPAREN
 --   reduce production args_opt ->
@@ -649,9 +657,10 @@ expr -> typ ID ASSIGN . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLU
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 47
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 48
 ## Reductions:
 
 State 43:
@@ -676,6 +685,16 @@ expr -> set_expr . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS O
 
 State 45:
 ## Known stack suffix:
+## paren_expr
+## LR(1) items:
+expr -> paren_expr . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+## Transitions:
+## Reductions:
+-- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
+--   reduce production expr -> paren_expr
+
+State 46:
+## Known stack suffix:
 ## list_expr
 ## LR(1) items:
 expr -> list_expr . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
@@ -684,7 +703,7 @@ expr -> list_expr . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS 
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production expr -> list_expr
 
-State 46:
+State 47:
 ## Known stack suffix:
 ## group_typ
 ## LR(1) items:
@@ -694,7 +713,7 @@ typ -> group_typ . [ RARROW ID COMMA ]
 -- On RARROW ID COMMA
 --   reduce production typ -> group_typ
 
-State 47:
+State 48:
 ## Known stack suffix:
 ## typ ID ASSIGN expr
 ## LR(1) items:
@@ -723,35 +742,35 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> typ ID ASSIGN expr . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On SEMI RPAREN RBRACK RBRACE OREQ MODEQ IN COMMA
 --   reduce production expr -> typ ID ASSIGN expr
 ** Conflict on OREQ MODEQ
 
-State 48:
+State 49:
 ## Known stack suffix:
 ## expr UNION
 ## LR(1) items:
@@ -776,12 +795,13 @@ expr -> expr UNION . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 49
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 50
 ## Reductions:
 
-State 49:
+State 50:
 ## Known stack suffix:
 ## expr UNION expr
 ## LR(1) items:
@@ -810,25 +830,25 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ
 expr -> expr UNION expr . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On INTERSECT shift to state 82
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On INTERSECT shift to state 83
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On UNION SEMI RPAREN RBRACK RBRACE OREQ OR NEQ MODEQ LT LEQ ISIN IN GT GEQ EQ COMMA AND
 --   reduce production expr -> expr UNION expr
 ** Conflict on OREQ MODEQ
 
-State 50:
+State 51:
 ## Known stack suffix:
 ## expr TIMESEQ
 ## LR(1) items:
@@ -853,12 +873,13 @@ expr -> expr TIMESEQ . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUS
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 51
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 52
 ## Reductions:
 
-State 51:
+State 52:
 ## Known stack suffix:
 ## expr TIMESEQ expr
 ## LR(1) items:
@@ -887,14 +908,14 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
 ## Reductions:
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production expr -> expr TIMESEQ expr
 ** Conflict on OREQ MODEQ
 
-State 52:
+State 53:
 ## Known stack suffix:
 ## expr OREQ
 ## LR(1) items:
@@ -919,12 +940,13 @@ expr -> expr OREQ . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ 
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 53
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 54
 ## Reductions:
 
-State 53:
+State 54:
 ## Known stack suffix:
 ## expr OREQ expr
 ## LR(1) items:
@@ -953,35 +975,35 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production expr -> expr OREQ expr
 ** Conflict on UNION TIMESEQ TIMES PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND
 
-State 54:
+State 55:
 ## Known stack suffix:
 ## expr TIMES
 ## LR(1) items:
@@ -1006,12 +1028,13 @@ expr -> expr TIMES . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 55
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 56
 ## Reductions:
 
-State 55:
+State 56:
 ## Known stack suffix:
 ## expr TIMES expr
 ## LR(1) items:
@@ -1040,14 +1063,14 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
 ## Reductions:
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production expr -> expr TIMES expr
 ** Conflict on OREQ MODEQ
 
-State 56:
+State 57:
 ## Known stack suffix:
 ## expr MODEQ
 ## LR(1) items:
@@ -1072,12 +1095,13 @@ expr -> expr MODEQ . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 57
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 58
 ## Reductions:
 
-State 57:
+State 58:
 ## Known stack suffix:
 ## expr MODEQ expr
 ## LR(1) items:
@@ -1106,35 +1130,35 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production expr -> expr MODEQ expr
 ** Conflict on UNION TIMESEQ TIMES PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND
 
-State 58:
+State 59:
 ## Known stack suffix:
 ## expr PLUSEQ
 ## LR(1) items:
@@ -1159,12 +1183,13 @@ expr -> expr PLUSEQ . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSE
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 59
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 60
 ## Reductions:
 
-State 59:
+State 60:
 ## Known stack suffix:
 ## expr PLUSEQ expr
 ## LR(1) items:
@@ -1193,20 +1218,20 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On UNION SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ COMMA AND
 --   reduce production expr -> expr PLUSEQ expr
 ** Conflict on OREQ MODEQ
 
-State 60:
+State 61:
 ## Known stack suffix:
 ## expr MOD
 ## LR(1) items:
@@ -1231,12 +1256,13 @@ expr -> expr MOD . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ P
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 61
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 62
 ## Reductions:
 
-State 61:
+State 62:
 ## Known stack suffix:
 ## expr MOD expr
 ## LR(1) items:
@@ -1265,14 +1291,14 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
 ## Reductions:
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production expr -> expr MOD expr
 ** Conflict on OREQ MODEQ
 
-State 62:
+State 63:
 ## Known stack suffix:
 ## expr DIVIDEEQ
 ## LR(1) items:
@@ -1297,12 +1323,13 @@ expr -> expr DIVIDEEQ . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLU
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 63
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 64
 ## Reductions:
 
-State 63:
+State 64:
 ## Known stack suffix:
 ## expr DIVIDEEQ expr
 ## LR(1) items:
@@ -1331,14 +1358,14 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
 ## Reductions:
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production expr -> expr DIVIDEEQ expr
 ** Conflict on OREQ MODEQ
 
-State 64:
+State 65:
 ## Known stack suffix:
 ## expr DIVIDE
 ## LR(1) items:
@@ -1363,12 +1390,13 @@ expr -> expr DIVIDE . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSE
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 65
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 66
 ## Reductions:
 
-State 65:
+State 66:
 ## Known stack suffix:
 ## expr DIVIDE expr
 ## LR(1) items:
@@ -1397,14 +1425,14 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
 ## Reductions:
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production expr -> expr DIVIDE expr
 ** Conflict on OREQ MODEQ
 
-State 66:
+State 67:
 ## Known stack suffix:
 ## expr ANDEQ
 ## LR(1) items:
@@ -1429,12 +1457,13 @@ expr -> expr ANDEQ . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 67
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 68
 ## Reductions:
 
-State 67:
+State 68:
 ## Known stack suffix:
 ## expr ANDEQ expr
 ## LR(1) items:
@@ -1463,14 +1492,14 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
 ## Reductions:
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production expr -> expr ANDEQ expr
 ** Conflict on OREQ MODEQ
 
-State 68:
+State 69:
 ## Known stack suffix:
 ## expr PLUS
 ## LR(1) items:
@@ -1495,12 +1524,13 @@ expr -> expr PLUS . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ 
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 69
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 70
 ## Reductions:
 
-State 69:
+State 70:
 ## Known stack suffix:
 ## expr PLUS expr
 ## LR(1) items:
@@ -1529,20 +1559,20 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On UNION SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ COMMA AND
 --   reduce production expr -> expr PLUS expr
 ** Conflict on OREQ MODEQ
 
-State 70:
+State 71:
 ## Known stack suffix:
 ## expr OR
 ## LR(1) items:
@@ -1567,12 +1597,13 @@ expr -> expr OR . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PL
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 71
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 72
 ## Reductions:
 
-State 71:
+State 72:
 ## Known stack suffix:
 ## expr OR expr
 ## LR(1) items:
@@ -1601,34 +1632,34 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On SEMI RPAREN RBRACK RBRACE OREQ OR MODEQ IN COMMA
 --   reduce production expr -> expr OR expr
 ** Conflict on OREQ MODEQ
 
-State 72:
+State 73:
 ## Known stack suffix:
 ## expr NEQ
 ## LR(1) items:
@@ -1653,12 +1684,13 @@ expr -> expr NEQ . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ P
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 73
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 74
 ## Reductions:
 
-State 73:
+State 74:
 ## Known stack suffix:
 ## expr NEQ expr
 ## LR(1) items:
@@ -1687,31 +1719,31 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On SEMI RPAREN RBRACK RBRACE OREQ OR NEQ MODEQ IN EQ COMMA AND
 --   reduce production expr -> expr NEQ expr
 ** Conflict on OREQ MODEQ
 
-State 74:
+State 75:
 ## Known stack suffix:
 ## expr MINUSEQ
 ## LR(1) items:
@@ -1736,12 +1768,13 @@ expr -> expr MINUSEQ . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUS
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 75
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 76
 ## Reductions:
 
-State 75:
+State 76:
 ## Known stack suffix:
 ## expr MINUSEQ expr
 ## LR(1) items:
@@ -1770,20 +1803,20 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On UNION SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ COMMA AND
 --   reduce production expr -> expr MINUSEQ expr
 ** Conflict on OREQ MODEQ
 
-State 76:
+State 77:
 ## Known stack suffix:
 ## expr MINUS
 ## LR(1) items:
@@ -1808,12 +1841,13 @@ expr -> expr MINUS . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 77
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 78
 ## Reductions:
 
-State 77:
+State 78:
 ## Known stack suffix:
 ## expr MINUS expr
 ## LR(1) items:
@@ -1842,20 +1876,20 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On UNION SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ COMMA AND
 --   reduce production expr -> expr MINUS expr
 ** Conflict on OREQ MODEQ
 
-State 78:
+State 79:
 ## Known stack suffix:
 ## expr LT
 ## LR(1) items:
@@ -1880,12 +1914,13 @@ expr -> expr LT . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PL
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 79
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 80
 ## Reductions:
 
-State 79:
+State 80:
 ## Known stack suffix:
 ## expr LT expr
 ## LR(1) items:
@@ -1914,27 +1949,27 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On SEMI RPAREN RBRACK RBRACE OREQ OR NEQ MODEQ LT LEQ IN GT GEQ EQ COMMA AND
 --   reduce production expr -> expr LT expr
 ** Conflict on OREQ MODEQ
 
-State 80:
+State 81:
 ## Known stack suffix:
 ## expr ISIN
 ## LR(1) items:
@@ -1959,12 +1994,13 @@ expr -> expr ISIN . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ 
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 81
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 82
 ## Reductions:
 
-State 81:
+State 82:
 ## Known stack suffix:
 ## expr ISIN expr
 ## LR(1) items:
@@ -1993,26 +2029,26 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr ISIN expr . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On INTERSECT shift to state 82
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On INTERSECT shift to state 83
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On SEMI RPAREN RBRACK RBRACE OREQ OR NEQ MODEQ LT LEQ ISIN IN GT GEQ EQ COMMA AND
 --   reduce production expr -> expr ISIN expr
 ** Conflict on OREQ MODEQ
 
-State 82:
+State 83:
 ## Known stack suffix:
 ## expr INTERSECT
 ## LR(1) items:
@@ -2037,12 +2073,13 @@ expr -> expr INTERSECT . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 83
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 84
 ## Reductions:
 
-State 83:
+State 84:
 ## Known stack suffix:
 ## expr INTERSECT expr
 ## LR(1) items:
@@ -2071,24 +2108,24 @@ expr -> expr INTERSECT expr . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On UNION SEMI RPAREN RBRACK RBRACE OREQ OR NEQ MODEQ LT LEQ ISIN INTERSECT IN GT GEQ EQ COMMA AND
 --   reduce production expr -> expr INTERSECT expr
 ** Conflict on OREQ MODEQ
 
-State 84:
+State 85:
 ## Known stack suffix:
 ## expr LEQ
 ## LR(1) items:
@@ -2113,12 +2150,13 @@ expr -> expr LEQ . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ P
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 85
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 86
 ## Reductions:
 
-State 85:
+State 86:
 ## Known stack suffix:
 ## expr LEQ expr
 ## LR(1) items:
@@ -2147,27 +2185,27 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On SEMI RPAREN RBRACK RBRACE OREQ OR NEQ MODEQ LT LEQ IN GT GEQ EQ COMMA AND
 --   reduce production expr -> expr LEQ expr
 ** Conflict on OREQ MODEQ
 
-State 86:
+State 87:
 ## Known stack suffix:
 ## expr GT
 ## LR(1) items:
@@ -2192,12 +2230,13 @@ expr -> expr GT . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PL
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 87
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 88
 ## Reductions:
 
-State 87:
+State 88:
 ## Known stack suffix:
 ## expr GT expr
 ## LR(1) items:
@@ -2226,27 +2265,27 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On SEMI RPAREN RBRACK RBRACE OREQ OR NEQ MODEQ LT LEQ IN GT GEQ EQ COMMA AND
 --   reduce production expr -> expr GT expr
 ** Conflict on OREQ MODEQ
 
-State 88:
+State 89:
 ## Known stack suffix:
 ## expr GEQ
 ## LR(1) items:
@@ -2271,12 +2310,13 @@ expr -> expr GEQ . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ P
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 89
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 90
 ## Reductions:
 
-State 89:
+State 90:
 ## Known stack suffix:
 ## expr GEQ expr
 ## LR(1) items:
@@ -2305,27 +2345,27 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On SEMI RPAREN RBRACK RBRACE OREQ OR NEQ MODEQ LT LEQ IN GT GEQ EQ COMMA AND
 --   reduce production expr -> expr GEQ expr
 ** Conflict on OREQ MODEQ
 
-State 90:
+State 91:
 ## Known stack suffix:
 ## expr EQ
 ## LR(1) items:
@@ -2350,12 +2390,13 @@ expr -> expr EQ . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PL
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 91
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 92
 ## Reductions:
 
-State 91:
+State 92:
 ## Known stack suffix:
 ## expr EQ expr
 ## LR(1) items:
@@ -2384,31 +2425,31 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On SEMI RPAREN RBRACK RBRACE OREQ OR NEQ MODEQ IN EQ COMMA AND
 --   reduce production expr -> expr EQ expr
 ** Conflict on OREQ MODEQ
 
-State 92:
+State 93:
 ## Known stack suffix:
 ## expr AND
 ## LR(1) items:
@@ -2433,12 +2474,13 @@ expr -> expr AND . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ P
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 93
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 94
 ## Reductions:
 
-State 93:
+State 94:
 ## Known stack suffix:
 ## expr AND expr
 ## LR(1) items:
@@ -2467,33 +2509,33 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PL
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
 ## Reductions:
 -- On SEMI RPAREN RBRACK RBRACE OREQ OR MODEQ IN COMMA AND
 --   reduce production expr -> expr AND expr
 ** Conflict on OREQ MODEQ
 
-State 94:
+State 95:
 ## Known stack suffix:
 ## expr
 ## LR(1) items:
@@ -2522,43 +2564,43 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR N
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On RPAREN COMMA
 --   reduce production args_list -> expr
 
-State 95:
+State 96:
 ## Known stack suffix:
 ## ID LPAREN args_opt
 ## LR(1) items:
 expr -> ID LPAREN args_opt . RPAREN [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On RPAREN shift to state 96
+-- On RPAREN shift to state 97
 ## Reductions:
 
-State 96:
+State 97:
 ## Known stack suffix:
 ## ID LPAREN args_opt RPAREN
 ## LR(1) items:
@@ -2568,19 +2610,19 @@ expr -> ID LPAREN args_opt RPAREN . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBR
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production expr -> ID LPAREN args_opt RPAREN
 
-State 97:
+State 98:
 ## Known stack suffix:
 ## args_list
 ## LR(1) items:
 args_list -> args_list . COMMA expr [ RPAREN COMMA ]
 args_opt -> args_list . [ RPAREN ]
 ## Transitions:
--- On COMMA shift to state 98
+-- On COMMA shift to state 99
 ## Reductions:
 -- On RPAREN
 --   reduce production args_opt -> args_list
 
-State 98:
+State 99:
 ## Known stack suffix:
 ## args_list COMMA
 ## LR(1) items:
@@ -2605,12 +2647,13 @@ args_list -> args_list COMMA . expr [ RPAREN COMMA ]
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 99
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 100
 ## Reductions:
 
-State 99:
+State 100:
 ## Known stack suffix:
 ## args_list COMMA expr
 ## LR(1) items:
@@ -2639,34 +2682,34 @@ expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR N
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On RPAREN COMMA
 --   reduce production args_list -> args_list COMMA expr
 
-State 100:
+State 101:
 ## Known stack suffix:
 ## ID LARROW
 ## LR(1) items:
@@ -2677,15 +2720,15 @@ templated_expr -> ID LARROW . typ_list RARROW LPAREN args_opt RPAREN [ UNION TIM
 -- On SET shift to state 7
 -- On LIST shift to state 9
 -- On INT shift to state 33
--- On ID shift to state 101
+-- On ID shift to state 102
 -- On FLOAT shift to state 36
 -- On BOOL shift to state 38
--- On typ_list shift to state 102
--- On typ shift to state 110
--- On group_typ shift to state 46
+-- On typ_list shift to state 103
+-- On typ shift to state 111
+-- On group_typ shift to state 47
 ## Reductions:
 
-State 101:
+State 102:
 ## Known stack suffix:
 ## ID
 ## LR(1) items:
@@ -2695,7 +2738,7 @@ typ -> ID . [ RARROW ID COMMA ]
 -- On RARROW ID COMMA
 --   reduce production typ -> ID
 
-State 102:
+State 103:
 ## Known stack suffix:
 ## ID LARROW typ_list
 ## LR(1) items:
@@ -2703,22 +2746,22 @@ templated_expr -> ID LARROW typ_list . RARROW ID [ UNION TIMESEQ TIMES SEMI RPAR
 templated_expr -> ID LARROW typ_list . RARROW LPAREN args_opt RPAREN [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 typ_list -> typ_list . COMMA typ [ RARROW COMMA ]
 ## Transitions:
--- On RARROW shift to state 103
--- On COMMA shift to state 108
+-- On RARROW shift to state 104
+-- On COMMA shift to state 109
 ## Reductions:
 
-State 103:
+State 104:
 ## Known stack suffix:
 ## ID LARROW typ_list RARROW
 ## LR(1) items:
 templated_expr -> ID LARROW typ_list RARROW . ID [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 templated_expr -> ID LARROW typ_list RARROW . LPAREN args_opt RPAREN [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On LPAREN shift to state 104
--- On ID shift to state 107
+-- On LPAREN shift to state 105
+-- On ID shift to state 108
 ## Reductions:
 
-State 104:
+State 105:
 ## Known stack suffix:
 ## ID LARROW typ_list RARROW LPAREN
 ## LR(1) items:
@@ -2743,25 +2786,26 @@ templated_expr -> ID LARROW typ_list RARROW LPAREN . args_opt RPAREN [ UNION TIM
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 94
--- On args_opt shift to state 105
--- On args_list shift to state 97
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 95
+-- On args_opt shift to state 106
+-- On args_list shift to state 98
 ## Reductions:
 -- On RPAREN
 --   reduce production args_opt ->
 
-State 105:
+State 106:
 ## Known stack suffix:
 ## ID LARROW typ_list RARROW LPAREN args_opt
 ## LR(1) items:
 templated_expr -> ID LARROW typ_list RARROW LPAREN args_opt . RPAREN [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On RPAREN shift to state 106
+-- On RPAREN shift to state 107
 ## Reductions:
 
-State 106:
+State 107:
 ## Known stack suffix:
 ## ID LARROW typ_list RARROW LPAREN args_opt RPAREN
 ## LR(1) items:
@@ -2771,7 +2815,7 @@ templated_expr -> ID LARROW typ_list RARROW LPAREN args_opt RPAREN . [ UNION TIM
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production templated_expr -> ID LARROW typ_list RARROW LPAREN args_opt RPAREN
 
-State 107:
+State 108:
 ## Known stack suffix:
 ## ID LARROW typ_list RARROW ID
 ## LR(1) items:
@@ -2781,7 +2825,7 @@ templated_expr -> ID LARROW typ_list RARROW ID . [ UNION TIMESEQ TIMES SEMI RPAR
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production templated_expr -> ID LARROW typ_list RARROW ID
 
-State 108:
+State 109:
 ## Known stack suffix:
 ## typ_list COMMA
 ## LR(1) items:
@@ -2791,14 +2835,14 @@ typ_list -> typ_list COMMA . typ [ RARROW COMMA ]
 -- On SET shift to state 7
 -- On LIST shift to state 9
 -- On INT shift to state 33
--- On ID shift to state 101
+-- On ID shift to state 102
 -- On FLOAT shift to state 36
 -- On BOOL shift to state 38
--- On typ shift to state 109
--- On group_typ shift to state 46
+-- On typ shift to state 110
+-- On group_typ shift to state 47
 ## Reductions:
 
-State 109:
+State 110:
 ## Known stack suffix:
 ## typ_list COMMA typ
 ## LR(1) items:
@@ -2808,7 +2852,7 @@ typ_list -> typ_list COMMA typ . [ RARROW COMMA ]
 -- On RARROW COMMA
 --   reduce production typ_list -> typ_list COMMA typ
 
-State 110:
+State 111:
 ## Known stack suffix:
 ## typ
 ## LR(1) items:
@@ -2818,25 +2862,25 @@ typ_list -> typ . [ RARROW COMMA ]
 -- On RARROW COMMA
 --   reduce production typ_list -> typ
 
-State 111:
+State 112:
 ## Known stack suffix:
 ## ID DOT
 ## LR(1) items:
 expr -> ID DOT . ID ASSIGN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On ID shift to state 112
+-- On ID shift to state 113
 ## Reductions:
 
-State 112:
+State 113:
 ## Known stack suffix:
 ## ID DOT ID
 ## LR(1) items:
 expr -> ID DOT ID . ASSIGN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On ASSIGN shift to state 113
+-- On ASSIGN shift to state 114
 ## Reductions:
 
-State 113:
+State 114:
 ## Known stack suffix:
 ## ID DOT ID ASSIGN
 ## LR(1) items:
@@ -2861,12 +2905,13 @@ expr -> ID DOT ID ASSIGN . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE 
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 114
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 115
 ## Reductions:
 
-State 114:
+State 115:
 ## Known stack suffix:
 ## ID DOT ID ASSIGN expr
 ## LR(1) items:
@@ -2895,35 +2940,35 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> ID DOT ID ASSIGN expr . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On SEMI RPAREN RBRACK RBRACE OREQ MODEQ IN COMMA
 --   reduce production expr -> ID DOT ID ASSIGN expr
 ** Conflict on OREQ MODEQ
 
-State 115:
+State 116:
 ## Known stack suffix:
 ## ID ASSIGN
 ## LR(1) items:
@@ -2948,12 +2993,13 @@ expr -> ID ASSIGN . expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ 
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 116
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 117
 ## Reductions:
 
-State 116:
+State 117:
 ## Known stack suffix:
 ## ID ASSIGN expr
 ## LR(1) items:
@@ -2982,46 +3028,46 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> ID ASSIGN expr . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On SEMI RPAREN RBRACK RBRACE OREQ MODEQ IN COMMA
 --   reduce production expr -> ID ASSIGN expr
 ** Conflict on OREQ MODEQ
 
-State 117:
+State 118:
 ## Known stack suffix:
 ## LBRACE set_list
 ## LR(1) items:
 set_expr -> LBRACE set_list . RBRACE [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 set_list -> set_list . COMMA expr [ RBRACE COMMA ]
 ## Transitions:
--- On RBRACE shift to state 118
--- On COMMA shift to state 119
+-- On RBRACE shift to state 119
+-- On COMMA shift to state 120
 ## Reductions:
 
-State 118:
+State 119:
 ## Known stack suffix:
 ## LBRACE set_list RBRACE
 ## LR(1) items:
@@ -3031,7 +3077,7 @@ set_expr -> LBRACE set_list RBRACE . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RB
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production set_expr -> LBRACE set_list RBRACE
 
-State 119:
+State 120:
 ## Known stack suffix:
 ## set_list COMMA
 ## LR(1) items:
@@ -3056,12 +3102,13 @@ set_list -> set_list COMMA . expr [ RBRACE COMMA ]
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 120
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 121
 ## Reductions:
 
-State 120:
+State 121:
 ## Known stack suffix:
 ## set_list COMMA expr
 ## LR(1) items:
@@ -3090,34 +3137,34 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES RBRACE PLUSEQ PLUS OREQ OR NEQ M
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 set_list -> set_list COMMA expr . [ RBRACE COMMA ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On RBRACE COMMA
 --   reduce production set_list -> set_list COMMA expr
 
-State 121:
+State 122:
 ## Known stack suffix:
 ## expr
 ## LR(1) items:
@@ -3146,45 +3193,45 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES RBRACE PLUSEQ PLUS OREQ OR NEQ M
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 set_list -> expr . [ RBRACE COMMA ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On RBRACE COMMA
 --   reduce production set_list -> expr
 
-State 122:
+State 123:
 ## Known stack suffix:
 ## LBRACK list_list
 ## LR(1) items:
 list_expr -> LBRACK list_list . RBRACK [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 list_list -> list_list . COMMA expr [ RBRACK COMMA ]
 ## Transitions:
--- On RBRACK shift to state 123
--- On COMMA shift to state 124
+-- On RBRACK shift to state 124
+-- On COMMA shift to state 125
 ## Reductions:
 
-State 123:
+State 124:
 ## Known stack suffix:
 ## LBRACK list_list RBRACK
 ## LR(1) items:
@@ -3194,7 +3241,7 @@ list_expr -> LBRACK list_list RBRACK . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK 
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production list_expr -> LBRACK list_list RBRACK
 
-State 124:
+State 125:
 ## Known stack suffix:
 ## list_list COMMA
 ## LR(1) items:
@@ -3219,12 +3266,13 @@ list_list -> list_list COMMA . expr [ RBRACK COMMA ]
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 125
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 126
 ## Reductions:
 
-State 125:
+State 126:
 ## Known stack suffix:
 ## list_list COMMA expr
 ## LR(1) items:
@@ -3253,34 +3301,34 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES RBRACK PLUSEQ PLUS OREQ OR NEQ M
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES RBRACK PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 list_list -> list_list COMMA expr . [ RBRACK COMMA ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On RBRACK COMMA
 --   reduce production list_list -> list_list COMMA expr
 
-State 126:
+State 127:
 ## Known stack suffix:
 ## expr
 ## LR(1) items:
@@ -3309,34 +3357,34 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES RBRACK PLUSEQ PLUS OREQ OR NEQ M
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES RBRACK PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 list_list -> expr . [ RBRACK COMMA ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On RBRACK COMMA
 --   reduce production list_list -> expr
 
-State 127:
+State 128:
 ## Known stack suffix:
 ## LPAREN expr
 ## LR(1) items:
@@ -3363,45 +3411,45 @@ expr -> expr . PLUSEQ expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR NEQ 
 expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND ]
 expr -> expr . UNION expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND ]
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND ]
-expr -> LPAREN expr . RPAREN [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+paren_expr -> LPAREN expr . RPAREN [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On RPAREN shift to state 128
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On RPAREN shift to state 129
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 
-State 128:
+State 129:
 ## Known stack suffix:
 ## LPAREN expr RPAREN
 ## LR(1) items:
-expr -> LPAREN expr RPAREN . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+paren_expr -> LPAREN expr RPAREN . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
 ## Reductions:
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
---   reduce production expr -> LPAREN expr RPAREN
+--   reduce production paren_expr -> LPAREN expr RPAREN
 
-State 129:
+State 130:
 ## Known stack suffix:
 ## MINUS expr
 ## LR(1) items:
@@ -3430,14 +3478,14 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> MINUS expr . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
 ## Reductions:
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production expr -> MINUS expr
 ** Conflict on OREQ MODEQ
 
-State 130:
+State 131:
 ## Known stack suffix:
 ## NOT expr
 ## LR(1) items:
@@ -3466,14 +3514,14 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 expr -> NOT expr . [ UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 ## Transitions:
--- On OREQ shift to state 52
--- On MODEQ shift to state 56
+-- On OREQ shift to state 53
+-- On MODEQ shift to state 57
 ## Reductions:
 -- On UNION TIMESEQ TIMES SEMI RPAREN RBRACK RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT IN GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND
 --   reduce production expr -> NOT expr
 ** Conflict on OREQ MODEQ
 
-State 131:
+State 132:
 ## Known stack suffix:
 ## WHILE LPAREN expr
 ## LR(1) items:
@@ -3502,33 +3550,33 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR NEQ M
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND ]
 stmt -> WHILE LPAREN expr . RPAREN stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On RPAREN shift to state 132
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On RPAREN shift to state 133
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 
-State 132:
+State 133:
 ## Known stack suffix:
 ## WHILE LPAREN expr RPAREN
 ## LR(1) items:
@@ -3538,34 +3586,35 @@ stmt -> WHILE LPAREN expr RPAREN . stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET 
 -- On STRING shift to state 5
 -- On SLIT shift to state 6
 -- On SET shift to state 7
--- On RETURN shift to state 133
+-- On RETURN shift to state 134
 -- On NOT shift to state 27
 -- On MINUS shift to state 28
 -- On LPAREN shift to state 29
 -- On LITERAL shift to state 30
 -- On LIST shift to state 9
 -- On LBRACK shift to state 31
--- On LBRACE shift to state 137
+-- On LBRACE shift to state 138
 -- On INT shift to state 33
--- On IF shift to state 140
+-- On IF shift to state 139
 -- On ID shift to state 34
--- On FOR shift to state 144
+-- On FOR shift to state 143
 -- On FLOAT shift to state 36
 -- On FLIT shift to state 37
--- On CONTINUE shift to state 152
--- On BREAK shift to state 154
+-- On CONTINUE shift to state 151
+-- On BREAK shift to state 153
 -- On BOOL shift to state 38
 -- On BLIT shift to state 39
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
--- On stmt shift to state 168
+-- On stmt shift to state 171
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 157
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 156
 ## Reductions:
 
-State 133:
+State 134:
 ## Known stack suffix:
 ## RETURN
 ## LR(1) items:
@@ -3590,24 +3639,25 @@ stmt -> RETURN . expr_opt SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RB
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr_opt shift to state 134
--- On expr shift to state 136
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr_opt shift to state 135
+-- On expr shift to state 137
 ## Reductions:
 -- On SEMI
 --   reduce production expr_opt ->
 
-State 134:
+State 135:
 ## Known stack suffix:
 ## RETURN expr_opt
 ## LR(1) items:
 stmt -> RETURN expr_opt . SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On SEMI shift to state 135
+-- On SEMI shift to state 136
 ## Reductions:
 
-State 135:
+State 136:
 ## Known stack suffix:
 ## RETURN expr_opt SEMI
 ## LR(1) items:
@@ -3617,7 +3667,7 @@ stmt -> RETURN expr_opt SEMI . [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RB
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT
 --   reduce production stmt -> RETURN expr_opt SEMI
 
-State 136:
+State 137:
 ## Known stack suffix:
 ## expr
 ## LR(1) items:
@@ -3646,126 +3696,85 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RPAREN PLUSEQ PLUS OREQ OR 
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RPAREN PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND ]
 expr_opt -> expr . [ SEMI RPAREN ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On SEMI RPAREN
 --   reduce production expr_opt -> expr
 
-State 137:
+State 138:
 ## Known stack suffix:
 ## LBRACE
 ## LR(1) items:
-set_expr -> LBRACE . set_list RBRACE [ UNION TIMESEQ TIMES SEMI PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND ]
+set_expr -> LBRACE . set_list RBRACE [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
 stmt -> LBRACE . stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
-## Transitions:
--- On STRING shift to state 5
--- On SLIT shift to state 6
--- On SET shift to state 7
--- On NOT shift to state 27
--- On MINUS shift to state 28
--- On LPAREN shift to state 29
--- On LITERAL shift to state 30
--- On LIST shift to state 9
--- On LBRACK shift to state 31
--- On LBRACE shift to state 32
--- On INT shift to state 33
--- On ID shift to state 34
--- On FLOAT shift to state 36
--- On FLIT shift to state 37
--- On BOOL shift to state 38
--- On BLIT shift to state 39
--- On typ shift to state 40
--- On templated_expr shift to state 43
--- On stmt_list shift to state 138
--- On set_list shift to state 117
--- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 121
-## Reductions:
-
-State 138:
-## Known stack suffix:
-## LBRACE stmt_list
-## LR(1) items:
-stmt -> LBRACE stmt_list . RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
-stmt_list -> stmt_list . stmt [ WHILE STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
 -- On WHILE shift to state 3
 -- On STRING shift to state 5
 -- On SLIT shift to state 6
 -- On SET shift to state 7
--- On RETURN shift to state 133
--- On RBRACE shift to state 139
+-- On RETURN shift to state 134
 -- On NOT shift to state 27
 -- On MINUS shift to state 28
 -- On LPAREN shift to state 29
 -- On LITERAL shift to state 30
 -- On LIST shift to state 9
 -- On LBRACK shift to state 31
--- On LBRACE shift to state 137
+-- On LBRACE shift to state 138
 -- On INT shift to state 33
--- On IF shift to state 140
+-- On IF shift to state 139
 -- On ID shift to state 34
--- On FOR shift to state 144
+-- On FOR shift to state 143
 -- On FLOAT shift to state 36
 -- On FLIT shift to state 37
--- On CONTINUE shift to state 152
--- On BREAK shift to state 154
+-- On CONTINUE shift to state 151
+-- On BREAK shift to state 153
 -- On BOOL shift to state 38
 -- On BLIT shift to state 39
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
--- On stmt shift to state 167
+-- On stmt_list shift to state 166
+-- On stmt shift to state 169
+-- On set_list shift to state 118
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 157
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 170
 ## Reductions:
 
 State 139:
-## Known stack suffix:
-## LBRACE stmt_list RBRACE
-## LR(1) items:
-stmt -> LBRACE stmt_list RBRACE . [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
-## Transitions:
-## Reductions:
--- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT
---   reduce production stmt -> LBRACE stmt_list RBRACE
-
-State 140:
 ## Known stack suffix:
 ## IF
 ## LR(1) items:
 stmt -> IF . LPAREN expr RPAREN stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 stmt -> IF . LPAREN expr RPAREN stmt ELSE stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On LPAREN shift to state 141
+-- On LPAREN shift to state 140
 ## Reductions:
 
-State 141:
+State 140:
 ## Known stack suffix:
 ## IF LPAREN
 ## LR(1) items:
@@ -3791,12 +3800,13 @@ stmt -> IF LPAREN . expr RPAREN stmt ELSE stmt [ WHILE TEMPLATE STRUCT STRING SL
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 142
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 141
 ## Reductions:
 
-State 142:
+State 141:
 ## Known stack suffix:
 ## IF LPAREN expr
 ## LR(1) items:
@@ -3826,33 +3836,33 @@ expr -> expr . ISIN expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR NEQ MO
 stmt -> IF LPAREN expr . RPAREN stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 stmt -> IF LPAREN expr . RPAREN stmt ELSE stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On RPAREN shift to state 143
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On RPAREN shift to state 142
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 
-State 143:
+State 142:
 ## Known stack suffix:
 ## IF LPAREN expr RPAREN
 ## LR(1) items:
@@ -3863,44 +3873,45 @@ stmt -> IF LPAREN expr RPAREN . stmt ELSE stmt [ WHILE TEMPLATE STRUCT STRING SL
 -- On STRING shift to state 5
 -- On SLIT shift to state 6
 -- On SET shift to state 7
--- On RETURN shift to state 133
+-- On RETURN shift to state 134
 -- On NOT shift to state 27
 -- On MINUS shift to state 28
 -- On LPAREN shift to state 29
 -- On LITERAL shift to state 30
 -- On LIST shift to state 9
 -- On LBRACK shift to state 31
--- On LBRACE shift to state 137
+-- On LBRACE shift to state 138
 -- On INT shift to state 33
--- On IF shift to state 140
+-- On IF shift to state 139
 -- On ID shift to state 34
--- On FOR shift to state 144
+-- On FOR shift to state 143
 -- On FLOAT shift to state 36
 -- On FLIT shift to state 37
--- On CONTINUE shift to state 152
--- On BREAK shift to state 154
+-- On CONTINUE shift to state 151
+-- On BREAK shift to state 153
 -- On BOOL shift to state 38
 -- On BLIT shift to state 39
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
--- On stmt shift to state 164
+-- On stmt shift to state 163
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 157
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 156
 ## Reductions:
 
-State 144:
+State 143:
 ## Known stack suffix:
 ## FOR
 ## LR(1) items:
 stmt -> FOR . LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 stmt -> FOR . LPAREN expr IN expr RPAREN stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On LPAREN shift to state 145
+-- On LPAREN shift to state 144
 ## Reductions:
 
-State 145:
+State 144:
 ## Known stack suffix:
 ## FOR LPAREN
 ## LR(1) items:
@@ -3926,24 +3937,25 @@ stmt -> FOR LPAREN . expr IN expr RPAREN stmt [ WHILE TEMPLATE STRUCT STRING SLI
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr_opt shift to state 146
--- On expr shift to state 159
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr_opt shift to state 145
+-- On expr shift to state 158
 ## Reductions:
 -- On SEMI
 --   reduce production expr_opt ->
 
-State 146:
+State 145:
 ## Known stack suffix:
 ## FOR LPAREN expr_opt
 ## LR(1) items:
 stmt -> FOR LPAREN expr_opt . SEMI expr SEMI expr_opt RPAREN stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On SEMI shift to state 147
+-- On SEMI shift to state 146
 ## Reductions:
 
-State 147:
+State 146:
 ## Known stack suffix:
 ## FOR LPAREN expr_opt SEMI
 ## LR(1) items:
@@ -3968,12 +3980,13 @@ stmt -> FOR LPAREN expr_opt SEMI . expr SEMI expr_opt RPAREN stmt [ WHILE TEMPLA
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 148
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 147
 ## Reductions:
 
-State 148:
+State 147:
 ## Known stack suffix:
 ## FOR LPAREN expr_opt SEMI expr
 ## LR(1) items:
@@ -4002,33 +4015,33 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI PLUSEQ PLUS OREQ OR NEQ MOD
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND ]
 stmt -> FOR LPAREN expr_opt SEMI expr . SEMI expr_opt RPAREN stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On SEMI shift to state 149
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On SEMI shift to state 148
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 
-State 149:
+State 148:
 ## Known stack suffix:
 ## FOR LPAREN expr_opt SEMI expr SEMI
 ## LR(1) items:
@@ -4053,24 +4066,25 @@ stmt -> FOR LPAREN expr_opt SEMI expr SEMI . expr_opt RPAREN stmt [ WHILE TEMPLA
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr_opt shift to state 150
--- On expr shift to state 136
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr_opt shift to state 149
+-- On expr shift to state 137
 ## Reductions:
 -- On RPAREN
 --   reduce production expr_opt ->
 
-State 150:
+State 149:
 ## Known stack suffix:
 ## FOR LPAREN expr_opt SEMI expr SEMI expr_opt
 ## LR(1) items:
 stmt -> FOR LPAREN expr_opt SEMI expr SEMI expr_opt . RPAREN stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On RPAREN shift to state 151
+-- On RPAREN shift to state 150
 ## Reductions:
 
-State 151:
+State 150:
 ## Known stack suffix:
 ## FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN
 ## LR(1) items:
@@ -4080,43 +4094,44 @@ stmt -> FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN . stmt [ WHILE TEMPLA
 -- On STRING shift to state 5
 -- On SLIT shift to state 6
 -- On SET shift to state 7
--- On RETURN shift to state 133
+-- On RETURN shift to state 134
 -- On NOT shift to state 27
 -- On MINUS shift to state 28
 -- On LPAREN shift to state 29
 -- On LITERAL shift to state 30
 -- On LIST shift to state 9
 -- On LBRACK shift to state 31
--- On LBRACE shift to state 137
+-- On LBRACE shift to state 138
 -- On INT shift to state 33
--- On IF shift to state 140
+-- On IF shift to state 139
 -- On ID shift to state 34
--- On FOR shift to state 144
+-- On FOR shift to state 143
 -- On FLOAT shift to state 36
 -- On FLIT shift to state 37
--- On CONTINUE shift to state 152
--- On BREAK shift to state 154
+-- On CONTINUE shift to state 151
+-- On BREAK shift to state 153
 -- On BOOL shift to state 38
 -- On BLIT shift to state 39
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
--- On stmt shift to state 156
+-- On stmt shift to state 155
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 157
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 156
 ## Reductions:
 
-State 152:
+State 151:
 ## Known stack suffix:
 ## CONTINUE
 ## LR(1) items:
 stmt -> CONTINUE . SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On SEMI shift to state 153
+-- On SEMI shift to state 152
 ## Reductions:
 
-State 153:
+State 152:
 ## Known stack suffix:
 ## CONTINUE SEMI
 ## LR(1) items:
@@ -4126,16 +4141,16 @@ stmt -> CONTINUE SEMI . [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NO
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT
 --   reduce production stmt -> CONTINUE SEMI
 
-State 154:
+State 153:
 ## Known stack suffix:
 ## BREAK
 ## LR(1) items:
 stmt -> BREAK . SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On SEMI shift to state 155
+-- On SEMI shift to state 154
 ## Reductions:
 
-State 155:
+State 154:
 ## Known stack suffix:
 ## BREAK SEMI
 ## LR(1) items:
@@ -4145,7 +4160,7 @@ stmt -> BREAK SEMI . [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT M
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT
 --   reduce production stmt -> BREAK SEMI
 
-State 156:
+State 155:
 ## Known stack suffix:
 ## FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
 ## LR(1) items:
@@ -4155,7 +4170,7 @@ stmt -> FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt . [ WHILE TEMPLA
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT
 --   reduce production stmt -> FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt
 
-State 157:
+State 156:
 ## Known stack suffix:
 ## expr
 ## LR(1) items:
@@ -4184,33 +4199,33 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI PLUSEQ PLUS OREQ OR NEQ MOD
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND ]
 stmt -> expr . SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On SEMI shift to state 158
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On SEMI shift to state 157
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 
-State 158:
+State 157:
 ## Known stack suffix:
 ## expr SEMI
 ## LR(1) items:
@@ -4220,7 +4235,7 @@ stmt -> expr SEMI . [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MI
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT
 --   reduce production stmt -> expr SEMI
 
-State 159:
+State 158:
 ## Known stack suffix:
 ## FOR LPAREN expr
 ## LR(1) items:
@@ -4250,35 +4265,35 @@ expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI PLUSEQ PLUS OREQ OR NEQ MODE
 expr_opt -> expr . [ SEMI ]
 stmt -> FOR LPAREN expr . IN expr RPAREN stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On IN shift to state 160
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On IN shift to state 159
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 -- On SEMI
 --   reduce production expr_opt -> expr
 
-State 160:
+State 159:
 ## Known stack suffix:
 ## FOR LPAREN expr IN
 ## LR(1) items:
@@ -4303,12 +4318,13 @@ stmt -> FOR LPAREN expr IN . expr RPAREN stmt [ WHILE TEMPLATE STRUCT STRING SLI
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 161
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 160
 ## Reductions:
 
-State 161:
+State 160:
 ## Known stack suffix:
 ## FOR LPAREN expr IN expr
 ## LR(1) items:
@@ -4337,33 +4353,33 @@ expr -> expr . UNION expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR NEQ M
 expr -> expr . ISIN expr [ UNION TIMESEQ TIMES RPAREN PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND ]
 stmt -> FOR LPAREN expr IN expr . RPAREN stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On UNION shift to state 48
--- On TIMESEQ shift to state 50
--- On TIMES shift to state 54
--- On RPAREN shift to state 162
--- On PLUSEQ shift to state 58
--- On PLUS shift to state 68
--- On OREQ shift to state 52
--- On OR shift to state 70
--- On NEQ shift to state 72
--- On MODEQ shift to state 56
--- On MOD shift to state 60
--- On MINUSEQ shift to state 74
--- On MINUS shift to state 76
--- On LT shift to state 78
--- On LEQ shift to state 84
--- On ISIN shift to state 80
--- On INTERSECT shift to state 82
--- On GT shift to state 86
--- On GEQ shift to state 88
--- On EQ shift to state 90
--- On DIVIDEEQ shift to state 62
--- On DIVIDE shift to state 64
--- On ANDEQ shift to state 66
--- On AND shift to state 92
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On RPAREN shift to state 161
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
 ## Reductions:
 
-State 162:
+State 161:
 ## Known stack suffix:
 ## FOR LPAREN expr IN expr RPAREN
 ## LR(1) items:
@@ -4373,34 +4389,35 @@ stmt -> FOR LPAREN expr IN expr RPAREN . stmt [ WHILE TEMPLATE STRUCT STRING SLI
 -- On STRING shift to state 5
 -- On SLIT shift to state 6
 -- On SET shift to state 7
--- On RETURN shift to state 133
+-- On RETURN shift to state 134
 -- On NOT shift to state 27
 -- On MINUS shift to state 28
 -- On LPAREN shift to state 29
 -- On LITERAL shift to state 30
 -- On LIST shift to state 9
 -- On LBRACK shift to state 31
--- On LBRACE shift to state 137
+-- On LBRACE shift to state 138
 -- On INT shift to state 33
--- On IF shift to state 140
+-- On IF shift to state 139
 -- On ID shift to state 34
--- On FOR shift to state 144
+-- On FOR shift to state 143
 -- On FLOAT shift to state 36
 -- On FLIT shift to state 37
--- On CONTINUE shift to state 152
--- On BREAK shift to state 154
+-- On CONTINUE shift to state 151
+-- On BREAK shift to state 153
 -- On BOOL shift to state 38
 -- On BLIT shift to state 39
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
--- On stmt shift to state 163
+-- On stmt shift to state 162
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 157
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 156
 ## Reductions:
 
-State 163:
+State 162:
 ## Known stack suffix:
 ## FOR LPAREN expr IN expr RPAREN stmt
 ## LR(1) items:
@@ -4410,19 +4427,19 @@ stmt -> FOR LPAREN expr IN expr RPAREN stmt . [ WHILE TEMPLATE STRUCT STRING SLI
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT
 --   reduce production stmt -> FOR LPAREN expr IN expr RPAREN stmt
 
-State 164:
+State 163:
 ## Known stack suffix:
 ## IF LPAREN expr RPAREN stmt
 ## LR(1) items:
 stmt -> IF LPAREN expr RPAREN stmt . [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 stmt -> IF LPAREN expr RPAREN stmt . ELSE stmt [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On ELSE shift to state 165
+-- On ELSE shift to state 164
 ## Reductions:
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT
 --   reduce production stmt -> IF LPAREN expr RPAREN stmt
 
-State 165:
+State 164:
 ## Known stack suffix:
 ## IF LPAREN expr RPAREN stmt ELSE
 ## LR(1) items:
@@ -4432,34 +4449,35 @@ stmt -> IF LPAREN expr RPAREN stmt ELSE . stmt [ WHILE TEMPLATE STRUCT STRING SL
 -- On STRING shift to state 5
 -- On SLIT shift to state 6
 -- On SET shift to state 7
--- On RETURN shift to state 133
+-- On RETURN shift to state 134
 -- On NOT shift to state 27
 -- On MINUS shift to state 28
 -- On LPAREN shift to state 29
 -- On LITERAL shift to state 30
 -- On LIST shift to state 9
 -- On LBRACK shift to state 31
--- On LBRACE shift to state 137
+-- On LBRACE shift to state 138
 -- On INT shift to state 33
--- On IF shift to state 140
+-- On IF shift to state 139
 -- On ID shift to state 34
--- On FOR shift to state 144
+-- On FOR shift to state 143
 -- On FLOAT shift to state 36
 -- On FLIT shift to state 37
--- On CONTINUE shift to state 152
--- On BREAK shift to state 154
+-- On CONTINUE shift to state 151
+-- On BREAK shift to state 153
 -- On BOOL shift to state 38
 -- On BLIT shift to state 39
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
--- On stmt shift to state 166
+-- On stmt shift to state 165
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 157
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 156
 ## Reductions:
 
-State 166:
+State 165:
 ## Known stack suffix:
 ## IF LPAREN expr RPAREN stmt ELSE stmt
 ## LR(1) items:
@@ -4469,7 +4487,57 @@ stmt -> IF LPAREN expr RPAREN stmt ELSE stmt . [ WHILE TEMPLATE STRUCT STRING SL
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT
 --   reduce production stmt -> IF LPAREN expr RPAREN stmt ELSE stmt
 
+State 166:
+## Known stack suffix:
+## LBRACE stmt_list
+## LR(1) items:
+stmt -> LBRACE stmt_list . RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
+stmt_list -> stmt_list . stmt [ WHILE STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT CONTINUE BREAK BOOL BLIT ]
+## Transitions:
+-- On WHILE shift to state 3
+-- On STRING shift to state 5
+-- On SLIT shift to state 6
+-- On SET shift to state 7
+-- On RETURN shift to state 134
+-- On RBRACE shift to state 167
+-- On NOT shift to state 27
+-- On MINUS shift to state 28
+-- On LPAREN shift to state 29
+-- On LITERAL shift to state 30
+-- On LIST shift to state 9
+-- On LBRACK shift to state 31
+-- On LBRACE shift to state 138
+-- On INT shift to state 33
+-- On IF shift to state 139
+-- On ID shift to state 34
+-- On FOR shift to state 143
+-- On FLOAT shift to state 36
+-- On FLIT shift to state 37
+-- On CONTINUE shift to state 151
+-- On BREAK shift to state 153
+-- On BOOL shift to state 38
+-- On BLIT shift to state 39
+-- On typ shift to state 40
+-- On templated_expr shift to state 43
+-- On stmt shift to state 168
+-- On set_expr shift to state 44
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 156
+## Reductions:
+
 State 167:
+## Known stack suffix:
+## LBRACE stmt_list RBRACE
+## LR(1) items:
+stmt -> LBRACE stmt_list RBRACE . [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT ]
+## Transitions:
+## Reductions:
+-- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT
+--   reduce production stmt -> LBRACE stmt_list RBRACE
+
+State 168:
 ## Known stack suffix:
 ## stmt_list stmt
 ## LR(1) items:
@@ -4479,7 +4547,75 @@ stmt_list -> stmt_list stmt . [ WHILE STRING SLIT SET RETURN RBRACE NOT MINUS LP
 -- On WHILE STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT CONTINUE BREAK BOOL BLIT
 --   reduce production stmt_list -> stmt_list stmt
 
-State 168:
+State 169:
+## Known stack suffix:
+## stmt
+## LR(1) items:
+stmt_list -> stmt . [ WHILE STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT CONTINUE BREAK BOOL BLIT ]
+## Transitions:
+## Reductions:
+-- On WHILE STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT CONTINUE BREAK BOOL BLIT
+--   reduce production stmt_list -> stmt
+
+State 170:
+## Known stack suffix:
+## expr
+## LR(1) items:
+expr -> expr . PLUS expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . MINUS expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . TIMES expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . DIVIDE expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . EQ expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . NEQ expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . LT expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . LEQ expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . GT expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . GEQ expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . AND expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . OR expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . MOD expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . DIVIDEEQ expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . TIMESEQ expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . ANDEQ expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . OREQ expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . MODEQ expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . MINUSEQ expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . PLUSEQ expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . INTERSECT expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . UNION expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+expr -> expr . ISIN expr [ UNION TIMESEQ TIMES SEMI RBRACE PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE COMMA ANDEQ AND ]
+set_list -> expr . [ RBRACE COMMA ]
+stmt -> expr . SEMI [ WHILE STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT CONTINUE BREAK BOOL BLIT ]
+## Transitions:
+-- On UNION shift to state 49
+-- On TIMESEQ shift to state 51
+-- On TIMES shift to state 55
+-- On SEMI shift to state 157
+-- On PLUSEQ shift to state 59
+-- On PLUS shift to state 69
+-- On OREQ shift to state 53
+-- On OR shift to state 71
+-- On NEQ shift to state 73
+-- On MODEQ shift to state 57
+-- On MOD shift to state 61
+-- On MINUSEQ shift to state 75
+-- On MINUS shift to state 77
+-- On LT shift to state 79
+-- On LEQ shift to state 85
+-- On ISIN shift to state 81
+-- On INTERSECT shift to state 83
+-- On GT shift to state 87
+-- On GEQ shift to state 89
+-- On EQ shift to state 91
+-- On DIVIDEEQ shift to state 63
+-- On DIVIDE shift to state 65
+-- On ANDEQ shift to state 67
+-- On AND shift to state 93
+## Reductions:
+-- On RBRACE COMMA
+--   reduce production set_list -> expr
+
+State 171:
 ## Known stack suffix:
 ## WHILE LPAREN expr RPAREN stmt
 ## LR(1) items:
@@ -4489,28 +4625,28 @@ stmt -> WHILE LPAREN expr RPAREN stmt . [ WHILE TEMPLATE STRUCT STRING SLIT SET 
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN RBRACE NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF ELSE CONTINUE BREAK BOOL BLIT
 --   reduce production stmt -> WHILE LPAREN expr RPAREN stmt
 
-State 169:
+State 172:
 ## Known stack suffix:
 ## TEMPLATE
 ## LR(1) items:
 fdecl -> TEMPLATE . LARROW t_list RARROW typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 sdecl -> TEMPLATE . LARROW t_list RARROW STRUCT ID LBRACE struct_formal_list RBRACE SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On LARROW shift to state 170
+-- On LARROW shift to state 173
 ## Reductions:
 
-State 170:
+State 173:
 ## Known stack suffix:
 ## TEMPLATE LARROW
 ## LR(1) items:
 fdecl -> TEMPLATE LARROW . t_list RARROW typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 sdecl -> TEMPLATE LARROW . t_list RARROW STRUCT ID LBRACE struct_formal_list RBRACE SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On ID shift to state 171
--- On t_list shift to state 172
+-- On ID shift to state 174
+-- On t_list shift to state 175
 ## Reductions:
 
-State 171:
+State 174:
 ## Known stack suffix:
 ## ID
 ## LR(1) items:
@@ -4520,7 +4656,7 @@ t_list -> ID . [ RARROW COMMA ]
 -- On RARROW COMMA
 --   reduce production t_list -> ID
 
-State 172:
+State 175:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list
 ## LR(1) items:
@@ -4528,48 +4664,48 @@ fdecl -> TEMPLATE LARROW t_list . RARROW typ ID LPAREN formals_opt RPAREN LBRACE
 sdecl -> TEMPLATE LARROW t_list . RARROW STRUCT ID LBRACE struct_formal_list RBRACE SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 t_list -> t_list . COMMA ID [ RARROW COMMA ]
 ## Transitions:
--- On RARROW shift to state 173
--- On COMMA shift to state 200
+-- On RARROW shift to state 176
+-- On COMMA shift to state 203
 ## Reductions:
 
-State 173:
+State 176:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW
 ## LR(1) items:
 fdecl -> TEMPLATE LARROW t_list RARROW . typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 sdecl -> TEMPLATE LARROW t_list RARROW . STRUCT ID LBRACE struct_formal_list RBRACE SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On STRUCT shift to state 174
+-- On STRUCT shift to state 177
 -- On STRING shift to state 5
 -- On SET shift to state 7
 -- On LIST shift to state 9
 -- On INT shift to state 33
--- On ID shift to state 101
+-- On ID shift to state 102
 -- On FLOAT shift to state 36
 -- On BOOL shift to state 38
--- On typ shift to state 186
--- On group_typ shift to state 46
+-- On typ shift to state 189
+-- On group_typ shift to state 47
 ## Reductions:
 
-State 174:
+State 177:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW STRUCT
 ## LR(1) items:
 sdecl -> TEMPLATE LARROW t_list RARROW STRUCT . ID LBRACE struct_formal_list RBRACE SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On ID shift to state 175
+-- On ID shift to state 178
 ## Reductions:
 
-State 175:
+State 178:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW STRUCT ID
 ## LR(1) items:
 sdecl -> TEMPLATE LARROW t_list RARROW STRUCT ID . LBRACE struct_formal_list RBRACE SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On LBRACE shift to state 176
+-- On LBRACE shift to state 179
 ## Reductions:
 
-State 176:
+State 179:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE
 ## LR(1) items:
@@ -4579,33 +4715,33 @@ sdecl -> TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE . struct_formal_list RBR
 -- On SET shift to state 7
 -- On LIST shift to state 9
 -- On INT shift to state 33
--- On ID shift to state 101
+-- On ID shift to state 102
 -- On FLOAT shift to state 36
 -- On BOOL shift to state 38
--- On typ shift to state 177
--- On struct_formal_list shift to state 180
--- On group_typ shift to state 46
+-- On typ shift to state 180
+-- On struct_formal_list shift to state 183
+-- On group_typ shift to state 47
 ## Reductions:
 
-State 177:
+State 180:
 ## Known stack suffix:
 ## typ
 ## LR(1) items:
 struct_formal_list -> typ . ID SEMI [ STRING SET RBRACE LIST INT ID FLOAT BOOL ]
 ## Transitions:
--- On ID shift to state 178
+-- On ID shift to state 181
 ## Reductions:
 
-State 178:
+State 181:
 ## Known stack suffix:
 ## typ ID
 ## LR(1) items:
 struct_formal_list -> typ ID . SEMI [ STRING SET RBRACE LIST INT ID FLOAT BOOL ]
 ## Transitions:
--- On SEMI shift to state 179
+-- On SEMI shift to state 182
 ## Reductions:
 
-State 179:
+State 182:
 ## Known stack suffix:
 ## typ ID SEMI
 ## LR(1) items:
@@ -4615,7 +4751,7 @@ struct_formal_list -> typ ID SEMI . [ STRING SET RBRACE LIST INT ID FLOAT BOOL ]
 -- On STRING SET RBRACE LIST INT ID FLOAT BOOL
 --   reduce production struct_formal_list -> typ ID SEMI
 
-State 180:
+State 183:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE struct_formal_list
 ## LR(1) items:
@@ -4624,26 +4760,26 @@ struct_formal_list -> struct_formal_list . typ ID SEMI [ STRING SET RBRACE LIST 
 ## Transitions:
 -- On STRING shift to state 5
 -- On SET shift to state 7
--- On RBRACE shift to state 181
+-- On RBRACE shift to state 184
 -- On LIST shift to state 9
 -- On INT shift to state 33
--- On ID shift to state 101
+-- On ID shift to state 102
 -- On FLOAT shift to state 36
 -- On BOOL shift to state 38
--- On typ shift to state 183
--- On group_typ shift to state 46
+-- On typ shift to state 186
+-- On group_typ shift to state 47
 ## Reductions:
 
-State 181:
+State 184:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE struct_formal_list RBRACE
 ## LR(1) items:
 sdecl -> TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE struct_formal_list RBRACE . SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On SEMI shift to state 182
+-- On SEMI shift to state 185
 ## Reductions:
 
-State 182:
+State 185:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE struct_formal_list RBRACE SEMI
 ## LR(1) items:
@@ -4653,25 +4789,25 @@ sdecl -> TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE struct_formal_list RBRAC
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT
 --   reduce production sdecl -> TEMPLATE LARROW t_list RARROW STRUCT ID LBRACE struct_formal_list RBRACE SEMI
 
-State 183:
+State 186:
 ## Known stack suffix:
 ## struct_formal_list typ
 ## LR(1) items:
 struct_formal_list -> struct_formal_list typ . ID SEMI [ STRING SET RBRACE LIST INT ID FLOAT BOOL ]
 ## Transitions:
--- On ID shift to state 184
+-- On ID shift to state 187
 ## Reductions:
 
-State 184:
+State 187:
 ## Known stack suffix:
 ## struct_formal_list typ ID
 ## LR(1) items:
 struct_formal_list -> struct_formal_list typ ID . SEMI [ STRING SET RBRACE LIST INT ID FLOAT BOOL ]
 ## Transitions:
--- On SEMI shift to state 185
+-- On SEMI shift to state 188
 ## Reductions:
 
-State 185:
+State 188:
 ## Known stack suffix:
 ## struct_formal_list typ ID SEMI
 ## LR(1) items:
@@ -4681,25 +4817,25 @@ struct_formal_list -> struct_formal_list typ ID SEMI . [ STRING SET RBRACE LIST 
 -- On STRING SET RBRACE LIST INT ID FLOAT BOOL
 --   reduce production struct_formal_list -> struct_formal_list typ ID SEMI
 
-State 186:
+State 189:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW typ
 ## LR(1) items:
 fdecl -> TEMPLATE LARROW t_list RARROW typ . ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On ID shift to state 187
+-- On ID shift to state 190
 ## Reductions:
 
-State 187:
+State 190:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW typ ID
 ## LR(1) items:
 fdecl -> TEMPLATE LARROW t_list RARROW typ ID . LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On LPAREN shift to state 188
+-- On LPAREN shift to state 191
 ## Reductions:
 
-State 188:
+State 191:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW typ ID LPAREN
 ## LR(1) items:
@@ -4709,27 +4845,27 @@ fdecl -> TEMPLATE LARROW t_list RARROW typ ID LPAREN . formals_opt RPAREN LBRACE
 -- On SET shift to state 7
 -- On LIST shift to state 9
 -- On INT shift to state 33
--- On ID shift to state 101
+-- On ID shift to state 102
 -- On FLOAT shift to state 36
 -- On BOOL shift to state 38
--- On typ shift to state 189
--- On group_typ shift to state 46
--- On formals_opt shift to state 191
--- On formal_list shift to state 196
+-- On typ shift to state 192
+-- On group_typ shift to state 47
+-- On formals_opt shift to state 194
+-- On formal_list shift to state 199
 ## Reductions:
 -- On RPAREN
 --   reduce production formals_opt ->
 
-State 189:
+State 192:
 ## Known stack suffix:
 ## typ
 ## LR(1) items:
 formal_list -> typ . ID [ RPAREN COMMA ]
 ## Transitions:
--- On ID shift to state 190
+-- On ID shift to state 193
 ## Reductions:
 
-State 190:
+State 193:
 ## Known stack suffix:
 ## typ ID
 ## LR(1) items:
@@ -4739,34 +4875,64 @@ formal_list -> typ ID . [ RPAREN COMMA ]
 -- On RPAREN COMMA
 --   reduce production formal_list -> typ ID
 
-State 191:
+State 194:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW typ ID LPAREN formals_opt
 ## LR(1) items:
 fdecl -> TEMPLATE LARROW t_list RARROW typ ID LPAREN formals_opt . RPAREN LBRACE stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On RPAREN shift to state 192
+-- On RPAREN shift to state 195
 ## Reductions:
 
-State 192:
+State 195:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW typ ID LPAREN formals_opt RPAREN
 ## LR(1) items:
 fdecl -> TEMPLATE LARROW t_list RARROW typ ID LPAREN formals_opt RPAREN . LBRACE stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On LBRACE shift to state 193
+-- On LBRACE shift to state 196
 ## Reductions:
 
-State 193:
+State 196:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW typ ID LPAREN formals_opt RPAREN LBRACE
 ## LR(1) items:
 fdecl -> TEMPLATE LARROW t_list RARROW typ ID LPAREN formals_opt RPAREN LBRACE . stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On stmt_list shift to state 194
+-- On WHILE shift to state 3
+-- On STRING shift to state 5
+-- On SLIT shift to state 6
+-- On SET shift to state 7
+-- On RETURN shift to state 134
+-- On NOT shift to state 27
+-- On MINUS shift to state 28
+-- On LPAREN shift to state 29
+-- On LITERAL shift to state 30
+-- On LIST shift to state 9
+-- On LBRACK shift to state 31
+-- On LBRACE shift to state 138
+-- On INT shift to state 33
+-- On IF shift to state 139
+-- On ID shift to state 34
+-- On FOR shift to state 143
+-- On FLOAT shift to state 36
+-- On FLIT shift to state 37
+-- On CONTINUE shift to state 151
+-- On BREAK shift to state 153
+-- On BOOL shift to state 38
+-- On BLIT shift to state 39
+-- On typ shift to state 40
+-- On templated_expr shift to state 43
+-- On stmt_list shift to state 197
+-- On stmt shift to state 169
+-- On set_expr shift to state 44
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 156
 ## Reductions:
 
-State 194:
+State 197:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW typ ID LPAREN formals_opt RPAREN LBRACE stmt_list
 ## LR(1) items:
@@ -4777,35 +4943,36 @@ stmt_list -> stmt_list . stmt [ WHILE STRING SLIT SET RETURN RBRACE NOT MINUS LP
 -- On STRING shift to state 5
 -- On SLIT shift to state 6
 -- On SET shift to state 7
--- On RETURN shift to state 133
--- On RBRACE shift to state 195
+-- On RETURN shift to state 134
+-- On RBRACE shift to state 198
 -- On NOT shift to state 27
 -- On MINUS shift to state 28
 -- On LPAREN shift to state 29
 -- On LITERAL shift to state 30
 -- On LIST shift to state 9
 -- On LBRACK shift to state 31
--- On LBRACE shift to state 137
+-- On LBRACE shift to state 138
 -- On INT shift to state 33
--- On IF shift to state 140
+-- On IF shift to state 139
 -- On ID shift to state 34
--- On FOR shift to state 144
+-- On FOR shift to state 143
 -- On FLOAT shift to state 36
 -- On FLIT shift to state 37
--- On CONTINUE shift to state 152
--- On BREAK shift to state 154
+-- On CONTINUE shift to state 151
+-- On BREAK shift to state 153
 -- On BOOL shift to state 38
 -- On BLIT shift to state 39
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
--- On stmt shift to state 167
+-- On stmt shift to state 168
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 157
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 156
 ## Reductions:
 
-State 195:
+State 198:
 ## Known stack suffix:
 ## TEMPLATE LARROW t_list RARROW typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
 ## LR(1) items:
@@ -4815,19 +4982,19 @@ fdecl -> TEMPLATE LARROW t_list RARROW typ ID LPAREN formals_opt RPAREN LBRACE s
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT
 --   reduce production fdecl -> TEMPLATE LARROW t_list RARROW typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
 
-State 196:
+State 199:
 ## Known stack suffix:
 ## formal_list
 ## LR(1) items:
 formal_list -> formal_list . COMMA typ ID [ RPAREN COMMA ]
 formals_opt -> formal_list . [ RPAREN ]
 ## Transitions:
--- On COMMA shift to state 197
+-- On COMMA shift to state 200
 ## Reductions:
 -- On RPAREN
 --   reduce production formals_opt -> formal_list
 
-State 197:
+State 200:
 ## Known stack suffix:
 ## formal_list COMMA
 ## LR(1) items:
@@ -4837,23 +5004,23 @@ formal_list -> formal_list COMMA . typ ID [ RPAREN COMMA ]
 -- On SET shift to state 7
 -- On LIST shift to state 9
 -- On INT shift to state 33
--- On ID shift to state 101
+-- On ID shift to state 102
 -- On FLOAT shift to state 36
 -- On BOOL shift to state 38
--- On typ shift to state 198
--- On group_typ shift to state 46
+-- On typ shift to state 201
+-- On group_typ shift to state 47
 ## Reductions:
 
-State 198:
+State 201:
 ## Known stack suffix:
 ## formal_list COMMA typ
 ## LR(1) items:
 formal_list -> formal_list COMMA typ . ID [ RPAREN COMMA ]
 ## Transitions:
--- On ID shift to state 199
+-- On ID shift to state 202
 ## Reductions:
 
-State 199:
+State 202:
 ## Known stack suffix:
 ## formal_list COMMA typ ID
 ## LR(1) items:
@@ -4863,16 +5030,16 @@ formal_list -> formal_list COMMA typ ID . [ RPAREN COMMA ]
 -- On RPAREN COMMA
 --   reduce production formal_list -> formal_list COMMA typ ID
 
-State 200:
+State 203:
 ## Known stack suffix:
 ## t_list COMMA
 ## LR(1) items:
 t_list -> t_list COMMA . ID [ RARROW COMMA ]
 ## Transitions:
--- On ID shift to state 201
+-- On ID shift to state 204
 ## Reductions:
 
-State 201:
+State 204:
 ## Known stack suffix:
 ## t_list COMMA ID
 ## LR(1) items:
@@ -4882,25 +5049,25 @@ t_list -> t_list COMMA ID . [ RARROW COMMA ]
 -- On RARROW COMMA
 --   reduce production t_list -> t_list COMMA ID
 
-State 202:
+State 205:
 ## Known stack suffix:
 ## STRUCT
 ## LR(1) items:
 sdecl -> STRUCT . ID LBRACE struct_formal_list RBRACE SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On ID shift to state 203
+-- On ID shift to state 206
 ## Reductions:
 
-State 203:
+State 206:
 ## Known stack suffix:
 ## STRUCT ID
 ## LR(1) items:
 sdecl -> STRUCT ID . LBRACE struct_formal_list RBRACE SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On LBRACE shift to state 204
+-- On LBRACE shift to state 207
 ## Reductions:
 
-State 204:
+State 207:
 ## Known stack suffix:
 ## STRUCT ID LBRACE
 ## LR(1) items:
@@ -4910,15 +5077,15 @@ sdecl -> STRUCT ID LBRACE . struct_formal_list RBRACE SEMI [ WHILE TEMPLATE STRU
 -- On SET shift to state 7
 -- On LIST shift to state 9
 -- On INT shift to state 33
--- On ID shift to state 101
+-- On ID shift to state 102
 -- On FLOAT shift to state 36
 -- On BOOL shift to state 38
--- On typ shift to state 177
--- On struct_formal_list shift to state 205
--- On group_typ shift to state 46
+-- On typ shift to state 180
+-- On struct_formal_list shift to state 208
+-- On group_typ shift to state 47
 ## Reductions:
 
-State 205:
+State 208:
 ## Known stack suffix:
 ## STRUCT ID LBRACE struct_formal_list
 ## LR(1) items:
@@ -4927,26 +5094,26 @@ struct_formal_list -> struct_formal_list . typ ID SEMI [ STRING SET RBRACE LIST 
 ## Transitions:
 -- On STRING shift to state 5
 -- On SET shift to state 7
--- On RBRACE shift to state 206
+-- On RBRACE shift to state 209
 -- On LIST shift to state 9
 -- On INT shift to state 33
--- On ID shift to state 101
+-- On ID shift to state 102
 -- On FLOAT shift to state 36
 -- On BOOL shift to state 38
--- On typ shift to state 183
--- On group_typ shift to state 46
+-- On typ shift to state 186
+-- On group_typ shift to state 47
 ## Reductions:
 
-State 206:
+State 209:
 ## Known stack suffix:
 ## STRUCT ID LBRACE struct_formal_list RBRACE
 ## LR(1) items:
 sdecl -> STRUCT ID LBRACE struct_formal_list RBRACE . SEMI [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On SEMI shift to state 207
+-- On SEMI shift to state 210
 ## Reductions:
 
-State 207:
+State 210:
 ## Known stack suffix:
 ## STRUCT ID LBRACE struct_formal_list RBRACE SEMI
 ## LR(1) items:
@@ -4956,7 +5123,7 @@ sdecl -> STRUCT ID LBRACE struct_formal_list RBRACE SEMI . [ WHILE TEMPLATE STRU
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT
 --   reduce production sdecl -> STRUCT ID LBRACE struct_formal_list RBRACE SEMI
 
-State 208:
+State 211:
 ## Known stack suffix:
 ## decls EOF
 ## LR(1) items:
@@ -4966,7 +5133,7 @@ program -> decls EOF . [ # ]
 -- On #
 --   reduce production program -> decls EOF
 
-State 209:
+State 212:
 ## Known stack suffix:
 ## typ
 ## LR(1) items:
@@ -4974,10 +5141,10 @@ expr -> typ . ID ASSIGN expr [ UNION TIMESEQ TIMES SEMI PLUSEQ PLUS OREQ OR NEQ 
 expr -> typ . ID [ UNION TIMESEQ TIMES SEMI PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND ]
 fdecl -> typ . ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On ID shift to state 210
+-- On ID shift to state 213
 ## Reductions:
 
-State 210:
+State 213:
 ## Known stack suffix:
 ## typ ID
 ## LR(1) items:
@@ -4985,13 +5152,13 @@ expr -> typ ID . ASSIGN expr [ UNION TIMESEQ TIMES SEMI PLUSEQ PLUS OREQ OR NEQ 
 expr -> typ ID . [ UNION TIMESEQ TIMES SEMI PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND ]
 fdecl -> typ ID . LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On LPAREN shift to state 211
+-- On LPAREN shift to state 214
 -- On ASSIGN shift to state 42
 ## Reductions:
 -- On UNION TIMESEQ TIMES SEMI PLUSEQ PLUS OREQ OR NEQ MODEQ MOD MINUSEQ MINUS LT LEQ ISIN INTERSECT GT GEQ EQ DIVIDEEQ DIVIDE ANDEQ AND
 --   reduce production expr -> typ ID
 
-State 211:
+State 214:
 ## Known stack suffix:
 ## typ ID LPAREN
 ## LR(1) items:
@@ -5001,45 +5168,75 @@ fdecl -> typ ID LPAREN . formals_opt RPAREN LBRACE stmt_list RBRACE [ WHILE TEMP
 -- On SET shift to state 7
 -- On LIST shift to state 9
 -- On INT shift to state 33
--- On ID shift to state 101
+-- On ID shift to state 102
 -- On FLOAT shift to state 36
 -- On BOOL shift to state 38
--- On typ shift to state 189
--- On group_typ shift to state 46
--- On formals_opt shift to state 212
--- On formal_list shift to state 196
+-- On typ shift to state 192
+-- On group_typ shift to state 47
+-- On formals_opt shift to state 215
+-- On formal_list shift to state 199
 ## Reductions:
 -- On RPAREN
 --   reduce production formals_opt ->
 
-State 212:
+State 215:
 ## Known stack suffix:
 ## typ ID LPAREN formals_opt
 ## LR(1) items:
 fdecl -> typ ID LPAREN formals_opt . RPAREN LBRACE stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On RPAREN shift to state 213
+-- On RPAREN shift to state 216
 ## Reductions:
 
-State 213:
+State 216:
 ## Known stack suffix:
 ## typ ID LPAREN formals_opt RPAREN
 ## LR(1) items:
 fdecl -> typ ID LPAREN formals_opt RPAREN . LBRACE stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On LBRACE shift to state 214
+-- On LBRACE shift to state 217
 ## Reductions:
 
-State 214:
+State 217:
 ## Known stack suffix:
 ## typ ID LPAREN formals_opt RPAREN LBRACE
 ## LR(1) items:
 fdecl -> typ ID LPAREN formals_opt RPAREN LBRACE . stmt_list RBRACE [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT ]
 ## Transitions:
--- On stmt_list shift to state 215
+-- On WHILE shift to state 3
+-- On STRING shift to state 5
+-- On SLIT shift to state 6
+-- On SET shift to state 7
+-- On RETURN shift to state 134
+-- On NOT shift to state 27
+-- On MINUS shift to state 28
+-- On LPAREN shift to state 29
+-- On LITERAL shift to state 30
+-- On LIST shift to state 9
+-- On LBRACK shift to state 31
+-- On LBRACE shift to state 138
+-- On INT shift to state 33
+-- On IF shift to state 139
+-- On ID shift to state 34
+-- On FOR shift to state 143
+-- On FLOAT shift to state 36
+-- On FLIT shift to state 37
+-- On CONTINUE shift to state 151
+-- On BREAK shift to state 153
+-- On BOOL shift to state 38
+-- On BLIT shift to state 39
+-- On typ shift to state 40
+-- On templated_expr shift to state 43
+-- On stmt_list shift to state 218
+-- On stmt shift to state 169
+-- On set_expr shift to state 44
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 156
 ## Reductions:
 
-State 215:
+State 218:
 ## Known stack suffix:
 ## typ ID LPAREN formals_opt RPAREN LBRACE stmt_list
 ## LR(1) items:
@@ -5050,35 +5247,36 @@ stmt_list -> stmt_list . stmt [ WHILE STRING SLIT SET RETURN RBRACE NOT MINUS LP
 -- On STRING shift to state 5
 -- On SLIT shift to state 6
 -- On SET shift to state 7
--- On RETURN shift to state 133
--- On RBRACE shift to state 216
+-- On RETURN shift to state 134
+-- On RBRACE shift to state 219
 -- On NOT shift to state 27
 -- On MINUS shift to state 28
 -- On LPAREN shift to state 29
 -- On LITERAL shift to state 30
 -- On LIST shift to state 9
 -- On LBRACK shift to state 31
--- On LBRACE shift to state 137
+-- On LBRACE shift to state 138
 -- On INT shift to state 33
--- On IF shift to state 140
+-- On IF shift to state 139
 -- On ID shift to state 34
--- On FOR shift to state 144
+-- On FOR shift to state 143
 -- On FLOAT shift to state 36
 -- On FLIT shift to state 37
--- On CONTINUE shift to state 152
--- On BREAK shift to state 154
+-- On CONTINUE shift to state 151
+-- On BREAK shift to state 153
 -- On BOOL shift to state 38
 -- On BLIT shift to state 39
 -- On typ shift to state 40
 -- On templated_expr shift to state 43
--- On stmt shift to state 167
+-- On stmt shift to state 168
 -- On set_expr shift to state 44
--- On list_expr shift to state 45
--- On group_typ shift to state 46
--- On expr shift to state 157
+-- On paren_expr shift to state 45
+-- On list_expr shift to state 46
+-- On group_typ shift to state 47
+-- On expr shift to state 156
 ## Reductions:
 
-State 216:
+State 219:
 ## Known stack suffix:
 ## typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
 ## LR(1) items:
@@ -5088,7 +5286,7 @@ fdecl -> typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE . [ WHILE TEMP
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT
 --   reduce production fdecl -> typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
 
-State 217:
+State 220:
 ## Known stack suffix:
 ## decls stmt
 ## LR(1) items:
@@ -5098,7 +5296,7 @@ decls -> decls stmt . [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS L
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT
 --   reduce production decls -> decls stmt
 
-State 218:
+State 221:
 ## Known stack suffix:
 ## decls sdecl
 ## LR(1) items:
@@ -5108,7 +5306,7 @@ decls -> decls sdecl . [ WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS 
 -- On WHILE TEMPLATE STRUCT STRING SLIT SET RETURN NOT MINUS LPAREN LITERAL LIST LBRACK LBRACE INT IF ID FOR FLOAT FLIT EOF CONTINUE BREAK BOOL BLIT
 --   reduce production decls -> decls sdecl
 
-State 219:
+State 222:
 ## Known stack suffix:
 ## decls fdecl
 ## LR(1) items:
