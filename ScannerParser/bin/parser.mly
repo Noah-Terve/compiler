@@ -146,12 +146,16 @@ expr_opt:
   | expr          { $1 }
 
 expr:
+  // Basic Literals
     LITERAL          { Literal($1)            }
   | FLIT	           { Fliteral($1)           }
   | BLIT             { BoolLit($1)            }
   | SLIT             { StringLit($1)          }
   | CLIT             { CharLit($1)            }
+
   | ID   { Id($1)                 }
+
+  // Binary Operators
   | expr PLUS   expr { Binop($1, Add,   $3)   }
   | expr MINUS  expr { Binop($1, Sub,   $3)   }
   | expr TIMES  expr { Binop($1, Mult,  $3)   }
@@ -165,6 +169,11 @@ expr:
   | expr AND    expr { Binop($1, And,   $3)   }
   | expr OR     expr { Binop($1, Or,    $3)   }
   | expr MOD    expr { Binop ($1, Mod, $3)}
+
+
+  // Assignment Operators
+  | ID ASSIGN expr               { Assign($1, $3)         }
+  | ID DOT ID ASSIGN expr        { StructAssign($1, $3, $5) }
   | expr DIVIDEEQ expr { Binop ($1, Diveq, $3)}
   | expr TIMESEQ expr  { Binop ($1, Multeq, $3) }
   | expr INTERSECTEQ expr { Binop ($1, Intersecteq, $3)}
@@ -172,14 +181,18 @@ expr:
   | expr MODEQ expr    { Binop ($1, Modeq, $3)}
   | expr MINUSEQ expr { Binop ($1, Minuseq, $3)}
   | expr PLUSEQ expr {Binop ($1, Pluseq, $3)}
+
+  // Set and List Operators
   | expr INTERSECT expr {Binop ($1, Intersect, $3) }
   | expr UNION expr     {Binop ($1, Union, $3) }
   | expr ISIN expr      {Binop ($1, Isin, $3 ) }
+
+  // Variable Declarations
   | typ ID ASSIGN expr                 { BindAssign ($1, $2, $4) }
-  | typ ID                             { BindDec($1, $2) }  
+  | typ ID                             { BindDec($1, $2) }
+  | ID DOT ID                         { StructMem ($1, $3) }
   
   // Struct dot assign and templating struct
-  | ID DOT ID ASSIGN expr              { BindDot ($1, $3, $5) }
   | LPAREN expr RPAREN                 { $2            }
   | templated_expr                     { $1            }
   
@@ -187,9 +200,11 @@ expr:
   | LBRACK list_opt RBRACK      { ListExplicit(List.rev $2)       }
   | LBRACE set_opt RBRACE       { SetExplicit(List.rev $2 )       }
   | LTAGS struct_list RTAGS        { StructExplicit(List.rev $2)     }
+
+  // Unary Operators
   | MINUS expr %prec NOT         { Unop(Neg, $2)      }
   | NOT expr                     { Unop(Not, $2)          }
-  | ID ASSIGN expr               { Assign($1, $3)         }
+
   | ID LPAREN args_opt RPAREN    { Call($1, $3)  }
 
 templated_expr:

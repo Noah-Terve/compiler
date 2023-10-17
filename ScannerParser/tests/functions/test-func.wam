@@ -1,0 +1,8 @@
+string complicated_print(string s) {
+    for (c in s) {
+        print(x);
+    }
+}
+
+string s = "Hello, world!";
+complicated_print(s);

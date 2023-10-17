@@ -9,8 +9,8 @@
 let digit = ['0' - '9']
 let digits = digit+
 
-(* A character is any printable character except  *)
-
+(* A character is any printable character except a single quote, a double quote
+   or a newline. *)
 let simple_char = [' ' - '!' '#' - '&' '(' - '[' ']' - '~']
 let escaped_char = ['\\' '"' '\'' 'n' 't' 'r' 'b' '0'-'9']
 let wampus_char = simple_char | '\\' escaped_char
@@ -22,7 +22,6 @@ rule token = parse
 
 | "and"    { AND }
 | "or"     { OR }
-(* | "char"   { CHAR } *)
 | "not"    { NOT }
 | "template" { TEMPLATE }
 | "break"  { BREAK }
