@@ -102,8 +102,8 @@ let string_of_uop = function
 | Float -> "float"
 | String -> "string"
 | Char -> "char"
-| List(t) -> "list l@" ^ string_of_typ t ^ "@r"
-| Set(t) -> "set l@" ^ string_of_typ t ^ "@r"
+| List(t) -> "list @l" ^ string_of_typ t ^ "@r"
+| Set(t) -> "set @l" ^ string_of_typ t ^ "@r"
 | Templated(t) -> t
 
 let rec string_of_expr = function
@@ -121,15 +121,15 @@ let rec string_of_expr = function
 | Call(f, el) ->
     f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 | TemplatedCall(f, tl, el) ->
-    f ^ "l@" ^ String.concat ", "(List.map string_of_typ tl) ^ "@r  (" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+    f ^ "@l" ^ String.concat ", "(List.map string_of_typ tl) ^ "@r  (" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 | BindAssign(t, id, e) -> string_of_typ t ^ " "^ id ^ " = " ^ string_of_expr e
 | BindDec (t, id) -> string_of_typ t ^ " " ^ id
 | BindDot (struct_id, id1, e) -> struct_id ^ "."^ id1 ^ " = " ^ string_of_expr e
-| BindTemplatedDec (struct_id, t_list, id) ->  struct_id ^ " l@" ^ String.concat ", " (List.map string_of_typ t_list) ^ "@r " ^ id
-| BindTemplatedAssign (struct_id, t_list, id, e) -> struct_id ^ " l@" ^ String.concat ", " (List.map string_of_typ t_list) ^ "@r " ^ id ^ " = " ^ string_of_expr e
+| BindTemplatedDec (struct_id, t_list, id) ->  struct_id ^ " @l" ^ String.concat ", " (List.map string_of_typ t_list) ^ "@r " ^ id
+| BindTemplatedAssign (struct_id, t_list, id, e) -> struct_id ^ " @l" ^ String.concat ", " (List.map string_of_typ t_list) ^ "@r " ^ id ^ " = " ^ string_of_expr e
 | ListExplicit(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
 | SetExplicit (el) -> "{" ^ String.concat ", " (List.map string_of_expr el) ^ "}"
-| StructExplicit (el) -> "l# " ^ String.concat ", " (List.map string_of_expr el) ^ " #r"
+| StructExplicit (el) -> "#l " ^ String.concat ", " (List.map string_of_expr el) ^ " #r"
 | Noexpr -> ""
 
 let rec string_of_stmt = function
@@ -152,7 +152,7 @@ let rec string_of_stmt = function
 
 let template = function
     [] -> ""
-    | types -> "template l@" ^ String.concat ", " (List.map (fun s -> s) types) ^ "@r\n"
+    | types -> "template @l" ^ String.concat ", " (List.map (fun s -> s) types) ^ "@r\n"
 
 let string_of_fdecl fdecl =
   (template fdecl.fun_t_list) ^

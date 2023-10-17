@@ -74,9 +74,9 @@ rule token = parse
 | "bool"   { BOOL }
 | "float"  { FLOAT }
 | "string" { STRING }
-| "l#"      { LTAGS }
+| "#l"      { LTAGS }
 | "#r"      { RTAGS }
-| "l@"      { LAT }
+| "@l"      { LAT }
 | "@r"      { RAT }
 
 (* Literals *)
