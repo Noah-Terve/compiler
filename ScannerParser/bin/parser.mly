@@ -8,7 +8,7 @@ open Ast
 %token NOT EQ NEQ LEQ GEQ AND OR TIMESEQ DIVIDEEQ INTERSECTEQ UNIONEQ MODEQ MINUSEQ PLUSEQ
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT STRING CHAR
 /* edits */
-%token LBRACK RBRACK LT GT LARROW RARROW IN MOD TEMPLATE UNION INTERSECT ISIN
+%token LBRACK RBRACK LARROW RARROW IN MOD TEMPLATE UNION INTERSECT ISIN
 %token LIST SET BREAK CONTINUE STRUCT DOT TAGS
 %token <int> LITERAL
 %token <bool> BLIT
@@ -22,6 +22,7 @@ open Ast
 
 %nonassoc NOELSE
 %nonassoc ELSE
+%nonassoc NOTTEMPLATE
 %right ASSIGN 
 %right UNIONEQ 
 %right INTERSECTEQ
@@ -30,7 +31,7 @@ open Ast
 %left OR 
 %left AND 
 %left EQ NEQ
-%left LT GT LEQ GEQ
+%left LARROW RARROW LEQ GEQ
 %left ISIN
 %left UNION
 %left INTERSECT
@@ -106,18 +107,20 @@ typ:
 
 group_typ:
     
-      SET LARROW INT RARROW         { Set (Int)     }
-    | SET LARROW BOOL RARROW        { Set (Bool)    }
-    | SET LARROW ID RARROW          { Set (Templated($3))}
-    | SET LARROW STRING RARROW      { Set (String)  }
-    | SET LARROW CHAR RARROW        { Set (Char)}
-    | SET LARROW group_typ RARROW        { Set ($3)      }
-    | LIST LARROW INT RARROW        { List (Int)    }
-    | LIST LARROW BOOL RARROW       { List (Bool)   }
-    | LIST LARROW ID RARROW         { List (Templated($3)) }
-    | LIST LARROW STRING RARROW      { List (String)  }
-    | LIST LARROW CHAR RARROW        { List (Char)}
-    | LIST LARROW group_typ RARROW  { List ($3)     }
+      SET LARROW INT RARROW         { Set (Int)           }
+    | SET LARROW BOOL RARROW        { Set (Bool)          }
+    | SET LARROW ID RARROW          { Set (Templated($3)) }
+    | SET LARROW STRING RARROW      { Set (String)        }
+    | SET LARROW CHAR RARROW        { Set (Char)          }
+    | SET LARROW FLOAT RARROW       { Set (Float)         }
+    | SET LARROW group_typ RARROW   { Set ($3)            }
+    | LIST LARROW INT RARROW        { List (Int)          }
+    | LIST LARROW BOOL RARROW       { List (Bool)         }
+    | LIST LARROW ID RARROW         { List (Templated($3))}
+    | LIST LARROW STRING RARROW     { List (String)       }
+    | LIST LARROW CHAR RARROW       { List (Char)         }
+    | LIST LARROW FLOAT RARROW      { List (Float)        }    
+    | LIST LARROW group_typ RARROW  { List ($3)           }
 
 stmt_list:
     stmt { [$1] }
@@ -149,25 +152,25 @@ expr:
   | BLIT             { BoolLit($1)            }
   | SLIT             { StringLit($1)          }
   | CLIT             { CharLit($1)            }
-  | ID               { Id($1)                 }
+  | ID %prec NOTTEMPLATE   { Id($1)                 }
   | expr PLUS   expr { Binop($1, Add,   $3)   }
   | expr MINUS  expr { Binop($1, Sub,   $3)   }
   | expr TIMES  expr { Binop($1, Mult,  $3)   }
   | expr DIVIDE expr { Binop($1, Div,   $3)   }
   | expr EQ     expr { Binop($1, Equal, $3)   }
   | expr NEQ    expr { Binop($1, Neq,   $3)   }
-  | expr LT     expr { Binop($1, Less,  $3)   }
+  | expr LARROW expr { Binop($1, Less,  $3)   }
   | expr LEQ    expr { Binop($1, Leq,   $3)   }
-  | expr GT     expr { Binop($1, Greater, $3) }
+  | expr RARROW expr { Binop($1, Greater, $3) }
   | expr GEQ    expr { Binop($1, Geq,   $3)   }
   | expr AND    expr { Binop($1, And,   $3)   }
   | expr OR     expr { Binop($1, Or,    $3)   }
   | expr MOD    expr { Binop ($1, Mod, $3)}
   | expr DIVIDEEQ expr { Binop ($1, Diveq, $3)}
-  | expr TIMESEQ expr { Binop ($1, Multeq, $3) }
+  | expr TIMESEQ expr  { Binop ($1, Multeq, $3) }
   | expr INTERSECTEQ expr { Binop ($1, Intersecteq, $3)}
-  | expr UNIONEQ expr { Binop ($1, Unioneq, $3)}
-  | expr MODEQ expr { Binop ($1, Modeq, $3)}
+  | expr UNIONEQ expr  { Binop ($1, Unioneq, $3)}
+  | expr MODEQ expr    { Binop ($1, Modeq, $3)}
   | expr MINUSEQ expr { Binop ($1, Minuseq, $3)}
   | expr PLUSEQ expr {Binop ($1, Pluseq, $3)}
   | expr INTERSECT expr {Binop ($1, Intersect, $3) }
