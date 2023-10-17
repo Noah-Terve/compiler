@@ -5,9 +5,9 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github Noah-Terve/compiler))
 
-(authors "Author Name")
+(authors "Heijun Si" "Noah Tervelon" "Christopher Sasanuma" "Neil Powers")
 
 (maintainers "Maintainer Name")
 
