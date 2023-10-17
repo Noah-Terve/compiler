@@ -1,0 +1,19 @@
+/* Create a struct to represent an edge */ 
+struct Edge {
+    int src;
+    int dest;
+};
+
+/* Create a struct to represent a graph */
+struct Graph {
+    /* V-> Number of vertices, E-> Number of edges */
+    int v;
+    int e;
+
+    /* Create an array of edges */
+    list @l Edge @r edges;
+};
+
+Graph myGraph = #l
+    2, 1, #l 0, 1 #r
+#r;
