@@ -1,4 +1,4 @@
 (library
  (name toplevel)
- (libraries llvm llvm.analysis))
+ (libraries))
 
