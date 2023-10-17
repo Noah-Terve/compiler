@@ -69,9 +69,9 @@ let string_of_op = function
   | Div -> "/"
   | Equal -> "=="
   | Neq -> "!="
-  | Less -> "lt"
+  | Less -> "<"
   | Leq -> "<="
-  | Greater -> "gt"
+  | Greater -> ">"
   | Geq -> ">="
   | And -> "&&"
   | Or -> "||"
@@ -149,10 +149,6 @@ let rec string_of_stmt = function
   | Break -> "break;\n"
   | Continue -> "continue;\n"
   | NullStatement -> ";\n"
-  (* | Break -> "break;"
-  | Continue -> "continue;" *)
-  (* | DeclBind(b) -> string_of_bind b ^ ";\n" *)
-(* let string_of_vdecl (b) = string_of_bind b ^ ";\n" *)
 
 let template = function
     [] -> ""
