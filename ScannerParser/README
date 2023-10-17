@@ -17,6 +17,6 @@ with no options and no test files will test all of our cases:
     -> ./testall.sh [options] [.wam files]
 
 Things we still need to add to our compiler:
-    As it stands our compiler puts statements first, then the functions and
+    As it stands our compiler prints statements first, then the functions and
     then the structs. This is purely an ordering issue, and will be resolved
     in the future.
