@@ -1,1 +1,1 @@
-list<int> empty = [];
+list @l int @r empty = [];

@@ -1,1 +1,1 @@
-list<char> hello = ['\n'];
+list @l char @r hello = ['\n'];
