@@ -5,16 +5,20 @@ Haijun Si - Haijun.Si@tufts.edu
 Neil Powers - neil.powers@tufts.edu
 Noah Tervalon - noah.tervalon@tufts.edu
 
-To compile and execute our compiler you can run the following:
-    -> dune exec toplevel [program_name]
-
 To just compile our compiler run:
-    -> make
+    > `make`
 
-To run our test script you can run the following. Running with -h will give
-the help list, and the .wam files are whatever files you want to test. Running
-with no options and no test files will test all of our cases:
-    -> ./testall.sh [options] [.wam files]
+To compile and execute our compiler you can run the following:
+    > `dune exec toplevel [program_name]`
+
+To run all the tests and see the status of each, use:
+    > `make test`.
+
+You can use the `testall.sh` script for more fine-grain control. Running with
+`-h` will give the help menu, where you can get more info. Running with no
+options and no test files will test all of our cases. Specifying a test file
+will run only that test.
+    > `./testall.sh [options] [.wam files]`
 
 Things we still need to add to our compiler:
     As it stands our compiler puts statements first, then the functions and
