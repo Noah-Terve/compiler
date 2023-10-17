@@ -1,4 +1,4 @@
-a @lint@r b;
+a @l int @r b;
 a.x = 5;
 dog d = #l "charlie", 4, 7 #r;
 dog @l int @r d = #l 4, "charlie", 5 #r;
