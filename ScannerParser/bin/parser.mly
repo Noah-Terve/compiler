@@ -25,7 +25,6 @@ open Ast
 
 %nonassoc NOELSE
 %nonassoc ELSE
-%nonassoc NOTTEMPLATE
 %right ASSIGN 
 %right UNIONEQ 
 %right INTERSECTEQ
@@ -152,7 +151,7 @@ expr:
   | BLIT             { BoolLit($1)            }
   | SLIT             { StringLit($1)          }
   | CLIT             { CharLit($1)            }
-  | ID %prec NOTTEMPLATE   { Id($1)                 }
+  | ID   { Id($1)                 }
   | expr PLUS   expr { Binop($1, Add,   $3)   }
   | expr MINUS  expr { Binop($1, Sub,   $3)   }
   | expr TIMES  expr { Binop($1, Mult,  $3)   }
