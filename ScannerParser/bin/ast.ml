@@ -1,4 +1,9 @@
-(* Abstract Syntax Tree and functions for printing it *)
+(* 
+    Authors: Neil Powers, Christopher Sasanuma, Haijun Si, Noah Tervalon
+*)
+
+(* AST for Wampus *)
+
 
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
           And | Or | Mod | Isin | Union | Intersect | Multeq | Diveq | Intersecteq |
@@ -75,7 +80,6 @@ let string_of_op = function
   | Geq -> ">="
   | And -> "&&"
   | Or -> "||"
-  (* add here *)
   | Mod -> "%"
   | Intersect -> "&"
   | Union -> "|"
@@ -98,9 +102,10 @@ let string_of_uop = function
 | Float -> "float"
 | String -> "string"
 | Char -> "char"
-| List(t) -> "list <" ^ string_of_typ t ^ ">"
-| Set(t) -> "set <" ^ string_of_typ t ^ ">"
+| List(t) -> "list l@" ^ string_of_typ t ^ "r@"
+| Set(t) -> "set l@" ^ string_of_typ t ^ "r@"
 | Templated(t) -> t
+
 let rec string_of_expr = function
   Literal(l) -> string_of_int l
 | Fliteral(l) -> l
@@ -116,21 +121,16 @@ let rec string_of_expr = function
 | Call(f, el) ->
     f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 | TemplatedCall(f, tl, el) ->
-    f ^ "<" ^ String.concat ", "(List.map string_of_typ tl) ^ ">  (" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+    f ^ "l@" ^ String.concat ", "(List.map string_of_typ tl) ^ "r@  (" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 | BindAssign(t, id, e) -> string_of_typ t ^ " "^ id ^ " = " ^ string_of_expr e
 | BindDec (t, id) -> string_of_typ t ^ " " ^ id
 | BindDot (struct_id, id1, e) -> struct_id ^ "."^ id1 ^ " = " ^ string_of_expr e
-| BindTemplatedDec (struct_id, t_list, id) ->  struct_id ^ " <" ^ String.concat ", " (List.map string_of_typ t_list) ^ "> " ^ id
-| BindTemplatedAssign (struct_id, t_list, id, e) -> struct_id ^ " <" ^ String.concat ", " (List.map string_of_typ t_list) ^ "> " ^ id ^ " = " ^ string_of_expr e
+| BindTemplatedDec (struct_id, t_list, id) ->  struct_id ^ " l@" ^ String.concat ", " (List.map string_of_typ t_list) ^ "r@ " ^ id
+| BindTemplatedAssign (struct_id, t_list, id, e) -> struct_id ^ " l@" ^ String.concat ", " (List.map string_of_typ t_list) ^ "r@ " ^ id ^ " = " ^ string_of_expr e
 | ListExplicit(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
 | SetExplicit (el) -> "{" ^ String.concat ", " (List.map string_of_expr el) ^ "}"
-| StructExplicit (el) -> "# " ^ String.concat ", " (List.map string_of_expr el) ^ " #"
+| StructExplicit (el) -> "l# " ^ String.concat ", " (List.map string_of_expr el) ^ " r#"
 | Noexpr -> ""
-
-(* let string_of_bind = function
-    BindDec(t, id) -> string_of_typ t ^ " " ^ id
-  | BindAssign(t, id, e) -> string_of_typ t ^ " " ^ id ^ " = " ^
-  string_of_expr e *)
 
 let rec string_of_stmt = function
     Block(stmts) ->
@@ -152,7 +152,7 @@ let rec string_of_stmt = function
 
 let template = function
     [] -> ""
-    | types -> "template <" ^ String.concat ", " (List.map (fun s -> s) types) ^ ">\n"
+    | types -> "template l@" ^ String.concat ", " (List.map (fun s -> s) types) ^ "r@\n"
 
 let string_of_fdecl fdecl =
   (template fdecl.fun_t_list) ^
