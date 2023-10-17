@@ -1,4 +1,4 @@
-template <T, hello>
+template @l T, hello @r
 int main(T x, hello y)
 {
 int a;
