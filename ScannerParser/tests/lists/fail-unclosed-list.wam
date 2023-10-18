@@ -1,0 +1,1 @@
+list @l string @r hello = ["Hello", ",", "World", "!", "\n";

@@ -1,0 +1,4 @@
+template @l 1, bool, string, int, bool @r struct dog {
+    int a;
+    bool b;
+};

@@ -1,0 +1,10 @@
+list @l Edge @r edges = [#l "a", "b" #r, #l "b", "c" #r, #l "c", "d" #r, #l "c", "b" #r, #l "d", "e" #r, #l "a", "e" #r, #l "e", "b" #r];
+set @l Edge @r traversed = {#l "a", "b" #r};
+for (edge in edges) {
+if (!edge Isin traversed)
+{
+print("Visited edge: " + to_str(edge) + "\n");
+traversed += edge;
+}
+}
+struct Edge { string from; string to;};

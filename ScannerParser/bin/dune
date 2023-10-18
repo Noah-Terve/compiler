@@ -1,0 +1,15 @@
+(executable
+ (public_name toplevel)
+ (name toplevel)
+ (libraries toplevel))
+
+
+(ocamllex scanner)
+
+(menhir
+  (modules parser))
+
+(env
+ (dev
+  (flags
+   (:standard -warn-error -A))))

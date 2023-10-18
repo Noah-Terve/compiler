@@ -1,0 +1,4 @@
+Graph myGraph = #l 2, 1, #l 0, 1 #r #r;
+struct Edge { int src; int dest;};
+
+struct Graph { int v; int e; list @l Edge @r edges;};

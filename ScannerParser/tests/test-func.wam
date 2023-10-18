@@ -1,0 +1,12 @@
+template @l T, hello @r
+int main(T x, hello y) {
+    int a;
+    T y;
+}
+int main () {
+    int a;
+}
+
+int main () {
+    int b;
+}

@@ -1,3 +1,6 @@
 .DS_Store
-_build/
-ScannerParser/_build/
+**/_build/
+parser.conflicts
+parser.automaton
+ScannerParser/testall.log
+ScannerParser/toplevel.opam

@@ -1,0 +1,13 @@
+template @l T @r
+struct my_struct {
+    T a;
+    T b;
+};
+
+my_struct @l int @r a = #l 4, 5 #r;
+a.a = 5;
+a.b = 6;
+
+a.a += b.b;
+
+print(a.a);
