@@ -1,2 +1,0 @@
-/* This is a comment, so even though 0abc is not a valid anything
-   in Wampus, it should not cause an error because it is commented out. */
