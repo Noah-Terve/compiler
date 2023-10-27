@@ -142,7 +142,7 @@ let check (globals, functions) =
                        string_of_typ t2 ^ " in " ^ string_of_expr e))
           in (ty, SBinop((t1, e1'), op, (t2, e2'))) *)
 
-      | Call(fname, args) as call -> 
+      (* | Call(fname, args) as call -> 
           let fd = find_func fname in
           let param_length = List.length fd.formals in
           if List.length args != param_length then
@@ -156,7 +156,20 @@ let check (globals, functions) =
             in (check_assign ft et err, e')
           in 
           let args' = List.map2 check_call fd.formals args
-          in (fd.typ, SCall(fname, args'))
+          in (fd.typ, SCall(fname, args')) *)
+        | TemplatedCall (fname, t_list, args) as call ->
+          let fd = find_func fname in
+          let template_length = List.length fd.fun_t_list in
+          if List.length t_list != template_length then
+            raise (Failure ("expecting " ^ string_of_int template_length ^ 
+                            " templates in " ^ string_of_expr call))
+          else let param_length = List.length fd.formals in
+          if List.length args != param_length then
+            raise (Failure ("expecting " ^ string_of_int param_length ^ 
+                            " arguments in " ^ string_of_expr call))
+          else let check_call(ft, tl, al) e = 
+
+
       | _  -> raise "Expr not handled yet"
     in
 
