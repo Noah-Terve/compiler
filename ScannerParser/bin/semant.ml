@@ -167,8 +167,12 @@ let check (globals, functions) =
           if List.length args != param_length then
             raise (Failure ("expecting " ^ string_of_int param_length ^ 
                             " arguments in " ^ string_of_expr call))
-          else let check_call(ft, tl, al) e = 
+          else
+          let t_ = List.fold_left2 (fun ft t map -> StringMap.add ft t map) StringMap.empty fd.fun_t_list t_list
 
+          (* args has to check the string map additionally *)
+
+          (* build a t list *)
 
       | _  -> raise "Expr not handled yet"
     in
