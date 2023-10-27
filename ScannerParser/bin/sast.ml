@@ -10,11 +10,21 @@ and sx =
   | SCharlit of char
   | SStringlit of string
   | SId of string
+  | SStructMem of string * string
   | SBinop of sexpr * op * sexpr
   | SUnop of uop * sexpr
   | SAssign of string * sexpr
   | SCall of string * sexpr list
-  | SNoexpr
+  | STemplatedCall of string * typ list * sexpr list
+  | SBindAssign of typ * string * sexpr
+  | SBindDec of typ * string
+  | SStructAssign of string * string * sexpr
+  | SBindTemplatedDec of string * typ list * string
+  | SBindTemplatedAssign of string * typ list * string * sexpr
+  | SListExplicit of sexpr list
+  | SSetExplicit of sexpr list
+  | SStructExplicit of sexpr list
+  | Noexpr
 
 type sstmt =
     SBlock of sstmt list
@@ -22,16 +32,26 @@ type sstmt =
   | SReturn of sexpr
   | SIf of sexpr * sstmt * sstmt
   | SFor of sexpr * sexpr * sexpr * sstmt
+  | SForEnhanced of sexpr * sexpr * sstmt
   | SWhile of sexpr * sstmt
+  | Continue
+  | Break
+  | NullStatement
 
 type sfunc_decl = {
-    styp : typ;
-    sfname : string;
-    sformals : bind list;
-    slocals : bind list;
-    sbody : sstmt list;
-  }
+  styp : typ;
+  sfname : string;
+  sformals : bind list;
+  slocals : bind list;
+  sbody : sstmt list;
+  sfun_t_list : string list;
+}
 
+type struct_decl = {
+  sname : string;
+  ssformals : bind list;
+  st_list : string list;
+}
 type sprogram = bind list * sfunc_decl list
 
 (* Pretty-printing functions *)
@@ -50,7 +70,8 @@ let rec string_of_sexpr (t, e) =
   | SCall(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
   | SNoexpr -> ""
-				  ) ^ ")"				     
+				  ) ^ ")"			
+  | _ -> "Not implemented"	     
 
 let rec string_of_sstmt = function
     SBlock(stmts) ->
@@ -65,6 +86,7 @@ let rec string_of_sstmt = function
       "for (" ^ string_of_sexpr e1  ^ " ; " ^ string_of_sexpr e2 ^ " ; " ^
       string_of_sexpr e3  ^ ") " ^ string_of_sstmt s
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
+  | _ -> "Not implemented"	
 
 let string_of_sfdecl fdecl =
   string_of_typ fdecl.styp ^ " " ^
