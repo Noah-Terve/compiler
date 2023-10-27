@@ -7,6 +7,8 @@ and sx =
     SLiteral of int
   | SFliteral of string
   | SBoolLit of bool
+  | SCharlit of char
+  | SStringlit of string
   | SId of string
   | SBinop of sexpr * op * sexpr
   | SUnop of uop * sexpr
