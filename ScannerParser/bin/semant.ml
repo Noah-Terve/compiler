@@ -40,14 +40,16 @@ let check (globals, functions) =
 
   (* Collect function declarations for built-in functions: no bodies *)
   let built_in_decls = 
-    let add_bind map (name, ty) = StringMap.add name {
-      typ = Int; fname = name; 
-      formals = [(ty, "x")];
-      body = []; fun_t_list = []; } map
+    let add_bind map(name, return_typ) = StringMap.add name {
+      typ = return_typ; fname = name; 
+      formals = [("T", "x")];
+      body = []; fun_t_list = ["T"]; } map
     in List.fold_left add_bind StringMap.empty [ ("print", Int);
-			                         ("printb", Bool);
-			                         ("printf", Float);
-			                         ("printbig", Int) ]
+                                                 ("println", Int);
+                                                 ("to_str", String);
+			                         (* ("printb", Bool); *)
+			                         (* ("printf", Float); *)
+			                         (* ("printbig", Int) *) ]
   in
 
   (* Add function name to symbol table *)
@@ -147,6 +149,7 @@ let check (globals, functions) =
             raise (Failure ("expecting " ^ string_of_int param_length ^ 
                             " arguments in " ^ string_of_expr call))
           else let check_call (ft, _) e = 
+            (* Ensure that templated calls work here *)
             let (et, e') = expr e in 
             let err = "illegal argument found " ^ string_of_typ et ^
               " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e
