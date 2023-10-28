@@ -167,8 +167,9 @@ let check (globals, functions) =
           if List.length args != param_length then
             raise (Failure ("expecting " ^ string_of_int param_length ^ 
                             " arguments in " ^ string_of_expr call))
-          else
-          let t_ = List.fold_left2 (fun ft t map -> StringMap.add ft t map) StringMap.empty fd.fun_t_list t_list
+          (* Creating a template string : type  map *)
+          else let t_ = List.fold_left2 (fun ft t map -> StringMap.add ft t map) StringMap.empty fd.fun_t_list t_list in
+
 
           (* args has to check the string map additionally *)
 
