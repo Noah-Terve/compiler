@@ -40,13 +40,22 @@ let check (globals, functions) =
 
   (* Collect function declarations for built-in functions: no bodies *)
   let built_in_decls = 
+    let add_bind map (name, ty) = StringMap.add name {
+      typ = Void; fname = name; 
+      formals = [(ty, "x")];
+      locals = []; body = [] } map
+    in List.fold_left add_bind StringMap.empty [ ("print", Int);
+			                         ("printb", Bool);
+			                         ("printf", Float);
+			                         ("printbig", Int) ]
+  (* let built_in_decls = 
     let add_bind map(name, return_typ) = StringMap.add name {
       typ = return_typ; fname = name; 
       formals = [("T", "x")];
       body = []; fun_t_list = ["T"]; } map
     in List.fold_left add_bind StringMap.empty [ ("print", Int);
                                                  ("println", Int);
-                                                 ("to_str", String);
+                                                 ("to_str", String); *)
 			                         (* ("printb", Bool); *)
 			                         (* ("printf", Float); *)
 			                         (* ("printbig", Int) *) ]
@@ -142,7 +151,7 @@ let check (globals, functions) =
                        string_of_typ t2 ^ " in " ^ string_of_expr e))
           in (ty, SBinop((t1, e1'), op, (t2, e2'))) *)
 
-      (* | Call(fname, args) as call -> 
+      | Call(fname, args) as call -> 
           let fd = find_func fname in
           let param_length = List.length fd.formals in
           if List.length args != param_length then
@@ -156,8 +165,8 @@ let check (globals, functions) =
             in (check_assign ft et err, e')
           in 
           let args' = List.map2 check_call fd.formals args
-          in (fd.typ, SCall(fname, args')) *)
-        | TemplatedCall (fname, t_list, args) as call ->
+          in (fd.typ, SCall(fname, args'))
+        (* | TemplatedCall (fname, t_list, args) as call ->
           let fd = find_func fname in
           let template_length = List.length fd.fun_t_list in
           if List.length t_list != template_length then
@@ -169,10 +178,12 @@ let check (globals, functions) =
                             " arguments in " ^ string_of_expr call))
           (* Creating a template string : type  map *)
           else let t_ = List.fold_left2 (fun ft t map -> StringMap.add ft t map) StringMap.empty fd.fun_t_list t_list in
-
-
           (* args has to check the string map additionally *)
-
+          let check_args (ft, _ ) a s = 
+            let (et, e') = expr e in
+            let err = "illegal argument found " ^ string_of_typ et ^
+              " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e
+          in  *)
           (* build a t list *)
 
       | _  -> raise "Expr not handled yet"
