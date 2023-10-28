@@ -43,7 +43,7 @@ let check (globals, functions) =
     let add_bind map (name, ty) = StringMap.add name {
       typ = Void; fname = name; 
       formals = [(ty, "x")];
-      locals = []; body = [] } map
+      body = []; fun_t_list = []; } map
     in List.fold_left add_bind StringMap.empty [ ("print", Int);
 			                         ("printb", Bool);
 			                         ("printf", Float);
@@ -153,7 +153,10 @@ let check (globals, functions) =
 
       | Call(fname, args) as call -> 
           let fd = find_func fname in
-          let param_length = List.length fd.formals in
+          let t_len = List.length fd.fun_t_list in
+          if t_len != 0 then
+            raise (Failure ("expecting " ^ string_of_int t_len ^ " template arguments in call to " ^ fd.name))
+          else let param_length = List.length fd.formals in
           if List.length args != param_length then
             raise (Failure ("expecting " ^ string_of_int param_length ^ 
                             " arguments in " ^ string_of_expr call))
