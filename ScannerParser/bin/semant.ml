@@ -14,11 +14,10 @@ let check (units) =
 
   (* Check if a certain kind of binding has void type or is a duplicate
      of another, previously checked binding *)
-  let check_binds (kind : string) (to_check : bind list) = 
+  (* let check_binds (kind : string) (to_check : bind list) = 
     let name_compare (_, n1) (_, n2) = compare n1 n2 in
     let check_it checked binding = 
-      let void_err = "illegal void " ^ kind ^ " " ^ snd binding
-      and dup_err = "duplicate " ^ kind ^ " " ^ snd binding
+      let dup_err = "duplicate " ^ kind ^ " " ^ snd binding
       in match binding with
         (* No void bindings *)
         (* (Void, _) -> raise (Failure void_err) *)
@@ -29,7 +28,7 @@ let check (units) =
 
     in let _ = List.fold_left check_it [] (List.sort name_compare to_check) 
        in to_check
-  in 
+  in  *)
 
   (**** Checking Global Variables ****)
 
@@ -79,7 +78,7 @@ let check (units) =
   
   (* Return a function from our symbol table *)
   let find_func s = 
-    try StringMap.find s function_decls
+    try StringMap.find s built_in_decls
     with Not_found -> raise (Failure ("unrecognized function " ^ s))
   in
 
@@ -113,7 +112,7 @@ let check (units) =
         Literal  l -> (Int, SLiteral l)
       | Fliteral l -> (Float, SFliteral l)
       | BoolLit l  -> (Bool, SBoolLit l)
-      | Charlit l -> (Char, SCharlit l)
+      | CharLit l -> (Char, SCharlit l)
       | StringLit l -> (String, SStringlit l)
       (* | Noexpr     -> (Void, SNoexpr)
       | Id s       -> (type_of_identifier s, SId s)
@@ -155,7 +154,7 @@ let check (units) =
           let fd = find_func fname in
           let t_len = List.length fd.fun_t_list in
           if t_len != 0 then
-            raise (Failure ("expecting " ^ string_of_int t_len ^ " template arguments in call to " ^ fd.name))
+            raise (Failure ("expecting " ^ string_of_int t_len ^ " template arguments in call to " ^ fd.fname))
           else let param_length = List.length fd.formals in
           if List.length args != param_length then
             raise (Failure ("expecting " ^ string_of_int param_length ^ 
@@ -189,7 +188,7 @@ let check (units) =
           in  *)
           (* build a t list *)
 
-      | _  -> raise "Expr not handled yet"
+      | _  -> raise (Failure "Expr not handled yet")
     in
 
     (* let check_bool_expr e = 
@@ -199,9 +198,9 @@ let check (units) =
     in *)
 
     (* Return a semantically-checked statement i.e. containing sexprs *)
-    let rec check_stmt = function
+    let check_stmt = function
         Expr e -> SExpr (expr e)
-      | _ -> raise "Unhandled statement"
+      | _ -> raise (Failure "Unhandled statement")
       (* | If(p, b1, b2) -> SIf(check_bool_expr p, check_stmt b1, check_stmt b2)
       | For(e1, e2, e3, st) ->
 	  SFor(expr e1, check_bool_expr e2, expr e3, check_stmt st)
@@ -235,8 +234,10 @@ let check (units) =
       in raise (Failure err)
     } *)
     in
-    let rec check_units u = function
-      Stmt s -> SStmt(check_stmt s)
-    | Fdecl f -> raise "Unimplemented functions"
-    | Sdecl st -> raise "Unimplemented structs"
-  in (List.fold_left check_units [] units)
+    let check_units = function
+      Stmt(s) -> SStmt(check_stmt s)
+    | _ -> raise (Failure "Unimplemented units")
+
+    (* | Fdecl(f) -> raise (Failure "Unimplemented functions")
+    | Sdecl(st) -> raise (Failure "Unimplemented structs") *)
+  in (List.map check_units units)
