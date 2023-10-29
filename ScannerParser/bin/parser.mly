@@ -44,13 +44,22 @@ open Ast
 %%
 
 program:
-  decls EOF { $1 }
+  decls EOF { List.rev $1 }
 
 decls:
-   /* nothing */ { ([], ([], [])) }
+    /* nothing */ { [] }
+  | decls p_unit { $2 :: $1 }
+
+p_unit:
+    stmt { Stmt($1) }
+  | fdecl { Fdecl($1) }
+  | sdecl { Sdecl($1) }
+
+/* decls:
+   nothing { ([], ([], [])) }
  | decls stmt { ((fst $1 @ [$2]), (fst (snd $1), snd (snd $1))) }
  | decls fdecl { (fst $1, ((fst (snd $1) @ [$2] ), snd (snd $1))) }
- | decls sdecl { (fst $1, (fst (snd $1), (snd (snd $1) @ [$2]))) }
+ | decls sdecl { (fst $1, (fst (snd $1), (snd (snd $1) @ [$2]))) } */
 
 fdecl:
    typ ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE

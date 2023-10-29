@@ -1,0 +1,13 @@
+int a = 5;
+
+struct s {
+    int a;
+    int b;
+};
+
+string func () {
+    return "Hello world";
+}
+
+char l = '4';
+

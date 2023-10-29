@@ -64,7 +64,14 @@ type struct_decl = {
   sformals : bind list;
   t_list : string list;
 }
-type program = stmt list * (func_decl list * struct_decl list)
+
+type prog_unit = 
+    Stmt of stmt
+  | Fdecl of func_decl
+  | Sdecl of struct_decl
+
+type program = prog_unit list
+(* type program = stmt list * (func_decl list * struct_decl list) *)
 
 (* Pretty-printing functions *)
 
@@ -166,7 +173,17 @@ let string_of_fdecl fdecl =
 let string_of_sdecl sdecl = 
   (template sdecl.t_list) ^ "struct " ^ sdecl.name ^ " { " ^ String.concat "; " (List.map (fun (t, s) -> string_of_typ t ^ " " ^ s) sdecl.sformals) ^ ";};\n"
 
-let string_of_program (stmts, (funcs, structs)) =
+
+let string_of_unit = function
+    Stmt(stmt) -> string_of_stmt stmt
+  | Fdecl(fdecl) -> string_of_fdecl fdecl
+  | Sdecl(sdecl) -> string_of_sdecl sdecl
+
+let rec string_of_program = function
+    [] -> ""
+  | e :: rest -> (string_of_unit e) ^ (string_of_program rest)
+  
+(* let string_of_program (stmts, (funcs, structs)) =
   String.concat "" (List.map string_of_stmt stmts)  ^
   String.concat "\n" (List.map string_of_fdecl funcs) ^
-  String.concat "\n" (List.map string_of_sdecl structs)
+  String.concat "\n" (List.map string_of_sdecl structs) *)
