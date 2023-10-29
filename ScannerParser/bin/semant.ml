@@ -10,7 +10,7 @@ module StringMap = Map.Make(String)
 
    Check each global variable, then check each function *)
 
-let check (globals, functions) =
+let check (units) =
 
   (* Check if a certain kind of binding has void type or is a duplicate
      of another, previously checked binding *)
@@ -201,7 +201,7 @@ let check (globals, functions) =
     (* Return a semantically-checked statement i.e. containing sexprs *)
     let rec check_stmt = function
         Expr e -> SExpr (expr e)
-      | _ -> "Unhandled statement"
+      | _ -> raise "Unhandled statement"
       (* | If(p, b1, b2) -> SIf(check_bool_expr p, check_stmt b1, check_stmt b2)
       | For(e1, e2, e3, st) ->
 	  SFor(expr e1, check_bool_expr e2, expr e3, check_stmt st)
@@ -234,4 +234,9 @@ let check (globals, functions) =
       | _ -> let err = "internal error: block didn't become a block?"
       in raise (Failure err)
     } *)
-  in (globals', List.map check_function functions)
+    in
+    let rec check_units u = function
+      Stmt s -> sStmt(check_stmt s)
+    | Functions f -> raise "Unimplemented functions"
+    | Structs st -> raise "Unimplemented structs"
+  in (List.fold_left check_units [] units)
