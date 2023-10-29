@@ -24,7 +24,7 @@ and sx =
   | SListExplicit of sexpr list
   | SSetExplicit of sexpr list
   | SStructExplicit of sexpr list
-  | Noexpr
+  | SNoexpr
 
 type sstmt =
     SBlock of sstmt list
@@ -34,9 +34,9 @@ type sstmt =
   | SFor of sexpr * sexpr * sexpr * sstmt
   | SForEnhanced of sexpr * sexpr * sstmt
   | SWhile of sexpr * sstmt
-  | Continue
-  | Break
-  | NullStatement
+  | SContinue
+  | SBreak
+  | SNullStatement
 
 type sfunc_decl = {
   styp : typ;
@@ -47,7 +47,7 @@ type sfunc_decl = {
   sfun_t_list : string list;
 }
 
-type struct_decl = {
+type sstruct_decl = {
   sname : string;
   ssformals : bind list;
   st_list : string list;
