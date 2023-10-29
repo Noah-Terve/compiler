@@ -21,7 +21,7 @@ let check (globals, functions) =
       and dup_err = "duplicate " ^ kind ^ " " ^ snd binding
       in match binding with
         (* No void bindings *)
-        (Void, _) -> raise (Failure void_err)
+        (* (Void, _) -> raise (Failure void_err) *)
       | (_, n1) -> match checked with
                     (* No duplicate bindings *)
                       ((_, n2) :: _) when n1 = n2 -> raise (Failure dup_err)
@@ -33,7 +33,7 @@ let check (globals, functions) =
 
   (**** Checking Global Variables ****)
 
-  let globals' = check_binds "global" globals in
+  (* let globals' = check_binds "global" globals in *)
 
   (**** Checking Functions ****)
 
@@ -62,7 +62,7 @@ let check (globals, functions) =
   in
 
   (* Add function name to symbol table *)
-  let add_func map fd = 
+  (* let add_func map fd = 
     let built_in_err = "function " ^ fd.fname ^ " may not be defined"
     and dup_err = "duplicate function " ^ fd.fname
     and make_err er = raise (Failure er)
@@ -71,11 +71,11 @@ let check (globals, functions) =
          _ when StringMap.mem n built_in_decls -> make_err built_in_err
        | _ when StringMap.mem n map -> make_err dup_err  
        | _ ->  StringMap.add n fd map 
-  in
+  in *)
 
   (* Collect all other function names into one symbol table *)
-  let function_decls = List.fold_left add_func built_in_decls functions
-  in
+  (* let function_decls = List.fold_left add_func built_in_decls functions
+  in *)
   
   (* Return a function from our symbol table *)
   let find_func s = 
@@ -83,12 +83,12 @@ let check (globals, functions) =
     with Not_found -> raise (Failure ("unrecognized function " ^ s))
   in
 
-  let _ = find_func "main" in (* Ensure "main" is defined *)
+  (* let _ = find_func "main" in Ensure "main" is defined *)
 
-  let check_function func =
+  (* let check_function func =
     (* Make sure no formals or locals are void or duplicates *)
     let formals' = check_binds "formal" func.formals in
-    let locals' = check_binds "local" func.locals in
+    let locals' = check_binds "local" func.locals in *)
 
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
@@ -97,7 +97,7 @@ let check (globals, functions) =
     in   
 
     (* Build local symbol table of variables for this function *)
-    let symbols = List.fold_left (fun m (ty, name) -> StringMap.add name ty m)
+    (* let symbols = List.fold_left (fun m (ty, name) -> StringMap.add name ty m)
 	                StringMap.empty (globals' @ formals' @ locals' )
     in
 
@@ -105,7 +105,7 @@ let check (globals, functions) =
     let type_of_identifier s =
       try StringMap.find s symbols
       with Not_found -> raise (Failure ("undeclared identifier " ^ s))
-    in
+    in *)
 
 
     (* Return a semantically-checked expression, i.e., with a type *)
@@ -192,11 +192,11 @@ let check (globals, functions) =
       | _  -> raise "Expr not handled yet"
     in
 
-    let check_bool_expr e = 
+    (* let check_bool_expr e = 
       let (t', e') = expr e
       and err = "expected Boolean expression in " ^ string_of_expr e
       in if t' != Bool then raise (Failure err) else (t', e') 
-    in
+    in *)
 
     (* Return a semantically-checked statement i.e. containing sexprs *)
     let rec check_stmt = function
@@ -224,7 +224,7 @@ let check (globals, functions) =
           in SBlock(check_stmt_list sl) *)
 
 
-    in (* body of check_function *)
+    (* in (* body of check_function *)
     { styp = func.typ;
       sfname = func.fname;
       sformals = formals';
@@ -233,5 +233,5 @@ let check (globals, functions) =
 	SBlock(sl) -> sl
       | _ -> let err = "internal error: block didn't become a block?"
       in raise (Failure err)
-    }
+    } *)
   in (globals', List.map check_function functions)
