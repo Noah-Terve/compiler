@@ -54,9 +54,9 @@ type sstruct_decl = {
 }
 
 type sunit_program = 
-    sStmt of sstmt
-  | sFunc of sfunc_decl
-  | sStruct of sstruct_decl
+    SStmt of sstmt
+  | SFdecl of sfunc_decl
+  | SSdecl of sstruct_decl
 
 type sprogram = sunit_program list
 
@@ -76,8 +76,8 @@ let rec string_of_sexpr (t, e) =
   | SCall(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
   | SNoexpr -> ""
-				  ) ^ ")"			
   | _ -> "Not implemented"	     
+				  ) ^ ")"			
 
 let rec string_of_sstmt = function
     SBlock(stmts) ->
@@ -94,14 +94,22 @@ let rec string_of_sstmt = function
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | _ -> "Not implemented"	
 
-let string_of_sfdecl fdecl =
+(* let string_of_sfdecl fdecl =
   string_of_typ fdecl.styp ^ " " ^
   fdecl.sfname ^ "(" ^ String.concat ", " (List.map snd fdecl.sformals) ^
   ")\n{\n" ^
   String.concat "" (List.map string_of_vdecl fdecl.slocals) ^
   String.concat "" (List.map string_of_sstmt fdecl.sbody) ^
-  "}\n"
+  "}\n" *)
 
-let string_of_sprogram (vars, funcs) =
-  String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^
-  String.concat "\n" (List.map string_of_sfdecl funcs)
+let string_of_sunit = function
+   SStmt(stmt) -> string_of_sstmt stmt
+  | SFdecl(fdecl) -> "Not implemented"
+  | SSdecl(sdecl) -> "Not implemented"
+
+let rec string_of_sprogram = function 
+  [] -> ""
+  | e :: rest -> (string_of_sunit e) ^ (string_of_sprogram rest)
+  (* String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^ *)
+  (* String.concat "\n" (List.map string_of_units u) *)
+  (* String.concat "\n" (List.map string_of_sfdecl funcs) *)

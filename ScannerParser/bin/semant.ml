@@ -41,7 +41,7 @@ let check (units) =
   (* Collect function declarations for built-in functions: no bodies *)
   let built_in_decls = 
     let add_bind map (name, ty) = StringMap.add name {
-      typ = Void; fname = name; 
+      typ = Int; fname = name; 
       formals = [(ty, "x")];
       body = []; fun_t_list = []; } map
     in List.fold_left add_bind StringMap.empty [ ("print", Int);
@@ -58,7 +58,7 @@ let check (units) =
                                                  ("to_str", String); *)
 			                         (* ("printb", Bool); *)
 			                         (* ("printf", Float); *)
-			                         (* ("printbig", Int) *) ]
+			                         (* ("printbig", Int) *)
   in
 
   (* Add function name to symbol table *)
@@ -236,7 +236,7 @@ let check (units) =
     } *)
     in
     let rec check_units u = function
-      Stmt s -> sStmt(check_stmt s)
-    | Func f -> raise "Unimplemented functions"
-    | Struct st -> raise "Unimplemented structs"
+      Stmt s -> SStmt(check_stmt s)
+    | Fdecl f -> raise "Unimplemented functions"
+    | Sdecl st -> raise "Unimplemented structs"
   in (List.fold_left check_units [] units)
