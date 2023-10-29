@@ -237,6 +237,6 @@ let check (units) =
     in
     let rec check_units u = function
       Stmt s -> sStmt(check_stmt s)
-    | Functions f -> raise "Unimplemented functions"
-    | Structs st -> raise "Unimplemented structs"
+    | Func f -> raise "Unimplemented functions"
+    | Struct st -> raise "Unimplemented structs"
   in (List.fold_left check_units [] units)

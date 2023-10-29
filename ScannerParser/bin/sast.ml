@@ -52,7 +52,13 @@ type sstruct_decl = {
   ssformals : bind list;
   st_list : string list;
 }
-type sprogram = bind list * sfunc_decl list
+
+type sunit_program = 
+    sStmt of sstmt
+  | sFunc of sfunc_decl
+  | sStruct of sstruct_decl
+
+type sprogram = sunit_program list
 
 (* Pretty-printing functions *)
 
