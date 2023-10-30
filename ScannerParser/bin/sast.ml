@@ -104,8 +104,9 @@ let rec string_of_sstmt = function
 
 let string_of_sunit = function
    SStmt(stmt) -> string_of_sstmt stmt
-  | SFdecl(fdecl) -> "Not implemented"
-  | SSdecl(sdecl) -> "Not implemented"
+  | _ ->  "Not Implemented" 
+  (* | SFdecl(fdecl) -> "Not implemented"
+  | SSdecl(sdecl) -> "Not implemented" *)
 
 let rec string_of_sprogram = function 
   [] -> ""
