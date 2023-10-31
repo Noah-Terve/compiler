@@ -23,7 +23,7 @@ module StringMap = Map.Make(String)
    throws an exception if something is wrong. *)
 let translate program =
   let functions = List.fold_left (fun acc unit -> match unit with 
-      A.Fdecl func -> func :: acc 
+      SFdecl func -> func :: acc 
       | _ -> acc) [] program in
   let context    = L.global_context () in
   (* Add types to the context so we can use them in our LLVM code *)
