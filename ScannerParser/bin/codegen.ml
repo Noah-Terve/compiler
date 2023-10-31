@@ -22,9 +22,12 @@ module StringMap = Map.Make(String)
 (* Code Generation from the SAST. Returns an LLVM module if successful,
    throws an exception if something is wrong. *)
 let translate program =
-  let functions = List.fold_left (fun acc unit -> match unit with 
+  let main_function = List.fold_left (fun acc units -> match units with 
+    A.SSDecl struc -> struc :: acc 
+    | _ -> acc) [] program in
+  let functions = List.fold_left (fun acc units -> match units with 
       A.Fdecl func -> func :: acc 
-      | _ -> acc) [] program in
+      | _ -> acc) [main_function] program in
   let context    = L.global_context () in
   (* Add types to the context so we can use them in our LLVM code *)
     let i32_t      = L.i32_type    context
