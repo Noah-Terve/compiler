@@ -15,19 +15,25 @@ http://llvm.moe/ocaml/
 (* We'll refer to Llvm and Ast constructs with module names *)
 module L = Llvm
 module A = Ast
-open Sast 
+open Sast
 
 module StringMap = Map.Make(String)
 
 (* Code Generation from the SAST. Returns an LLVM module if successful,
    throws an exception if something is wrong. *)
 let translate program =
-  let main_function = List.fold_left (fun acc units -> match units with 
-    A.SSDecl struc -> struc :: acc 
-    | _ -> acc) [] program in
-  let functions = List.fold_left (fun acc units -> match units with 
-      A.Fdecl func -> func :: acc 
-      | _ -> acc) [main_function] program in
+  let main_function = 
+    { styp : Int;
+      sfname : "main";
+      sformals : [];
+      slocals : [];
+      sbody : List.rev (List.fold_left (fun acc units -> match units with 
+                                SStmt struc -> struc :: acc 
+                                | _ -> acc) [] program);
+      sfun_t_list : []} in
+  let functions = List.rev (List.fold_left (fun acc units -> match units with 
+      SFdecl func -> func :: acc 
+    | _ -> acc) [main_function] program) in
   let context    = L.global_context () in
   (* Add types to the context so we can use them in our LLVM code *)
     let i32_t      = L.i32_type    context
@@ -187,7 +193,7 @@ let translate program =
     let add_terminal builder instr =
                            (* The current block where we're inserting instr *)
       match L.block_terminator (L.insertion_block builder) with
-	Some _ -> ()
+	      Some _ -> ()
       | None -> ignore (instr builder) in
 	
     (* Build the code for the given statement; return the builder for
