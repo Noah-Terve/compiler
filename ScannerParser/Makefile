@@ -15,6 +15,9 @@ test: all testall.sh
 clean:
 	dune clean
 	rm -rf testall.log *.diff toplevel.opam
+	rm *.s
+	rm *.ll
+	rm *.out
 
 .PHONY: fail-%
 fail-%: all $(TESTDIR)/fail-%.wam
