@@ -1,4 +1,10 @@
 (library
- (name toplevel)
- (libraries llvm llvm.analysis))
+  (name toplevel)
+  (libraries llvm llvm.analysis))
 
+; (rule
+;   (targets test/ast/%.out)
+;   (deps
+;     (alias toplevel)
+
+;   )

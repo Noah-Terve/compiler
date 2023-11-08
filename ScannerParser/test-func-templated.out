@@ -1,8 +1,0 @@
-template @l T, T2 @r
-T2 complicated_print(T a, T2 b)
-{
-print@l T @r  (a);
-return b;
-}
-string s = "Hello, world!";
-int i = complicated_print@l string, int @r  (s, 5);
