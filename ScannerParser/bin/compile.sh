@@ -37,13 +37,26 @@ name=$(basename "${wam_file%.*}")
 TARGET_DIR="$(dirname "$exe_file")"
 
 # Make the wampus compiler
+echo "Building compiler:"
 make -C "$HOME_DIR"
+echo ""
 
 # Compile the wampus file to llvm
+echo "Compiling to llvm:"
+echo "$WAMPUS $wam_file > $TARGET_DIR/$name.ll"
 "$WAMPUS" "$wam_file" > "$TARGET_DIR/$name.ll"
+echo ""
 
 # Compile the llvm file to assembly
+echo "Compiling llvm to assembly:"
+echo "$LLC -relocation-model=pic $TARGET_DIR/$name.ll -o $TARGET_DIR/$name.s"
 "$LLC" -relocation-model=pic "$TARGET_DIR/$name.ll" -o "$TARGET_DIR/$name.s"
+echo ""
 
 # Compile the assembly file to an executable
+echo "Compiling assembly into an executable:"
+echo "$CC -O2 $TARGET_DIR/$name.s -o $exe_file"
 "$CC" -O2 "$TARGET_DIR/$name.s" -o "$exe_file"
+echo ""
+echo "Run your the program with:"
+echo "./$exe_file"

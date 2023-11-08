@@ -91,7 +91,10 @@ let translate program =
     (* Construct the function's "locals": formal arguments and locally
        declared variables.  Allocate each on the stack, initialize their
        value, if appropriate, and remember their values in the "locals" map *)
-    let local_vars =
+    (* THIS LINE NEEDS TO BE UNCOMMENTED TO ADD BACK IN LOCAL VARS
+       NOT NEEDED NOW, REMOVING TO REMOVE UNUSED VAR WARNING
+       let local_vars = *)
+    let _ =
       let add_formal m (t, n) p = 
         let () = L.set_value_name n p in
 	        let local = L.build_alloca (ltype_of_typ t) n builder in
@@ -102,13 +105,12 @@ let translate program =
       (* Allocate space for any locally declared variables and add the
        * resulting registers to our map *)
       let add_local m (t, n) =
-	let local_var = L.build_alloca (ltype_of_typ t) n builder
-	in StringMap.add n local_var m in
+	    let local_var = L.build_alloca (ltype_of_typ t) n builder
+	      in StringMap.add n local_var m in
 
       let formals = List.fold_left2 add_formal StringMap.empty fdecl.sformals
           (Array.to_list (L.params the_function)) in
-      List.fold_left add_local formals fdecl.slocals 
-    in
+      List.fold_left add_local formals fdecl.slocals in
 
     (* Return the value for a variable or formal argument. First check
      * locals, then globals *)

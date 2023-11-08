@@ -8,11 +8,16 @@ Noah Tervalon - noah.tervalon@tufts.edu
 To just compile our compiler run:
     > `make`
 
-To compile and execute our compiler you can run the following:
-    > `dune exec toplevel [program_name]`
+Given a single source file written in your language, run your compiler on that file to generate
+the executable and any intermediary files generated along the way.
+
+To run our compiler on a source file written in our language, and generate all
+intermediate files generated, run:
+    > `./bin/compile.sh [.wam file] [executable name]`
 
 To run all the tests and see the status of each, use:
     > `make test`.
+You can then see the sepcific results of all tests in the generated file: `testall.log`
 
 You can use the `testall.sh` script for more fine-grain control. Running with
 `-h` will give the help menu, where you can get more info. Running with no
@@ -20,7 +25,19 @@ options and no test files will test all of our cases. Specifying a test file
 will run only that test.
     > `./testall.sh [options] [.wam files]`
 
+how your test script
+validates that a compiled program is correct or that an invalid program couldn’t be compiled. 
+
+Testing:
+Our testing script validates that a program is correct by comparing the results
+of running a test to a golden standard which we have created. For tests that are
+supposed to pass they are .out files of the same name as the test. We validate
+that a program that couldn't be compiled actually can't by comparing it to the
+error that it is supposed to raise, which we have generated and stored in a
+.err file. The two test files we have included exemplify both of these options,
+one passing and one failing.
+    /tests/exec/test-print_int.wam - a simple file that prints 123
+    /tests/exec/fail-print_int.wam - a file that tries to call print but gives it a bad argument
+
 Things we still need to add to our compiler:
-    As it stands our compiler prints statements first, then the functions and
-    then the structs. This is purely an ordering issue, and will be resolved
-    in the future.
+   Functionality of all things except print and basic types.
