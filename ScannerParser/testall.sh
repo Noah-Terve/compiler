@@ -7,10 +7,15 @@
 
 # Try "_build/wampus.native" if ocamlbuild was unable to create a symbolic link.
 WAMPUS="toplevel"
+LLC="llc"
+CC="cc"
 #WAMPUS="_build/wampus.native"
 
 # Set time limit for all operations
 ulimit -t 30
+
+OUTPUT_DIR="out"
+mkdir -p $OUTPUT_DIR
 
 globallog=testall.log
 rm -f $globallog
@@ -80,9 +85,14 @@ Check() {
 
     generatedfiles=""
 
-    generatedfiles="$generatedfiles ${basename}.out ${basename}.diff" &&
-    Run "dune exec $WAMPUS" "$1" ">" "${basename}.out" &&
-    Compare ${basename}.out ${reffile}.out ${basename}.diff
+    output_path="$OUTPUT_DIR/$basename"
+
+    generatedfiles="$generatedfiles ${output_path}.ll ${output_path}.s ${output_path}.exe ${output_path}.out" &&
+    Run "dune exec $WAMPUS" "$1" ">" "${output_path}.ll" &&
+    Run "$LLC" "-relocation-model=pic" "${output_path}.ll" ">" "${output_path}.s" &&
+    Run "$CC" "-o" "${output_path}.exe" "${output_path}.s" &&
+    Run "./${output_path}.exe" > "${output_path}.out" &&
+    Compare ${output_path}.out ${reffile}.out ${output_path}.diff
 
     # Report the status and clean up the generated files
 
@@ -112,9 +122,11 @@ CheckFail() {
 
     generatedfiles=""
 
-    generatedfiles="$generatedfiles ${basename}.err ${basename}.diff" &&
-    RunFail "dune exec $WAMPUS" "<" $1 "2>" "${basename}.err" ">>" $globallog &&
-    Compare ${basename}.err ${reffile}.err ${basename}.diff
+    output_path="$OUTPUT_DIR/$basename"
+
+    generatedfiles="$generatedfiles ${output_path}.err ${output_path}.diff" &&
+    RunFail "dune exec $WAMPUS" "<" $1 "2>" "${output_path}.err" ">>" $globallog &&
+    Compare ${output_path}.err ${reffile}.err ${output_path}.diff
 
     # Report the status and clean up the generated files
 
@@ -152,7 +164,7 @@ else
 
     # Files include any test-*.wam and fail-*.wam file in tests/ or any
     # of its subdirectories.
-    files=`find tests -name 'test-*.wam' -o -name 'fail-*.wam'`
+    files=`find test/exec -name 'test-*.wam' -o -name 'fail-*.wam'`
 fi
 
 for file in $files
