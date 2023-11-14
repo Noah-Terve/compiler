@@ -161,13 +161,14 @@ let translate program =
 	  | A.Geq     -> L.build_icmp L.Icmp.Sge
     | _ -> raise (Failure "not implemeneted yet")
 	  ) e1' e2' "tmp" builder
+    *)
       | SUnop(op, e) ->
 	  let (t, _) = e in
           let e' = expr builder e in
 	  (match op with
 	    A.Neg when t = A.Float -> L.build_fneg 
 	  | A.Neg                  -> L.build_neg
-          | A.Not                  -> L.build_not) e' "tmp" builder *)
+          | A.Not                  -> L.build_not) e' "tmp" builder
     | SCall ("print", [e]) | SCall ("printb", [e]) ->
       L.build_call printf_func [| int_format_str ; (expr builder e) |]
                     "printf" builder
