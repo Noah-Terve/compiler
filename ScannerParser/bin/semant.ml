@@ -130,7 +130,6 @@ let check (units) =
                                  string_of_uop op ^ string_of_typ t ^
                                  " in " ^ string_of_expr ex))
           in (ty, SUnop(op, (t, e')))
-      (*
       | Binop(e1, op, e2) as e -> 
           let (t1, e1') = expr e1 
           and (t2, e2') = expr e2 in
@@ -148,8 +147,7 @@ let check (units) =
 	      Failure ("illegal binary operator " ^
                        string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
                        string_of_typ t2 ^ " in " ^ string_of_expr e))
-          in (ty, SBinop((t1, e1'), op, (t2, e2'))) *)
-
+          in (ty, SBinop((t1, e1'), op, (t2, e2')))
       | Call(fname, args) as call -> 
           let fd = find_func fname in
           let t_len = List.length fd.fun_t_list in

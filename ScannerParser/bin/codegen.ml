@@ -127,41 +127,41 @@ let translate program =
       | SId s -> L.build_load (lookup s) s builder
       | SAssign (s, e) -> let e' = expr builder e in
                           let _  = L.build_store e' (lookup s) builder in e'
+      *)
       | SBinop (e1, op, e2) ->
 	  let (t, _) = e1
 	  and e1' = expr builder e1
 	  and e2' = expr builder e2 in
-	  if t = A.Float then (match op with 
-	    A.Add     -> L.build_fadd
-	  | A.Sub     -> L.build_fsub
-	  | A.Mult    -> L.build_fmul
-	  | A.Div     -> L.build_fdiv 
-	  | A.Equal   -> L.build_fcmp L.Fcmp.Oeq
-	  | A.Neq     -> L.build_fcmp L.Fcmp.One
-	  | A.Less    -> L.build_fcmp L.Fcmp.Olt
-	  | A.Leq     -> L.build_fcmp L.Fcmp.Ole
-	  | A.Greater -> L.build_fcmp L.Fcmp.Ogt
-	  | A.Geq     -> L.build_fcmp L.Fcmp.Oge
-	  | A.And | A.Or ->
-	      raise (Failure "internal error: semant should have rejected and/or on float")
-	  | _ -> raise (Failure "not implemented yet")
-      ) e1' e2' "tmp" builder 
-	  else (match op with
-	  | A.Add     -> L.build_add
-	  | A.Sub     -> L.build_sub
-	  | A.Mult    -> L.build_mul
-          | A.Div     -> L.build_sdiv
-	  | A.And     -> L.build_and
-	  | A.Or      -> L.build_or
-	  | A.Equal   -> L.build_icmp L.Icmp.Eq
-	  | A.Neq     -> L.build_icmp L.Icmp.Ne
-	  | A.Less    -> L.build_icmp L.Icmp.Slt
-	  | A.Leq     -> L.build_icmp L.Icmp.Sle
-	  | A.Greater -> L.build_icmp L.Icmp.Sgt
-	  | A.Geq     -> L.build_icmp L.Icmp.Sge
-    | _ -> raise (Failure "not implemeneted yet")
-	  ) e1' e2' "tmp" builder
-    *)
+      if t = A.Float then (match op with 
+        A.Add     -> L.build_fadd
+      | A.Sub     -> L.build_fsub
+      | A.Mult    -> L.build_fmul
+      | A.Div     -> L.build_fdiv 
+      | A.Equal   -> L.build_fcmp L.Fcmp.Oeq
+      | A.Neq     -> L.build_fcmp L.Fcmp.One
+      | A.Less    -> L.build_fcmp L.Fcmp.Olt
+      | A.Leq     -> L.build_fcmp L.Fcmp.Ole
+      | A.Greater -> L.build_fcmp L.Fcmp.Ogt
+      | A.Geq     -> L.build_fcmp L.Fcmp.Oge
+      | A.And | A.Or ->
+          raise (Failure "internal error: semant should have rejected and/or on float")
+      | _ -> raise (Failure "not implemented yet")
+        ) e1' e2' "tmp" builder 
+      else (match op with
+      | A.Add     -> L.build_add
+      | A.Sub     -> L.build_sub
+      | A.Mult    -> L.build_mul
+      | A.Div     -> L.build_sdiv
+      | A.And     -> L.build_and
+      | A.Or      -> L.build_or
+      | A.Equal   -> L.build_icmp L.Icmp.Eq
+      | A.Neq     -> L.build_icmp L.Icmp.Ne
+      | A.Less    -> L.build_icmp L.Icmp.Slt
+      | A.Leq     -> L.build_icmp L.Icmp.Sle
+      | A.Greater -> L.build_icmp L.Icmp.Sgt
+      | A.Geq     -> L.build_icmp L.Icmp.Sge
+      | _ -> raise (Failure "not implemeneted yet")
+      ) e1' e2' "tmp" builder
       | SUnop(op, e) ->
 	  let (t, _) = e in
           let e' = expr builder e in
