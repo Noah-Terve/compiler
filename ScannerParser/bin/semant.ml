@@ -137,8 +137,9 @@ let check (units) =
           let same = t1 = t2 in
           (* Determine expression type based on operator and operand types *)
           let ty = match op with
-            Add | Sub | Mult | Div when same && t1 = Int   -> Int
-          | Add | Sub | Mult | Div when same && t1 = Float -> Float
+            Add | Sub | Mult | Div | Pluseq | Minuseq | Multeq | Diveq when same && (t1 = Int || t1 = Float)   -> t1
+          | Add | Sub | Mult | Div when (t1 = Int && t2 = Float) || (t1 = Float && t2 = Int) -> Float
+          | Mod | Modeq when same && t1 = Int -> t1
           | Equal | Neq            when same               -> Bool
           | Less | Leq | Greater | Geq
                      when same && (t1 = Int || t1 = Float) -> Bool
