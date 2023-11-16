@@ -119,6 +119,7 @@ let translate program =
     in *)
 
     (* Construct code for an expression; return its value *)
+    let convert_to_float (t, e) = (if t = A.Int then L.build_sitofp e float_t "ItoF" builder else e) in
     let rec expr builder ((_, e) : sexpr) = match e with
 	      SLiteral i -> L.const_int i32_t i
       | SBoolLit b -> L.const_int i1_t (if b then 1 else 0)
@@ -129,10 +130,11 @@ let translate program =
                           let _  = L.build_store e' (lookup s) builder in e'
       *)
       | SBinop (e1, op, e2) ->
-	  let (t, _) = e1
+	  let (t1, _) = e1
+    and (t2, _) = e2
 	  and e1' = expr builder e1
 	  and e2' = expr builder e2 in
-      if t = A.Float then (match op with 
+      if (t1 = A.Float || t2 = A.Float) then (match op with 
         A.Add     -> L.build_fadd
       | A.Sub     -> L.build_fsub
       | A.Mult    -> L.build_fmul
@@ -146,7 +148,7 @@ let translate program =
       | A.And | A.Or ->
           raise (Failure "internal error: semant should have rejected and/or on float")
       | _ -> raise (Failure "not implemented yet")
-        ) e1' e2' "tmp" builder 
+        ) (convert_to_float (t1, e1')) (convert_to_float (t2, e2')) "tmp" builder 
       else (match op with
       | A.Add     -> L.build_add
       | A.Sub     -> L.build_sub
