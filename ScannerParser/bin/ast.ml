@@ -6,8 +6,7 @@
 
 
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
-          And | Or | Mod | Isin | Union | Intersect | Multeq | Diveq | Intersecteq |
-          Unioneq | Modeq | Pluseq | Minuseq
+          And | Or | Mod | Isin | Union | Intersect 
 
 type uop = Neg | Not
 
@@ -92,13 +91,13 @@ let string_of_op = function
   | Intersect -> "&"
   | Union -> "|"
   | Isin -> "Isin"
-  | Multeq -> "*="
+  (* | Multeq -> "*="
   | Diveq -> "/="
   | Pluseq -> "+="
   | Minuseq -> "-="
   | Intersecteq -> "&="
   | Unioneq -> "|="
-  | Modeq -> "%="
+  | Modeq -> "%=" *)
 
 let string_of_uop = function
     Neg -> "-"

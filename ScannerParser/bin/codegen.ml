@@ -124,11 +124,10 @@ let translate program =
 	      SLiteral i -> L.const_int i32_t i
       | SBoolLit b -> L.const_int i1_t (if b then 1 else 0)
       | SFliteral l -> L.const_float_of_string float_t l
-      (* | SNoexpr -> L.const_int i32_t 0
-      | SId s -> L.build_load (lookup s) s builder
-      | SAssign (s, e) -> let e' = expr builder e in
-                          let _  = L.build_store e' (lookup s) builder in e'
-      *)
+      | SNoexpr -> L.const_int i32_t 0
+      (* | SId s -> L.build_load (lookup s) s builder *)
+      (* | SAssign (s, e) -> let e' = expr builder e in
+                          let _  = L.build_store e' (lookup s) builder in e' *)
       | SBinop (e1, op, e2) ->
 	  let (t1, _) = e1
     and (t2, _) = e2
@@ -145,6 +144,7 @@ let translate program =
       | A.Leq     -> L.build_fcmp L.Fcmp.Ole
       | A.Greater -> L.build_fcmp L.Fcmp.Ogt
       | A.Geq     -> L.build_fcmp L.Fcmp.Oge
+      (* | A.Pluseq  -> expr builder SAssign(e, ) *)
       | A.And | A.Or ->
           raise (Failure "internal error: semant should have rejected and/or on float")
       | _ -> raise (Failure "not implemented yet")
