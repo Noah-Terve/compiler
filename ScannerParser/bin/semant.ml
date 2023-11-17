@@ -120,7 +120,7 @@ let check (units) =
           and (rt, e') = expr e in
           let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
-          in (check_assign lt rt err, SAssign(var, (rt, e')))
+          in (check_assign lt rt err, SAssign(var, (rt, e'))) *)
       | Unop(op, e) as ex -> 
           let (t, e') = expr e in
           let ty = match op with
@@ -137,8 +137,11 @@ let check (units) =
           let same = t1 = t2 in
           (* Determine expression type based on operator and operand types *)
           let ty = match op with
-            Add | Sub | Mult | Div when same && t1 = Int   -> Int
-          | Add | Sub | Mult | Div when same && t1 = Float -> Float
+            Add | Sub | Mult | Div when same && (t1 = Int || t1 = Float)   -> t1
+          | Add | Sub | Mult | Div when (t1 = Int && t2 = Float) || (t1 = Float && t2 = Int) -> Float
+          (* Potential route *)
+          (* | expr Assign(e1, SBinop((t1, e1'), op, (t2, e2'))) *)
+          | Mod | Modeq when same && t1 = Int -> t1
           | Equal | Neq            when same               -> Bool
           | Less | Leq | Greater | Geq
                      when same && (t1 = Int || t1 = Float) -> Bool
@@ -147,8 +150,7 @@ let check (units) =
 	      Failure ("illegal binary operator " ^
                        string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
                        string_of_typ t2 ^ " in " ^ string_of_expr e))
-          in (ty, SBinop((t1, e1'), op, (t2, e2'))) *)
-
+          in (ty, SBinop((t1, e1'), op, (t2, e2')))
       | Call(fname, args) as call -> 
           let fd = find_func fname in
           let t_len = List.length fd.fun_t_list in
