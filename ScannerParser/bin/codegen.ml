@@ -8,7 +8,7 @@ http://llvm.org/docs/tutorial/index.html
 Detailed documentation on the OCaml LLVM library:
 
 http://llvm.moe/
-http://llvm.moe/ocaml/
+http://llxvm.moe/ocaml/
 
 *)
 
@@ -42,13 +42,16 @@ let translate program =
     and float_t    = L.double_type context
     (* Create an LLVM module -- this is a "container" into which we'll 
      generate actual code *)
-    and the_module = L.create_module context "Wampus" in
+    and the_module = L.create_module context "Wampus" 
+    and pointer_t = L.pointer_type in
 
   (* Convert MicroC types to LLVM types *)
   let ltype_of_typ = function
       A.Int   -> i32_t
     | A.Bool  -> i1_t
     | A.Float -> float_t
+    | A.Char  -> i8_t
+    | A.String -> pointer_t i8_t
     | _ -> raise (Failure "types not implemented yet")
   in
 
@@ -124,6 +127,8 @@ let translate program =
 	      SLiteral i -> L.const_int i32_t i
       | SBoolLit b -> L.const_int i1_t (if b then 1 else 0)
       | SFliteral l -> L.const_float_of_string float_t l
+      (* | SCharlit c  -> L.const_int i8_t c *)
+      | SStringlit s -> L.build_global_stringptr s "string" builder
       | SNoexpr -> L.const_int i32_t 0
       (* | SId s -> L.build_load (lookup s) s builder *)
       (* | SAssign (s, e) -> let e' = expr builder e in

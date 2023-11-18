@@ -141,7 +141,7 @@ let check (units) =
           | Add | Sub | Mult | Div when (t1 = Int && t2 = Float) || (t1 = Float && t2 = Int) -> Float
           (* Potential route *)
           (* | expr Assign(e1, SBinop((t1, e1'), op, (t2, e2'))) *)
-          | Mod | Modeq when same && t1 = Int -> t1
+          | Mod when same && t1 = Int -> t1
           | Equal | Neq            when same               -> Bool
           | Less | Leq | Greater | Geq
                      when same && (t1 = Int || t1 = Float) -> Bool
