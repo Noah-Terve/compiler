@@ -84,7 +84,7 @@ let detemplate (units) =
     | Stmt(stmt) -> Stmt(stmt) :: acc
      
   
-  List.fold_left resolveTemplates [] units in
+  List.rev (List.fold_left resolveTemplates [] units)
   
   (* List.rev (List.fold_left removeTemplates [] fin) *)
 
