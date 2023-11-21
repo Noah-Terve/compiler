@@ -90,14 +90,14 @@ let check units =
 
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
-    let check_assign lvaluet rvaluet err =
+    let check_assign (lvaluet: typ) (rvaluet: typ) err =
        if lvaluet = rvaluet then lvaluet else raise (Failure err) in
     (* Return a variable from our local symbol table *)
-    let rec type_of_identifier id envs = match envs with
+    let rec type_of_identifier id (envs: typ StringMap.t list) = match envs with
         [] -> raise (Failure ("Undeclared identifier " ^ id))
       | env :: envs -> try StringMap.find id env
                           with Not_found -> type_of_identifier id envs in
-    let bind id ty env = match env with
+    let bind id (ty: typ) env = match env with
         [] -> raise (Failure ("BUG IN COMPILER: no environments"))
       | env :: envs -> StringMap.add id ty env :: envs
     in 
@@ -109,44 +109,44 @@ let check units =
 
 
     (* Return a semantically-checked expression, i.e., with a type *)
-    let rec expr e envs = match e with
-        Literal  l -> (Int, SLiteral l)
-      | Fliteral l -> (Float, SFliteral l)
-      | BoolLit l  -> (Bool, SBoolLit l)
-      | CharLit l -> (Char, SCharlit l)
-      | StringLit l -> (String, SStringlit l)
-      | Noexpr     -> (Int, SNoexpr)
-      | Id s       -> (type_of_identifier s envs, SId s)
+    let rec check_expr e envs = match e with
+        Literal  l -> (envs, (Int, SLiteral l))
+      | Fliteral l -> (envs, (Float, SFliteral l))
+      | BoolLit l  -> (envs, (Bool, SBoolLit l))
+      | CharLit l -> (envs, (Char, SCharlit l))
+      | StringLit l -> (envs, (String, SStringlit l))
+      | Noexpr     -> (envs, (Int, SNoexpr))
+      | Id s       -> (envs, (type_of_identifier s envs, SId s))
       (* Bind the variable in the topmost environment. *)
       | BindAssign (typ, id, e1) ->
           let envs' = bind id typ envs in
-          let (t, e1') = expr e1 envs' in
+          let (envs'', (t, e1')) = check_expr e1 envs' in
           let err = "illegal assignment " ^ string_of_typ typ ^ " = " ^
-            string_of_typ t ^ " in " ^ string_of_expr e
-          in (check_assign typ t err, SBindAssign(typ, id, (t, e1')))
-          
-      
-            
-      (*
+            string_of_typ t ^ " in " ^ string_of_expr e in
+          let _ = check_assign typ t err
+          in (envs'', (typ, SBindAssign(typ, id, (t, e1'))))
+      | BindDec (typ, id) -> 
+          let envs' = bind id typ envs
+          in (envs', (typ, SBindDec(typ, id)))
       | Assign(var, e) as ex -> 
-          let lt = type_of_identifier var
-          and (rt, e') = expr e in
+          let lt = type_of_identifier var envs in
+          let (envs'', (rt, e')) = check_expr e envs in
           let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
-            string_of_typ rt ^ " in " ^ string_of_expr ex
-          in (check_assign lt rt err, SAssign(var, (rt, e'))) *)
-          
+            string_of_typ rt ^ " in " ^ string_of_expr ex in
+          let _ = check_assign lt rt err 
+          in (envs'', (lt, SAssign(var, (rt, e'))))
       | Unop(op, e) as ex -> 
-          let (t, e') = expr e envs in
+          let (envs', (t, e')) = check_expr e envs in
           let ty = match op with
             Neg when t = Int || t = Float -> t
           | Not when t = Bool -> Bool
           | _ -> raise (Failure ("illegal unary operator " ^ 
                                  string_of_uop op ^ string_of_typ t ^
                                  " in " ^ string_of_expr ex))
-          in (ty, SUnop(op, (t, e')))
+          in (envs', (ty, SUnop(op, (t, e'))))
       | Binop(e1, op, e2) as e -> 
-          let (t1, e1') = expr e1 envs
-          and (t2, e2') = expr e2 envs in
+          let (envs', (t1, e1'))  = check_expr e1 envs in
+          let (envs'', (t2, e2')) = check_expr e2 envs' in
           (* All binary operators require operands of the same type *)
           let same = t1 = t2 in
           (* Determine expression type based on operator and operand types *)
@@ -164,25 +164,29 @@ let check units =
               Failure ("illegal binary operator " ^
                        string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
                        string_of_typ t2 ^ " in " ^ string_of_expr e))
-          in (ty, SBinop((t1, e1'), op, (t2, e2')))
+          in (envs'', (ty, SBinop((t1, e1'), op, (t2, e2'))))
       | Call(fname, args) as call -> 
           let fd = find_func fname in
           let t_len = List.length fd.fun_t_list in
           if t_len != 0 then
-            raise (Failure ("expecting " ^ string_of_int t_len ^ " template arguments in call to " ^ fd.fname))
+            raise (Failure ("Compiler error: templates may not exist in function calls"))
           else let param_length = List.length fd.formals in
           if List.length args != param_length then
             raise (Failure ("expecting " ^ string_of_int param_length ^ 
                             " arguments in " ^ string_of_expr call))
-          else let check_call (ft, _) e = 
+          (* Compare types of arguments to expected types of functions *)
+          else let check_call (envs, (args: sexpr list)) (formal_t, _) e = 
             (* Ensure that templated calls work here *)
-            let (et, e') = expr e envs in 
+            let (envs', ((et, _) as se)) = check_expr e envs in 
             let err = "illegal argument found " ^ string_of_typ et ^
-              " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e
-            in (check_assign ft et err, e')
-          in 
-          let args' = List.map2 check_call fd.formals args
-          in (fd.typ, SCall(fname, args'))
+              " expected " ^ string_of_typ formal_t ^ " in " ^ string_of_expr e in
+            let _ = check_assign formal_t et err
+            in (envs', se::args)
+          in
+        let (envs', args') = List.fold_left2 check_call (envs, []) fd.formals args
+        in (envs', (fd.typ, SCall(fname, List.rev args')))
+
+
         (* | TemplatedCall (fname, t_list, args) as call ->
           let fd = find_func fname in
           let template_length = List.length fd.fun_t_list in
@@ -213,7 +217,7 @@ let check units =
     in *)
 
     (* Return a semantically-checked statement i.e. containing sexprs *)
-    let rec check_stmt (envs: 'a StringMap.t list) stmt = match stmt with
+    let rec check_stmt (envs: typ StringMap.t list) stmt = match stmt with
         Block stmts ->
           (* A new block creates a new scoping, so we need to create a new
              environment for this block *)
@@ -228,7 +232,9 @@ let check units =
                 let sstmts = check_stmt_list envs' stmts in (sstmt :: sstmts)
             | [] -> []
           in (envs, SBlock(check_stmt_list (StringMap.empty :: envs) stmts))
-      | Expr e -> (envs, SExpr (expr e envs))
+      | Expr e -> 
+          let (envs', se) = check_expr e envs in
+          (envs', SExpr(se))
       (* | If(p, b1, b2) -> SIf(check_bool_expr p, check_stmt b1, check_stmt b2)
       | For(e1, e2, e3, st) ->
           SFor(expr e1, check_bool_expr e2, expr e3, check_stmt st)
