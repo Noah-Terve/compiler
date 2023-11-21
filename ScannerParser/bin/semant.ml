@@ -140,7 +140,7 @@ let check units =
       | Unop(op, e) as ex -> 
           let (envs', (t, e')) = check_expr e envs in
           let ty = match op with
-            Neg when t = Int || t = Float -> t
+            Neg when t = Int || t = Float || t = Char -> t
           | Not when t = Bool -> Bool
           | _ -> raise (Failure ("illegal unary operator " ^ 
                                  string_of_uop op ^ string_of_typ t ^
