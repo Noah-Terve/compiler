@@ -152,12 +152,25 @@ let check units =
           (* All binary operators require operands of the same type *)
           let same = t1 = t2 in
           (* Determine expression type based on operator and operand types *)
+          (* Used for arithmetic *)
+          let resultFloat = function
+              Char -> true
+            | Int -> true
+            | Float -> true
+            | _ -> false
+          in
+          let resultInt = function
+              Char -> true
+            |  Int -> true
+            | _ -> false
+          in
           let ty = match op with
-            Add | Sub | Mult | Div when same && (t1 = Int || t1 = Float)   -> t1
-          | Add | Sub | Mult | Div when (t1 = Int && t2 = Float) || (t1 = Float && t2 = Int) -> Float
+            Add | Sub | Mult | Div when same && (t1 = Int || t1 = Float || t1 = Char)   -> t1
+          | Add | Sub | Mult | Div when (resultInt t1 && resultInt t2)  -> Int
+          | Add | Sub | Mult | Div when (resultFloat t1 && resultFloat t2) -> Float
           (* Potential route *)
           (* | expr Assign(e1, SBinop((t1, e1'), op, (t2, e2'))) *)
-          | Mod when same && t1 = Int -> t1
+          | Mod when same && (t1 = Int || t1 = Char) -> t1
           | Equal | Neq            when same               -> Bool
           | Less | Leq | Greater | Geq
                      when same && (t1 = Int || t1 = Float) -> Bool

@@ -125,7 +125,7 @@ let translate program =
     in *)
 
     (* Construct code for an expression; return its value *)
-    let convert_to_float (t, e) = (if t = A.Int then L.build_sitofp e float_t "ItoF" builder else e) in
+    let convert_to_float (t, e) = (if t = A.Int || t = A.Char then L.build_sitofp e float_t "ItoF" builder else e) in
     let rec expr builder ((_, e) : sexpr) = match e with
 	      SLiteral i -> L.const_int i32_t i
       | SBoolLit b -> L.const_int i1_t (if b then 1 else 0)
