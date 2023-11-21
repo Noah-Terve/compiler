@@ -258,13 +258,13 @@ let check units =
       in raise (Failure err)
     } *)
     in
-    let check_program_unit prog_unit =
-      let env = StringMap.empty in
-      let envs = [env] in
+    let check_program_unit (envs, sunits) prog_unit =
       match prog_unit with
-          Stmt(s) -> let (_, sstmt) = check_stmt envs s in SStmt(sstmt)
+          (* TODO: Make sure envs is updated after every check *)
+          Stmt(s) -> let (envs, sstmt) = check_stmt envs s in (envs, SStmt(sstmt) :: sunits)
         | _ -> raise (Failure "Unimplemented units")
 
     (* | Fdecl(f) -> raise (Failure "Unimplemented functions")
     | Sdecl(st) -> raise (Failure "Unimplemented structs") *)
-  in (List.map check_program_unit units)
+  in let envs = [StringMap.empty] 
+  in let (_, sunits) = (List.fold_left check_program_unit (envs, []) units) in List.rev sunits
