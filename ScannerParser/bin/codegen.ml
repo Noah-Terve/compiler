@@ -89,7 +89,10 @@ let translate program =
     let builder = L.builder_at_end context (L.entry_block the_function) in
     
     let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder
-    and float_format_str = L.build_global_stringptr "%g\n" "fmt" builder in
+    and float_format_str = L.build_global_stringptr "%g\n" "fmt" builder 
+    and string_format_str = L.build_global_stringptr "%s\n" "fmt" builder 
+    and char_format_str = L.build_global_stringptr "%c\n" "fmt" builder in
+
 
     (* Construct the function's "locals": formal arguments and locally
        declared variables.  Allocate each on the stack, initialize their
@@ -127,7 +130,7 @@ let translate program =
 	      SLiteral i -> L.const_int i32_t i
       | SBoolLit b -> L.const_int i1_t (if b then 1 else 0)
       | SFliteral l -> L.const_float_of_string float_t l
-      (* | SCharlit c  -> L.const_int i8_t c *)
+      | SCharlit c  -> L.const_int i8_t (int_of_char c)
       | SStringlit s -> L.build_global_stringptr s "string" builder
       | SNoexpr -> L.const_int i32_t 0
       (* | SId s -> L.build_load (lookup s) s builder *)
@@ -182,6 +185,10 @@ let translate program =
                     "printf" builder
     (* | SCall ("printbig", [e]) ->
       L.build_call printbig_func [| (expr builder e) |] "printbig" builder *)
+    | SCall ("prints", [e]) -> L.build_call printf_func [| string_format_str ; (expr builder e) |]
+    "printf" builder
+    | SCall ("printc", [e]) -> L.build_call printf_func [| char_format_str ; (expr builder e) |]
+    "printf" builder
     | SCall ("printf", [e]) -> 
       L.build_call printf_func [| float_format_str ; (expr builder e) |]
                     "printf" builder
