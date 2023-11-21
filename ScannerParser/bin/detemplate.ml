@@ -166,7 +166,6 @@ let detemplate (units) =
   
   let rec resolveTemplates prog prog_unit = match prog_unit with 
       Fdecl (func) -> (match func.fun_t_list with
-      (* TODO this needs to be updated to go through the function's statements *)
            [] -> let (new_body, p0) = resolve_stmts func.body prog StringMap.empty in
                  let _ = resolved_functions := (StringMap.add func.fname (Fdecl(func)) !resolved_functions) in Fdecl(func) :: prog
           | _ -> let _ = known_templated_funcs := (StringMap.add func.fname (Fdecl(func)) !known_templated_funcs) in prog)
