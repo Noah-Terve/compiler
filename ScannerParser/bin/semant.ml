@@ -10,7 +10,7 @@ module StringMap = Map.Make(String)
 
    Check each global variable, then check each function *)
 
-let check (units) =
+let check units =
 
   (* Check if a certain kind of binding has void type or is a duplicate
      of another, previously checked binding *)
@@ -44,8 +44,8 @@ let check (units) =
       formals = [(ty, "x")];
       body = []; fun_t_list = []; } map
     in List.fold_left add_bind StringMap.empty [ ("print", Int);
-			                         ("printb", Bool);
-			                         ("printf", Float)]
+                                                 ("printb", Bool);
+                                                 ("printf", Float)]
   (* let built_in_decls = 
     let add_bind map(name, return_typ) = StringMap.add name {
       typ = return_typ; fname = name; 
@@ -54,9 +54,9 @@ let check (units) =
     in List.fold_left add_bind StringMap.empty [ ("print", Int);
                                                  ("println", Int);
                                                  ("to_str", String); *)
-			                         (* ("printb", Bool); *)
-			                         (* ("printf", Float); *)
-			                         (* ("printbig", Int) *)
+                                                 (* ("printb", Bool); *)
+                                                 (* ("printf", Float); *)
+                                                 (* ("printbig", Int) *)
   in
 
   (* Add function name to symbol table *)
@@ -91,38 +91,52 @@ let check (units) =
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
     let check_assign lvaluet rvaluet err =
-       if lvaluet = rvaluet then lvaluet else raise (Failure err)
-    in   
-
-    (* Build local symbol table of variables for this function *)
-    (* let symbols = List.fold_left (fun m (ty, name) -> StringMap.add name ty m)
-	                StringMap.empty (globals' @ formals' @ locals' )
-    in
-
+       if lvaluet = rvaluet then lvaluet else raise (Failure err) in
     (* Return a variable from our local symbol table *)
-    let type_of_identifier s =
+    let rec type_of_identifier id envs = match envs with
+        [] -> raise (Failure ("Undeclared identifier " ^ id))
+      | env :: envs -> try StringMap.find id env
+                          with Not_found -> type_of_identifier id envs in
+    let bind id ty env = match env with
+        [] -> raise (Failure ("BUG IN COMPILER: no environments"))
+      | env :: envs -> StringMap.add id ty env :: envs
+    in 
+
+    (* let type_of_identifier s = 
       try StringMap.find s symbols
       with Not_found -> raise (Failure ("undeclared identifier " ^ s))
     in *)
 
 
     (* Return a semantically-checked expression, i.e., with a type *)
-    let rec expr = function
+    let rec expr e envs = match e with
         Literal  l -> (Int, SLiteral l)
       | Fliteral l -> (Float, SFliteral l)
       | BoolLit l  -> (Bool, SBoolLit l)
       | CharLit l -> (Char, SCharlit l)
       | StringLit l -> (String, SStringlit l)
-      (* | Noexpr     -> (Void, SNoexpr)
-      | Id s       -> (type_of_identifier s, SId s)
+      | Noexpr     -> (Int, SNoexpr)
+      | Id s       -> (type_of_identifier s envs, SId s)
+      (* Bind the variable in the topmost environment. *)
+      | BindAssign (typ, id, e1) ->
+          let envs' = bind id typ envs in
+          let (t, e1') = expr e1 envs' in
+          let err = "illegal assignment " ^ string_of_typ typ ^ " = " ^
+            string_of_typ t ^ " in " ^ string_of_expr e
+          in (check_assign typ t err, SBindAssign(typ, id, (t, e1')))
+          
+      
+            
+      (*
       | Assign(var, e) as ex -> 
           let lt = type_of_identifier var
           and (rt, e') = expr e in
           let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
           in (check_assign lt rt err, SAssign(var, (rt, e'))) *)
+          
       | Unop(op, e) as ex -> 
-          let (t, e') = expr e in
+          let (t, e') = expr e envs in
           let ty = match op with
             Neg when t = Int || t = Float -> t
           | Not when t = Bool -> Bool
@@ -131,8 +145,8 @@ let check (units) =
                                  " in " ^ string_of_expr ex))
           in (ty, SUnop(op, (t, e')))
       | Binop(e1, op, e2) as e -> 
-          let (t1, e1') = expr e1 
-          and (t2, e2') = expr e2 in
+          let (t1, e1') = expr e1 envs
+          and (t2, e2') = expr e2 envs in
           (* All binary operators require operands of the same type *)
           let same = t1 = t2 in
           (* Determine expression type based on operator and operand types *)
@@ -147,7 +161,7 @@ let check (units) =
                      when same && (t1 = Int || t1 = Float) -> Bool
           | And | Or when same && t1 = Bool -> Bool
           | _ -> raise (
-	      Failure ("illegal binary operator " ^
+              Failure ("illegal binary operator " ^
                        string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
                        string_of_typ t2 ^ " in " ^ string_of_expr e))
           in (ty, SBinop((t1, e1'), op, (t2, e2')))
@@ -162,7 +176,7 @@ let check (units) =
                             " arguments in " ^ string_of_expr call))
           else let check_call (ft, _) e = 
             (* Ensure that templated calls work here *)
-            let (et, e') = expr e in 
+            let (et, e') = expr e envs in 
             let err = "illegal argument found " ^ string_of_typ et ^
               " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e
             in (check_assign ft et err, e')
@@ -199,29 +213,32 @@ let check (units) =
     in *)
 
     (* Return a semantically-checked statement i.e. containing sexprs *)
-    let check_stmt = function
-        Expr e -> SExpr (expr e)
-      | _ -> raise (Failure "Unhandled statement")
+    let rec check_stmt (envs: 'a StringMap.t list) stmt = match stmt with
+        Block stmts ->
+          (* A new block creates a new scoping, so we need to create a new
+             environment for this block *)
+          let rec check_stmt_list envs stmts = match stmts with
+              [Return _ as s] -> let (_, sstmt) = check_stmt envs s in [sstmt]
+            | Return _ :: _ -> raise (Failure "Bad coding practice! Nothing should follow a return statement")
+            | Block _ as block :: stmts ->
+                let (_, sstmt) = check_stmt (StringMap.empty :: envs) block and
+                    sstmts = check_stmt_list envs stmts in (sstmt :: sstmts)
+            | stmt :: stmts ->
+                let (envs', sstmt) = check_stmt envs stmt in
+                let sstmts = check_stmt_list envs' stmts in (sstmt :: sstmts)
+            | [] -> []
+          in (envs, SBlock(check_stmt_list (StringMap.empty :: envs) stmts))
+      | Expr e -> (envs, SExpr (expr e envs))
       (* | If(p, b1, b2) -> SIf(check_bool_expr p, check_stmt b1, check_stmt b2)
       | For(e1, e2, e3, st) ->
-	  SFor(expr e1, check_bool_expr e2, expr e3, check_stmt st)
+          SFor(expr e1, check_bool_expr e2, expr e3, check_stmt st)
       | While(p, s) -> SWhile(check_bool_expr p, check_stmt s)
       | Return e -> let (t, e') = expr e in
         if t = func.typ then SReturn (t, e') 
         else raise (
-	  Failure ("return gives " ^ string_of_typ t ^ " expected " ^
-		   string_of_typ func.typ ^ " in " ^ string_of_expr e))
-	    
-	    (* A block is correct if each statement is correct and nothing
-	       follows any Return statement.  Nested blocks are flattened. *)
-      | Block sl -> 
-          let rec check_stmt_list = function
-              [Return _ as s] -> [check_stmt s]
-            | Return _ :: _   -> raise (Failure "nothing may follow a return")
-            | Block sl :: ss  -> check_stmt_list (sl @ ss) (* Flatten blocks *)
-            | s :: ss         -> check_stmt s :: check_stmt_list ss
-            | []              -> []
-          in SBlock(check_stmt_list sl) *)
+          Failure ("return gives " ^ string_of_typ t ^ " expected " ^
+                   string_of_typ func.typ ^ " in " ^ string_of_expr e)) *)
+      | _ -> raise (Failure "Unhandled statement")
 
 
     (* in (* body of check_function *)
@@ -230,15 +247,18 @@ let check (units) =
       sformals = formals';
       slocals  = locals';
       sbody = match check_stmt (Block func.body) with
-	SBlock(sl) -> sl
+        SBlock(sl) -> sl
       | _ -> let err = "internal error: block didn't become a block?"
       in raise (Failure err)
     } *)
     in
-    let check_units = function
-      Stmt(s) -> SStmt(check_stmt s)
-    | _ -> raise (Failure "Unimplemented units")
+    let check_program_unit prog_unit =
+      let env = StringMap.empty in
+      let envs = [env] in
+      match prog_unit with
+          Stmt(s) -> let (_, sstmt) = check_stmt envs s in SStmt(sstmt)
+        | _ -> raise (Failure "Unimplemented units")
 
     (* | Fdecl(f) -> raise (Failure "Unimplemented functions")
     | Sdecl(st) -> raise (Failure "Unimplemented structs") *)
-  in (List.map check_units units)
+  in (List.map check_program_unit units)
