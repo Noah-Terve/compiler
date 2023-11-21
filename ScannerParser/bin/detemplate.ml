@@ -164,17 +164,18 @@ let detemplate (units) =
     | _ -> (stmt, prog)
   in
   
-  let rec resolveTemplates acc prog_unit = match prog_unit with 
+  let rec resolveTemplates prog prog_unit = match prog_unit with 
       Fdecl (func) -> (match func.fun_t_list with
       (* TODO this needs to be updated to go through the function's statements *)
-           [] -> let _ = resolved_functions := (StringMap.add func.fname (Fdecl(func)) !resolved_functions) in Fdecl(func) :: acc
-          | _ -> let _ = known_templated_funcs := (StringMap.add func.fname (Fdecl(func)) !known_templated_funcs) in acc)
+           [] -> let (new_body, p0) = resolve_stmts func.body prog StringMap.empty in
+                 let _ = resolved_functions := (StringMap.add func.fname (Fdecl(func)) !resolved_functions) in Fdecl(func) :: prog
+          | _ -> let _ = known_templated_funcs := (StringMap.add func.fname (Fdecl(func)) !known_templated_funcs) in prog)
         
     | Sdecl (struc) -> (match struc.t_list with
-           [] -> let _ = resolved_structs := (StringMap.add struc.name (Sdecl(struc)) !resolved_structs) in (Sdecl(struc)) :: acc
-          | _ -> let _ = known_templated_structs := (StringMap.add struc.name (Sdecl(struc)) !known_templated_structs) in acc)
+           [] -> let _ = resolved_structs := (StringMap.add struc.name (Sdecl(struc)) !resolved_structs) in (Sdecl(struc)) :: prog
+          | _ -> let _ = known_templated_structs := (StringMap.add struc.name (Sdecl(struc)) !known_templated_structs) in prog)
         
-    | Stmt (stmt) -> let (st, prog) = resolve_stmt stmt acc StringMap.empty in (Stmt st) :: prog
+    | Stmt (stmt) -> let (st, p0) = resolve_stmt stmt prog StringMap.empty in (Stmt st) :: p0
   
   in
   
