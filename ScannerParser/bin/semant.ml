@@ -45,7 +45,9 @@ let check units =
       body = []; fun_t_list = []; } map
     in List.fold_left add_bind StringMap.empty [ ("print", Int);
                                                  ("printb", Bool);
-                                                 ("printf", Float)]
+                                                 ("printf", Float);
+                                                 ("prints", String);
+                                                 ("printc", Char)]
   (* let built_in_decls = 
     let add_bind map(name, return_typ) = StringMap.add name {
       typ = return_typ; fname = name; 
