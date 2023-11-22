@@ -225,11 +225,11 @@ let check units =
       | _  -> raise (Failure "Expr not handled yet")
     in
 
-    (* let check_bool_expr e = 
-      let (t', e') = expr e
+    let check_bool_expr e envs = 
+      let (envs', (t', e')) = check_expr e envs
       and err = "expected Boolean expression in " ^ string_of_expr e
-      in if t' != Bool then raise (Failure err) else (t', e') 
-    in *)
+      in if t' != Bool then raise (Failure err) else (envs', (t', e'))
+    in
 
     (* Return a semantically-checked statement i.e. containing sexprs *)
     let rec check_stmt (envs: typ StringMap.t list) stmt = match stmt with
@@ -250,11 +250,22 @@ let check units =
       | Expr e -> 
           let (envs', se) = check_expr e envs in
           (envs', SExpr(se))
-      (* | If(p, b1, b2) -> SIf(check_bool_expr p, check_stmt b1, check_stmt b2) *)
+      | If(p, b1, b2) -> 
+          let (envs', p') = check_bool_expr p envs in
+          let (envs'', b1') = check_stmt envs' b1  in
+          let (envs''', b2') = check_stmt envs'' b2  in 
+        (envs''', SIf(p', b1', b2'))
+      | For(e1, e2, e3, st) -> 
+          let (envs', e1') = check_expr e1 envs in
+          let (envs'', e2') = check_bool_expr e2 envs' in
+          let (envs''', e3') = check_expr e3 envs'' in
+          let (envs'''', st') = check_stmt envs''' st in
+          (envs'''', SFor(e1', e2', e3', st'))
+      | While(p, s) -> 
+        let (envs', p') = check_bool_expr p envs in
+        let (envs'', s') = check_stmt envs' s in
+        (envs'', SWhile(p', s'))
       (*
-      | For(e1, e2, e3, st) ->
-          SFor(expr e1, check_bool_expr e2, expr e3, check_stmt st)
-      | While(p, s) -> SWhile(check_bool_expr p, check_stmt s)
       | Return e -> let (t, e') = expr e in
         if t = func.typ then SReturn (t, e') 
         else raise (
