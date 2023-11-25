@@ -4,13 +4,14 @@
 
 (* Toplevel driver for Wampus *)
 
-type action = Ast | Sast | LLVM_IR | Compile
+type action = Ast | DeTemp | Sast | LLVM_IR | Compile
 
 let () =
   let action = ref Compile in
   let set_action a () = action := a in
   let speclist = [
     ("-a", Arg.Unit (set_action Ast), "Print the AST");
+    ("-d", Arg.Unit (set_action DeTemp), "Print the detemplated AST");
     ("-s", Arg.Unit (set_action Sast), "Print the SAST");
     ("-l", Arg.Unit (set_action LLVM_IR), "Print the generated LLVM IR");
     ("-c", Arg.Unit (set_action Compile),
@@ -22,11 +23,14 @@ let () =
 
   let lexbuf = Lexing.from_channel !channel in
   let ast = Parser.program Scanner.token lexbuf in
+  let detemp = Detemplate.detemplate ast in
   match !action with
     Ast -> print_string (Ast.string_of_program ast)
-  | _ -> let sast = Semant.check ast in
+  | DeTemp -> print_string (Ast.string_of_program detemp)
+  | _ -> let sast = Semant.check detemp in
     match !action with
       Ast     -> ()
+    | DeTemp  -> ()
     | Sast    -> print_string (Sast.string_of_sprogram sast)
     | LLVM_IR -> print_string (Llvm.string_of_llmodule (Codegen.translate sast))
     | Compile -> let m = Codegen.translate sast in

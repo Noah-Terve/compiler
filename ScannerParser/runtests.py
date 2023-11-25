@@ -101,6 +101,7 @@ def parse_command_line() -> argparse.Namespace:
     # Create a mutually exclusive group for the different stages of the compiler
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-a', '--ast', action='store_true', help='Test the AST')
+    group.add_argument('-d', '--detemp', action='store_true', help='Test the DETEMPLATE')
     group.add_argument('-s', '--sast', action='store_true', help='Test the SAST')
     group.add_argument('-l', '--llvm', action='store_true', help='Test the LLVM IR')
     group.add_argument('--opt', action='store_true', help='Test the optimized LLVM IR')
@@ -200,6 +201,9 @@ def generate_output(file: str, testname: str) -> tuple[str, str, bool, typing.Li
     match mode:
         case "ast":
             cmd = [WAMPUS_EXE, "-a", file]
+            output, errout, success = generate_output_of_cmd(cmd)
+        case "detemp":
+            cmd = [WAMPUS_EXE, "-d", file]
             output, errout, success = generate_output_of_cmd(cmd)
         case "sast":
             cmd = [WAMPUS_EXE, "-s", file]
