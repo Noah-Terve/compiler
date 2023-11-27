@@ -272,9 +272,9 @@ let check units =
         let (envs', p') = check_bool_expr p envs in
         let (_, s') = check_stmt envs' s in
         (envs, SWhile(p', s'))
-      (*
-      | Return e -> let (t, e') = expr e in
-        if t = func.typ then SReturn (t, e') 
+      (* look at other groups semant checker for return *)
+      (* | Return e -> let (_, (t, e)) = check_expr e envs in
+        if t = func.typ then (envs, SReturn (t, e))
         else raise (
           Failure ("return gives " ^ string_of_typ t ^ " expected " ^
                    string_of_typ func.typ ^ " in " ^ string_of_expr e)) *)
