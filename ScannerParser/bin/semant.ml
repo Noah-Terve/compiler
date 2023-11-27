@@ -274,7 +274,9 @@ let check units =
         (envs, SWhile(p', s'))
       (* look at other groups semant checker for return *)
       (* | Return e -> let (_, (t, e)) = check_expr e envs in
-        if t = func.typ then (envs, SReturn (t, e))
+        let func_typ = try func.typ
+                      with Not_found -> raise (Failure "Return can only be within a function") in
+        if t = func_typ then (envs, SReturn (t, e))
         else raise (
           Failure ("return gives " ^ string_of_typ t ^ " expected " ^
                    string_of_typ func.typ ^ " in " ^ string_of_expr e)) *)
