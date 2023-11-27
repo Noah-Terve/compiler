@@ -2,7 +2,7 @@ template @l T, hello @r
 T test(T x, hello y) {
     T w = x;
     hello z = y;
-    return a;
+    return w;
 }
 
 test @l int, int @r (5, 4);

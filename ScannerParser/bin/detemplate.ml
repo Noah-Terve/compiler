@@ -20,21 +20,23 @@ let detemplate (units) =
      Append the new version of the function to the front of the program and
      return the updated program *)
 
-  let potentially_templated_to_typ typ names_to_types = match typ with
+  let rec potentially_templated_to_typ typ names_to_types = match typ with
       Templated(n) -> (try StringMap.find n names_to_types
                       with Not_found -> let msg = "Attempted to turn the template: " ^ n ^ ", into a type, but didn't find it as a current tempalted type" in 
                                             raise (Failure msg))
+    | List (t) -> List (potentially_templated_to_typ t names_to_types)
+    | Set (t) -> Set (potentially_templated_to_typ t names_to_types)
     | _ -> typ
   in
   
-  let rec resolve_templated_function name types prog names_to_types = 
+  let rec resolve_templated_function name types prog = 
     let new_fname = get_new_function_name name types in
     let templated_func = try StringMap.find name !known_templated_funcs
                          with Not_found -> let msg = "Function: " ^ name ^ " not declared but attempted to be called" in 
                                            raise (Failure msg)
     in let pairs = try List.combine templated_func.fun_t_list types
       with Invalid_argument _ -> raise (Failure "Number of template parameters do not match with function declaration")
-    in let new_names_to_types = List.fold_left (fun map (n, t) -> (StringMap.add n t map)) names_to_types pairs
+    in let new_names_to_types = List.fold_left (fun map (n, t) -> (StringMap.add n t map)) StringMap.empty pairs
     in let new_typ = (potentially_templated_to_typ templated_func.typ new_names_to_types)
     in let new_formals = List.map (fun (typ, name) -> (potentially_templated_to_typ typ new_names_to_types, name)) templated_func.formals 
     in let (new_body, p1) = resolve_stmts templated_func.body prog new_names_to_types
@@ -87,7 +89,8 @@ let detemplate (units) =
                   (Call(new_fname, exprs), p0)
               
               (* case where the function hasnt been resolved yet *)
-      with Not_found -> let p0 = resolve_templated_function name ts prog names_to_types in
+      with Not_found -> let new_ts = List.map (fun typ -> potentially_templated_to_typ typ names_to_types) ts in
+                        let p0 = resolve_templated_function name new_ts prog in
                         let (exprs, p1) = resolve_exprs es p0 names_to_types in 
                         (Call(new_fname, exprs), p1))
 

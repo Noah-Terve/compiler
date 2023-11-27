@@ -71,6 +71,7 @@ rule token = parse
 | "return" { RETURN }
 | "int"    { INT }
 | "bool"   { BOOL }
+| "char"   { CHAR }
 | "float"  { FLOAT }
 | "string" { STRING }
 | "#l"      { LTAGS }
