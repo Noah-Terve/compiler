@@ -253,18 +253,18 @@ let check units =
       | If(p, b1, b2) -> 
           let (envs', p') = check_bool_expr p envs in
           let (envs'', b1') = check_stmt envs' b1  in
-          let (envs''', b2') = check_stmt envs'' b2  in 
-        (envs''', SIf(p', b1', b2'))
+          let (_, b2') = check_stmt envs'' b2  in 
+        (envs, SIf(p', b1', b2'))
       | For(e1, e2, e3, st) -> 
           let (envs', e1') = check_expr e1 envs in
           let (envs'', e2') = check_bool_expr e2 envs' in
           let (envs''', e3') = check_expr e3 envs'' in
-          let (envs'''', st') = check_stmt envs''' st in
-          (envs'''', SFor(e1', e2', e3', st'))
+          let (_, st') = check_stmt envs''' st in
+          (envs, SFor(e1', e2', e3', st'))
       | While(p, s) -> 
         let (envs', p') = check_bool_expr p envs in
-        let (envs'', s') = check_stmt envs' s in
-        (envs'', SWhile(p', s'))
+        let (_, s') = check_stmt envs' s in
+        (envs, SWhile(p', s'))
       (*
       | Return e -> let (t, e') = expr e in
         if t = func.typ then SReturn (t, e') 
