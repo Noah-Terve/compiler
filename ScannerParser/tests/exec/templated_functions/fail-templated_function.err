@@ -1,1 +1,1 @@
-Fatal error: exception Failure("Attempted to turn the template or struct: THE_TEMPLATE, into a type, but didn't find it as a current tempalted type or struct")
+Fatal error: exception Failure("Attempted to turn the template or struct: T, into a type, but didn't find it as a current tempalted type or struct")

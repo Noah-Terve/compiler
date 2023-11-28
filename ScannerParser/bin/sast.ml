@@ -69,6 +69,7 @@ let rec string_of_sexpr (t, e) =
   | SBoolLit(false) -> "false"
   | SFliteral(l) -> l
   | SCharlit (c) -> string_of_int (int_of_char c)
+  | SStringlit (s) -> s
   | SId(s) -> s
   | SBinop(e1, o, e2) ->
       string_of_sexpr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_sexpr e2
@@ -98,16 +99,16 @@ let rec string_of_sstmt = function
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | _ -> "Not implemented"	
 
-(* let string_of_sfdecl fdecl =
+let string_of_sfdecl fdecl =
   string_of_typ fdecl.styp ^ " " ^
   fdecl.sfname ^ "(" ^ String.concat ", " (List.map snd fdecl.sformals) ^
   ")\n{\n" ^
-  String.concat "" (List.map string_of_vdecl fdecl.slocals) ^
   String.concat "" (List.map string_of_sstmt fdecl.sbody) ^
-  "}\n" *)
+  "}\n"
 
 let string_of_sunit = function
    SStmt(stmt) -> string_of_sstmt stmt
+  | SFdecl(fdecl) -> string_of_sfdecl fdecl
   | _ ->  "Not Implemented" 
   (* | SFdecl(fdecl) -> "Not implemented"
   | SSdecl(sdecl) -> "Not implemented" *)

@@ -2,7 +2,7 @@ template @l T, hello @r
 T test(T x, hello y) {
     T w = x;
     hello z = y;
-    return w;
+    return x;
 }
 
 printi(test @l int, int @r (5, 4));
@@ -32,8 +32,8 @@ printf(test @l float, char @r (123.456, 'y'));
 printf(test @l float, float @r (1.0, 1.0));
 printf(test @l float, string @r (08234.87, "maybe yes"));
 
-printfs(test @l string, int @r ("hello", 2));
-printfs(test @l string, bool @r ("hello", false));
-printfs(test @l string, char @r ("world", '!'));
-printfs(test @l string, float @r ("alive", 456.73));
-printfs(test @l string, string @r ("work", "please"));
+prints(test @l string, int @r ("hello", 2));
+prints(test @l string, bool @r ("hello", false));
+prints(test @l string, char @r ("world", '!'));
+prints(test @l string, float @r ("alive", 456.73));
+prints(test @l string, string @r ("work", "please"));
