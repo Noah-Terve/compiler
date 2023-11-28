@@ -241,6 +241,7 @@ let translate program =
       | SCharlit c  -> (L.const_int i8_t (int_of_char c), envs)
       | SStringlit s -> (L.build_global_stringptr s "string" builder, envs)
       | SNoexpr -> (L.const_int i32_t 0, envs)
+      | SId s -> (L.build_load (lookup s envs) s builder, envs)
       (* | SId s -> L.build_load (lookup s) s builder *)
       (* | SAssign (s, e) -> let e' = expr builder e in
                           let _  = L.build_store e' (lookup s) builder in e' *)
