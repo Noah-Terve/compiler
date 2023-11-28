@@ -233,7 +233,6 @@ let translate program =
     (* Construct code for an expression; return its value *)
     let convert_to_float (t, e) = (if t = A.Int || t = A.Char then L.build_sitofp e float_t "ItoF" builder else e) in
 
-
     let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with
         SLiteral i -> (L.const_int i32_t i, envs)
       | SBoolLit b -> (L.const_int i1_t (if b then 1 else 0), envs)
@@ -242,9 +241,6 @@ let translate program =
       | SStringlit s -> (L.build_global_stringptr s "string" builder, envs)
       | SNoexpr -> (L.const_int i32_t 0, envs)
       | SId s -> (L.build_load (lookup s envs) s builder, envs)
-      (* | SId s -> L.build_load (lookup s) s builder *)
-      (* | SAssign (s, e) -> let e' = expr builder e in
-                          let _  = L.build_store e' (lookup s) builder in e' *)
       | SBinop (e1, op, e2) ->
         let (t1, _) = e1 in
         let (t2, _) = e2 in
