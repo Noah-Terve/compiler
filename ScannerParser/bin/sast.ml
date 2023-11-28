@@ -75,13 +75,12 @@ let rec string_of_sexpr (t, e) =
       string_of_sexpr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_sexpr e2
   | SUnop(o, e) -> string_of_uop o ^ string_of_sexpr e
   | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
-  | SBindDec (typ, id) -> id
-  | SBindAssign (typ, id, e) -> id ^ " = " ^ string_of_sexpr e
-  | SAssign(id, e) -> id ^ " = " ^ string_of_sexpr e
+  | SBindDec (_, id) -> id
+  | SBindAssign (_, id, e) -> id ^ " = " ^ string_of_sexpr e
   | SCall(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
   | SNoexpr -> ""
-  | _ -> "Not implemented"	     
+  | _ -> "Sast expr printing Not implemented"	     
 				  ) ^ ")"			
 
 let rec string_of_sstmt = function
@@ -109,13 +108,10 @@ let string_of_sfdecl fdecl =
 let string_of_sunit = function
    SStmt(stmt) -> string_of_sstmt stmt
   | SFdecl(fdecl) -> string_of_sfdecl fdecl
-  | _ ->  "Not Implemented" 
-  (* | SFdecl(fdecl) -> "Not implemented"
+  | _ ->  "Sdecl Not Implemented in the SAST" 
+  (* 
   | SSdecl(sdecl) -> "Not implemented" *)
 
 let rec string_of_sprogram = function 
   [] -> ""
   | e :: rest -> (string_of_sunit e) ^ (string_of_sprogram rest)
-  (* String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^ *)
-  (* String.concat "\n" (List.map string_of_units u) *)
-  (* String.concat "\n" (List.map string_of_sfdecl funcs) *)
