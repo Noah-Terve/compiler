@@ -178,8 +178,17 @@ let check (units : program) =
           |  Int -> true
           | _ -> false
         in
+          (* let rec getCharLit = function
+              (_ , SCharlit l) -> l
+            | (_, sx) -> getCharLit (Char, sx)
+          (* Convert chars to strings *)
+          if (op == Add && same && (t1 = Char | t1 = String)) then let (e1'', e2'') = match t1 with  
+            Char -> (string_of_int getCharLit e1') (string_of_int getCharLit e2')
+            String -> e1' e2'
+          ) in  *)
         let ty = match op with
-          Add | Sub | Mult | Div when same && (t1 = Int || t1 = Float || t1 = Char)   -> t1
+          Add when same && (t1 = Char || t1 = String) -> String
+          | Add | Sub | Mult | Div when same && (t1 = Int || t1 = Float || t1 = Char)   -> t1
         | Add | Sub | Mult | Div when (resultInt t1 && resultInt t2)  -> Int
         | Add | Sub | Mult | Div when (resultFloat t1 && resultFloat t2) -> Float
         (* Potential route *)

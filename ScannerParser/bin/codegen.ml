@@ -231,8 +231,10 @@ let translate program =
     in
 
     (* Construct code for an expression; return its value *)
-    let convert_to_float (t, e) = (if t = A.Int || t = A.Char then L.build_sitofp e float_t "ItoF" builder else e) in
-
+    let rec getLit = function
+          (_, SCharlit l) -> (String.make 1 l)
+        | (_, SStringlit s) -> s
+        | (t, sx) -> getLit (t, sx) in
     let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with
         SLiteral i -> (L.const_int i32_t i, envs)
       | SBoolLit b -> (L.const_int i1_t (if b then 1 else 0), envs)
@@ -242,8 +244,8 @@ let translate program =
       | SNoexpr -> (L.const_int i32_t 0, envs)
       | SId s -> (L.build_load (lookup s envs) s builder, envs)
       | SBinop (e1, op, e2) ->
-        let (t1, _) = e1 in
-        let (t2, _) = e2 in
+        let (t1, expr1) = e1 in
+        let (t2, expr2) = e2 in
         let (e1', envs) = expr builder e1 envs in
         let (e2', envs) = expr builder e2 envs in
         
@@ -262,6 +264,11 @@ let translate program =
               raise (Failure "Internal error: semant should have rejected and/or on float")
           | _ -> raise (Failure "not implemented yet")
           ) (L.build_sitofp e1' float_t "ItoF" builder) (L.build_sitofp e2' float_t "ItoF" builder) "tmp" builder, envs)
+        else if (op = A.Add && (t1 = A.String || t1 = A.Char)) then 
+          let s1 = getLit (t1, expr1) in
+          let s2 = getLit (t1, expr2) in
+          let s = s1 ^ s2 in
+          (L.build_global_stringptr s "string" builder, envs)
         else (match op with
             A.Add     -> L.build_add
           | A.Sub     -> L.build_sub
