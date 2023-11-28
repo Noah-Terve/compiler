@@ -367,17 +367,17 @@ let translate program =
       are the build_br functions used at the end of the then and else blocks (if
       they don't already have a terminator) and the build_cond_br function at
       the end, which adds jump instructions to the "then" and "else" basic blocks *)
-      | SIf (predicate, then_stmt, else_stmt) ->
-         let bool_val = expr builder predicate in
+    | SIf (predicate, then_stmt, else_stmt) ->
+        let bool_val = expr builder predicate in
          (* Add "merge" basic block to our function's list of blocks *)
    let merge_bb = L.append_block context "merge" the_function in
          (* Partial function used to generate branch to merge block *) 
-         let branch_instr = L.build_br merge_bb in
+        let branch_instr = L.build_br merge_bb in
 
          (* Same for "then" basic block *)
    let then_bb = L.append_block context "then" the_function in
          (* Position builder in "then" block and build the statement *)
-         let then_builder = stmt (L.builder_at_end context then_bb) then_stmt in
+        let then_builder = stmt (L.builder_at_end context then_bb) then_stmt in
          (* Add a branch to the "then" block (to the merge block) 
            if a terminator doesn't already exist for the "then" block *)
    let () = add_terminal then_builder branch_instr in
