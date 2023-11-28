@@ -1,7 +1,7 @@
-print(4 + 5);
-print(4 - 5); /* -1 */
-print(4 * 5);
-print(4 / 2);
+printi(4 + 5);
+printi(4 - 5); /* -1 */
+printi(4 * 5);
+printi(4 / 2);
 printb(4 == 5); /* false */
 printb(4 == 4); /* true */
 printb(4 != 5); /* true */

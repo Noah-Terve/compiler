@@ -247,7 +247,7 @@ let translate program =
         let (e1', envs) = expr builder e1 envs in
         let (e2', envs) = expr builder e2 envs in
         
-        if (t1 = A.Float || t2 = A.Float) then (match op with 
+        if (t1 = A.Float || t2 = A.Float) then ((match op with 
             A.Add     -> L.build_fadd
           | A.Sub     -> L.build_fsub
           | A.Mult    -> L.build_fmul
@@ -258,11 +258,10 @@ let translate program =
           | A.Leq     -> L.build_fcmp L.Fcmp.Ole
           | A.Greater -> L.build_fcmp L.Fcmp.Ogt
           | A.Geq     -> L.build_fcmp L.Fcmp.Oge
-          (* | A.Pluseq  -> expr builder SAssign(e, ) *)
           | A.And | A.Or ->
               raise (Failure "Internal error: semant should have rejected and/or on float")
           | _ -> raise (Failure "not implemented yet")
-          ) (convert_to_float (t1, e1')) (convert_to_float (t2, e2')) "tmp" builder, envs
+          ) (L.build_sitofp e1' float_t "ItoF" builder) (L.build_sitofp e2' float_t "ItoF" builder) "tmp" builder, envs)
         else (match op with
             A.Add     -> L.build_add
           | A.Sub     -> L.build_sub
@@ -287,7 +286,7 @@ let translate program =
           | A.Neg                  -> (L.build_neg e' "tmp" builder, envs)
           | A.Not                  -> (L.build_not e' "tmp" builder, envs)
           )
-      | SCall ("print", [e]) | SCall ("printb", [e]) ->
+      | SCall ("printi", [e]) | SCall ("printb", [e]) ->
         let (e_llvalue, envs) = expr builder e envs in
         (L.build_call printf_func [| int_format_str ; e_llvalue |] "printf" builder, envs)
         

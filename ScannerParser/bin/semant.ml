@@ -43,7 +43,7 @@ let check units =
       typ = Int; fname = name; 
       formals = [(ty, "x")];
       body = []; fun_t_list = []; } map
-    in List.fold_left add_bind StringMap.empty [ ("print", Int);
+    in List.fold_left add_bind StringMap.empty [ ("printi", Int);
                                                  ("printb", Bool);
                                                  ("printf", Float);
                                                  ("prints", String);
