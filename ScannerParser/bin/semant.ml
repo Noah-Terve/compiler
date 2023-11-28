@@ -81,16 +81,24 @@ let check (units : program) =
       if lvaluet = rvaluet then lvaluet else raise (Failure err) in
     (* Return a variable from our local symbol table *)
   let rec type_of_identifier id (envs: typ StringMap.t list) = 
+    (* let first_env = List.hd envs in
+    let _ = StringMap.iter (fun k v -> Printf.printf "typ Key: '%s', Value: '%s'\n" k (string_of_typ v)) first_env in
+    let _ = Printf.printf "key: '%s'\n" id in *)
     match envs with
-      env :: envs -> (try StringMap.find id env
-                      with Not_found -> type_of_identifier id envs)
-    | [] -> (try StringMap.find id !globals 
+      (* env :: rest -> (try let t = StringMap.find id env in let _ = Printf.printf "type: '%s'\n" (string_of_typ t) in t
+                      with Not_found -> type_of_identifier id rest) *)
+      env :: rest -> (try StringMap.find id env
+                      with Not_found -> type_of_identifier id rest)
+    | [] -> (try StringMap.find id !globals
             with Not_found -> raise (Failure ("Undeclared identifier " ^ id))) in
                           
-  let bind id (ty: typ) env = match env with
+  let bind id (ty: typ) envs = match envs with
       [] -> raise (Failure ("BUG IN COMPILER: no environments"))
-    | env :: envs -> StringMap.add id ty env :: envs
+    | env :: envs -> 
+      (* let _ = Printf.printf "Binding %s to %s\n" id (string_of_typ ty) in *)
+      StringMap.add id ty env :: envs
   in
+
   let bind_global id (ty : typ) =
     let env = !globals in
     globals := StringMap.add id ty env
@@ -137,8 +145,10 @@ let check (units : program) =
         (match is_toplevel with 
           (* Not at top level *)
           false -> 
-            let envs' = bind id typ envs
-            in (envs', (typ, SBindDec(typ, id)))
+            let envs' = bind id typ envs in
+            (* let first_env = List.hd envs' in
+            let _ = StringMap.iter (fun k v -> Printf.printf "Key: %s, Value: %s\n" k (string_of_typ v)) first_env in *)
+            envs', (typ, SBindDec(typ, id))
           (* At top level *)
         | true ->  
               let _ = bind_global id typ in 
@@ -213,7 +223,7 @@ let check (units : program) =
           let _ = check_assign formal_t et err
           in (envs', se::args)
         in
-      let (_, args') = List.fold_left2 check_call ([], []) sfd.sformals args
+      let (_, args') = List.fold_left2 check_call (envs, []) sfd.sformals args
       in (envs, (sfd.styp, SCall(fname, List.rev args')))
 
 
@@ -245,6 +255,8 @@ let check (units : program) =
         in (envs, SBlock(check_stmt_list (StringMap.empty :: envs) stmts))
     | Expr e -> 
         let (envs', se) = check_expr e envs is_toplevel in
+        (* let first_env = List.hd envs' in
+        let _ = StringMap.iter (fun k v -> Printf.printf "expr Key: %s, Value: %s\n" k (string_of_typ v)) first_env in *)
         (envs', SExpr(se))
     | If(p, b1, b2) -> 
         let (envs', p') = check_bool_expr p envs in
@@ -307,7 +319,7 @@ in
     match prog_unit with
         (* TODO: Make sure envs is updated after every check *)
         Stmt(s) -> let (envs, sstmt) = check_stmt envs s toplevel in (envs, SStmt(sstmt) :: sunits)
-      | Fdecl(f) -> let sf = check_function f in(envs, SFdecl(sf) :: sunits)
+      | Fdecl(f) -> let sf = check_function f in (envs, SFdecl(sf) :: sunits)
       | _ -> raise (Failure "Unimplemented units")
 
     (* | Fdecl(f) -> raise (Failure "Unimplemented functions")

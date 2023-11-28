@@ -58,7 +58,7 @@ let translate program =
       are being declared here, we also convert all bindassigs to assignments,
       etc. main just uses the global environment as its local environment. *)
   let parse_main_statements sstmts =
-    let parse_statement (sstmts, global_vars) sstmt = match sstmt with
+    let parse_toplevel_statement (sstmts, global_vars) sstmt = match sstmt with
         SExpr (t, s) -> (match s with
             SBindDec (t, n) -> (sstmts, StringMap.add n (L.define_global n (L.const_int (ltype_of_typ t) 0) the_module) global_vars)
           | SBindAssign (t, n, e) ->
@@ -69,7 +69,7 @@ let translate program =
       | _ -> (sstmt :: sstmts, global_vars)
     in
     let global_vars = StringMap.empty in
-    let (sstmts, global_vars) = List.fold_left parse_statement ([], global_vars) sstmts in
+    let (sstmts, global_vars) = List.fold_left parse_toplevel_statement ([], global_vars) sstmts in
     (List.rev sstmts, global_vars)
   in
 
@@ -84,50 +84,11 @@ let translate program =
                                 | _ -> acc)
                 [main_function] program) in
 
-  (* Declare each global variable; remember its value in a map *)
-  (* let global_vars : L.llvalue StringMap.t =
-    let global_var m (t, n) = 
-      let init = match t with
-          A.Float -> L.const_float (ltype_of_typ t) 0.0
-        | _ -> L.const_int (ltype_of_typ t) 0
-      in StringMap.add n (L.define_global n init the_module) m in
-    List.fold_left global_var StringMap.empty globals in *)
-  (* How variable scoping works:
-     In Wampus, any function will have access to its local variables (which
-    includes variables declared in the function and any formal parameters), and
-    all global variables, which are those accessible from the global scope.
-    
-    To manage scope, we create two separate environments: one for globals and
-    one for locals. Each environment is a list of maps, where each map is a 
-    mapping from variable names to their corresponding LLVM values (llvalues).
-    The first map in the list is the innermost scope, and the last map is the
-    outermost scope (which typically contains function parameters). When we
-    look up a variable, we first look in the local environment, and if it's not
-    there, we look in the global environment. Within an environment, we look up
-    variables in the innermost scope first, and then work our way outwards.
-    
-    New scopes are created when we enter a new block (e.g. an if's body), and
-    are discarded when we leave the block. This means that we can shadow
-    variables in inner scopes, and that we can't access variables from outer
-    scopes once we leave them. This is the behavior we want.
-
-    The reason we use a list of maps instead of a single map is because we want
-    to be able to shadow variables in inner scopes. If we used a single map,
-    then we would have to remove the variable from the map when we leave the
-    scope, which would be a pain. Instead, we just discard the map when we
-    leave the scope, and the variable is no longer accessible.
-
-    Because Wampus doesn't have a true "main" function, it is a little tricky
-    to handle global variables, especially since LLVM requires a main function.
-    Instead, all statements in the global scope are treated as if
-    they were in the main function. If treated as a normal function, this would
-    mean that all global variables would be local variables, and would not be
-    accessible from other functions. To get around this, we make `main` a
-    special function that uses the global environment as its local environment.
-    *)
-  (* ref *)
   (* let global_vars : L.llvalue StringMap.t ref = ref StringMap.empty in *)
   let global_vars : L.llvalue StringMap.t ref = ref global_vars in
+
+  (* Print all the global variable names *)
+  (* let _ = StringMap.iter (fun name _ -> Printf.fprintf stderr "global var: %s\n" name) !global_vars in *)
 
   (* Define each function (arguments and return type) so we can 
    * define it's body and call it later *)
@@ -142,11 +103,13 @@ let translate program =
 
   (* Define each function (arguments and return type) so we can 
    * define it's body and call it later *)
-  let function_decls : (L.llvalue * sfunc_decl) StringMap.t =
+  let function_decls : ((L.llvalue * sfunc_decl) StringMap.t) =
     let function_decl m fdecl =
-      let name = fdecl.sfname
-      and formal_types = 
-        Array.of_list (List.map (fun (t,_) -> ltype_of_typ t) fdecl.sformals)
+      let name = fdecl.sfname in
+      (* print name to stderr *)
+      (* let _ = Printf.fprintf stderr "generating code for %s\n" name in *)
+      let formal_types = 
+        Array.of_list (List.map (fun (t, _) -> ltype_of_typ t) fdecl.sformals)
       in let ftype = L.function_type (ltype_of_typ fdecl.styp) formal_types in
       StringMap.add name (L.define_function name ftype the_module, fdecl) m in
     List.fold_left function_decl StringMap.empty functions in
@@ -204,12 +167,12 @@ let translate program =
       (* Allocate space for any locally declared variables and add the
        * resulting registers to our map *)
       let add_local m (t, n) =
-      let local_var = L.build_alloca (ltype_of_typ t) n builder
-        in StringMap.add n local_var m in
+        let local_var = L.build_alloca (ltype_of_typ t) n builder
+          in StringMap.add n local_var m in
 
-      let formals = List.fold_left2 add_formal StringMap.empty fdecl.sformals
-          (Array.to_list (L.params the_function)) in
-      List.fold_left add_local formals fdecl.slocals in
+        let formals = List.fold_left2 add_formal StringMap.empty fdecl.sformals
+            (Array.to_list (L.params the_function)) in
+        List.fold_left add_local formals fdecl.slocals in
 
     (* Return the value for a variable or formal argument. First check
      * locals, then globals *)
@@ -308,14 +271,19 @@ let translate program =
       | SCall ("printf", [e]) ->
         let (e_llvalue, envs) = expr builder e envs in
         (L.build_call printf_func [| float_format_str ; e_llvalue |] "printf" builder, envs)
-      (* | SCall (f, args) ->
-         let (fdef, fdecl) = StringMap.find f function_decls in
-   let llargs = List.rev (List.map (expr builder) (List.rev args)) in
-   let result = (match fdecl.styp with 
-                        A.Void -> ""
-                      | _ -> f ^ "_result") in
-         L.build_call fdef (Array.of_list llargs) result builder *)
-      | SBindDec (t, n) -> (L.const_int (ltype_of_typ t) 0, bind n (L.const_int (ltype_of_typ t) 0) envs)
+      | SCall (f, args) ->
+          let (fdef, fdecl) = StringMap.find f function_decls in
+          let llargs = List.rev (List.fold_left (fun llargs (t, e) -> 
+            let (e', envs) = expr builder (t, e) envs in
+            e' :: llargs) [] args) in
+          let result = (A.string_of_typ fdecl.styp) ^ "result" in
+          (L.build_call fdef (Array.of_list llargs) result builder, envs)
+      (* | SBindDec (t, n) -> (L.const_int (ltype_of_typ t) 0, bind n (L.const_int (ltype_of_typ t) 0) envs) *)
+      | SBindDec (t, n) ->
+          (* let _ = Printf.fprintf stderr "generating code for binding %s\n" n in *)
+          let local_var = L.build_alloca (ltype_of_typ t) n builder in
+          (L.const_int (ltype_of_typ t) 0, bind n local_var envs)
+          
       | SAssign (var_name, e) ->
           let (value_to_assign, envs) = expr builder e envs in
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in

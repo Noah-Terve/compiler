@@ -1,0 +1,9 @@
+int a = 5;
+printi(a);
+
+{
+    a = 6;
+    printi(a);
+}
+
+printi(a);
