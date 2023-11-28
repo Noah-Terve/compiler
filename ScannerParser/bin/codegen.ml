@@ -34,21 +34,14 @@ let translate program =
 
   let context    = L.global_context () in
   (* Add types to the context so we can use them in our LLVM code *)
-    let i32_t      = L.i32_type    context
-    and i8_t       = L.i8_type     context
-    and i1_t       = L.i1_type     context
-    and float_t    = L.double_type context
-    (* Create an LLVM module -- this is a "container" into which we'll 
-     generate actual code *)
-    and the_module = L.create_module context "Wampus" 
-    and pointer_t = L.pointer_type in
-
-  (* Gather all the functions *)
-  let functions =
-    List.rev (List.fold_left (fun acc units -> match units with 
-                                  SFdecl func -> func :: acc 
-                                | _ -> acc)
-                [main_function] program) in
+  let i32_t      = L.i32_type    context
+  and i8_t       = L.i8_type     context
+  and i1_t       = L.i1_type     context
+  and float_t    = L.double_type context
+  (* Create an LLVM module -- this is a "container" into which we'll 
+    generate actual code *)
+  and the_module = L.create_module context "Wampus" 
+  and pointer_t = L.pointer_type in
 
   (* Convert MicroC types to LLVM types *)
   let ltype_of_typ = function
@@ -59,6 +52,37 @@ let translate program =
     | A.String -> pointer_t i8_t
     | _ -> raise (Failure "types not implemented yet")
   in
+
+  (* Extract global variables from main, declaring them, in essense. This means
+      that all variables declared in main will be global variables. Since they
+      are being declared here, we also convert all bindassigs to assignments,
+      etc. main just uses the global environment as its local environment. *)
+  let parse_main_statements sstmts =
+    let parse_statement (sstmts, global_vars) sstmt = match sstmt with
+        SExpr (t, s) -> (match s with
+            SBindDec (t, n) -> (sstmts, StringMap.add n (L.define_global n (L.const_int (ltype_of_typ t) 0) the_module) global_vars)
+          | SBindAssign (t, n, e) ->
+              let global_vars = StringMap.add n (L.define_global n (L.const_int (ltype_of_typ t) 0) the_module) global_vars in
+              let e = (t, SAssign (n, e)) in
+              ((SExpr e) :: sstmts, global_vars)
+          | _ -> (sstmt :: sstmts, global_vars))
+      | _ -> (sstmt :: sstmts, global_vars)
+    in
+    let global_vars = StringMap.empty in
+    let (sstmts, global_vars) = List.fold_left parse_statement ([], global_vars) sstmts in
+    (List.rev sstmts, global_vars)
+  in
+
+  (* Update mains sbody and get the global vars *)
+  let (main_function_stmts, global_vars) = parse_main_statements main_function.sbody in
+  let main_function = { main_function with sbody = main_function_stmts } in
+
+  (* Gather all the functions *)
+  let functions =
+    List.rev (List.fold_left (fun acc units -> match units with 
+                                  SFdecl func -> func :: acc 
+                                | _ -> acc)
+                [main_function] program) in
 
   (* Declare each global variable; remember its value in a map *)
   (* let global_vars : L.llvalue StringMap.t =
@@ -102,7 +126,11 @@ let translate program =
     special function that uses the global environment as its local environment.
     *)
   (* ref *)
-  let global_vars : L.llvalue StringMap.t ref = ref StringMap.empty in
+  (* let global_vars : L.llvalue StringMap.t ref = ref StringMap.empty in *)
+  let global_vars : L.llvalue StringMap.t ref = ref global_vars in
+
+  (* Define each function (arguments and return type) so we can 
+   * define it's body and call it later *)
 
   let printf_t : L.lltype = 
       L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
@@ -190,7 +218,8 @@ let translate program =
     in *)
     let rec lookup n (envs: L.llvalue StringMap.t list) = 
       match envs with
-        [] -> raise (Failure ("variable not found: " ^ n))
+        [] -> (try StringMap.find n !global_vars
+             with Not_found -> raise (Failure ("Internal error: Semant should have rejected variable " ^ n ^ " in function " ^ fdecl.sfname)))
       | env :: rest -> try StringMap.find n env
                        with Not_found -> lookup n rest
     in
@@ -283,7 +312,13 @@ let translate program =
                         A.Void -> ""
                       | _ -> f ^ "_result") in
          L.build_call fdef (Array.of_list llargs) result builder *)
-      | _ -> raise (Failure "expr not implemented yet")
+      | SBindDec (t, n) -> (L.const_int (ltype_of_typ t) 0, bind n (L.const_int (ltype_of_typ t) 0) envs)
+      | SAssign (var_name, e) ->
+          let (value_to_assign, envs) = expr builder e envs in
+
+          let _ = L.build_store value_to_assign (lookup var_name envs) builder in
+          (value_to_assign, envs)
+      | _ -> raise (Failure "Codegen: expr not implemented yet")
     in
     
     (* Each basic block in a program ends with a "terminator" instruction i.e.
