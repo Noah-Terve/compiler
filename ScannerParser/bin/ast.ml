@@ -11,7 +11,7 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
 type uop = Neg | Not
 
 type typ = Int | Bool | Float | String | Char
-         | List of typ | Set of typ | Templated of string
+         | List of typ | Set of typ | Templated of string | Struct of string
 
 type expr =
     Literal of int
@@ -112,6 +112,7 @@ let string_of_uop = function
 | List(t) -> "list @l " ^ string_of_typ t ^ " @r"
 | Set(t) -> "set @l " ^ string_of_typ t ^ " @r"
 | Templated(t) -> t
+| Struct(t) -> t
 
 let rec string_of_expr = function
   Literal(l) -> string_of_int l

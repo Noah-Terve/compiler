@@ -9,8 +9,20 @@ let detemplate (units) =
   let known_templated_funcs = ref StringMap.empty in
   let known_templated_structs = ref StringMap.empty in
   
-  let get_new_function_name name t_list = 
-    "_" ^ name ^ "." ^ (String.concat "." (List.map string_of_typ t_list))
+  let rec typ_to_new_name = function
+      Int -> "int"
+    | Bool -> "bool"
+    | Float -> "float"
+    | String -> "string"
+    | Char -> "char"
+    | List(t) -> "list_" ^ typ_to_new_name t
+    | Set(t) -> "set_" ^ typ_to_new_name t
+    | Templated(t) -> t
+    | Struct(t) -> t
+  in
+
+  let get_new_name name t_list = 
+    "_" ^ name ^ "." ^ (String.concat "." (List.map typ_to_new_name t_list))
   in 
 
   (* given a name, a list of types, and the program, 
@@ -22,27 +34,31 @@ let detemplate (units) =
 
   let rec potentially_templated_to_typ typ names_to_types = match typ with
       Templated(n) -> (try StringMap.find n names_to_types
-                      with Not_found -> let msg = "Attempted to turn the template: " ^ n ^ ", into a type, but didn't find it as a current tempalted type" in 
-                                            raise (Failure msg))
+                      with Not_found -> 
+                        try let _ = StringMap.find n !resolved_structs in
+                            Struct(n)
+                        with Not_found ->
+                          let msg = "Attempted to turn the template or struct: " ^ n ^ ", into a type, but didn't find it as a current tempalted type or struct" in 
+                          raise (Failure msg))
     | List (t) -> List (potentially_templated_to_typ t names_to_types)
     | Set (t) -> Set (potentially_templated_to_typ t names_to_types)
     | _ -> typ
   in
   
   let rec resolve_templated_function name types prog = 
-    let new_fname = get_new_function_name name types in
+    let new_fname = get_new_name name types in
     let templated_func = try StringMap.find name !known_templated_funcs
-                         with Not_found -> let msg = "Function: " ^ name ^ " not declared but attempted to be called" in 
-                                           raise (Failure msg)
-    in let pairs = try List.combine templated_func.fun_t_list types
-      with Invalid_argument _ -> raise (Failure "Number of template parameters do not match with function declaration")
-    in let new_names_to_types = List.fold_left (fun map (n, t) -> (StringMap.add n t map)) StringMap.empty pairs
-    in let new_typ = (potentially_templated_to_typ templated_func.typ new_names_to_types)
-    in let new_formals = List.map (fun (typ, name) -> (potentially_templated_to_typ typ new_names_to_types, name)) templated_func.formals 
-    in let (new_body, p1) = resolve_stmts templated_func.body prog new_names_to_types
-    in let new_func = {typ = new_typ; fname = new_fname; formals = new_formals; body = new_body; fun_t_list = []}
-    in let _ = resolved_functions := (StringMap.add new_func.fname new_func !resolved_functions)
-    in Fdecl(new_func) :: p1
+                         with Not_found -> let msg = "Function: " ^ name ^ " was not declared but attempted to be called" in 
+                                           raise (Failure msg) in
+    let pairs = try List.combine templated_func.fun_t_list types
+                with Invalid_argument _ -> raise (Failure "Number of template parameters do not match with function declaration") in
+    let new_names_to_types = List.fold_left (fun map (n, t) -> (StringMap.add n t map)) StringMap.empty pairs in
+    let new_typ = (potentially_templated_to_typ templated_func.typ new_names_to_types) in
+    let new_formals = List.map (fun (typ, name) -> (potentially_templated_to_typ typ new_names_to_types, name)) templated_func.formals in
+    let (new_body, p1) = resolve_stmts templated_func.body prog new_names_to_types in
+    let new_func = {typ = new_typ; fname = new_fname; formals = new_formals; body = new_body; fun_t_list = []} in
+    let _ = resolved_functions := (StringMap.add new_func.fname new_func !resolved_functions) in
+    Fdecl(new_func) :: p1
     
     (* check that the length of the list of tempaltes they gave is the right length
        
@@ -58,6 +74,22 @@ let detemplate (units) =
        add to the list of resolved functions
      *)
   and
+
+  resolve_templated_struct name types prog =
+    let new_sname = get_new_name name types in
+    let templated_struct = try StringMap.find name !known_templated_structs
+                           with Not_found -> let msg = "Struct: " ^ name ^ " was not declared but attempted to be instanciated" in 
+                                             raise (Failure msg) in
+    let pairs = try List.combine templated_struct.t_list types
+                with Invalid_argument _ -> raise (Failure "Number of template parameters do not match with function declaration") in
+    let new_names_to_types = List.fold_left (fun map (n, t) -> (StringMap.add n t map)) StringMap.empty pairs in
+    let new_formals = List.map (fun (typ, name) -> (potentially_templated_to_typ typ new_names_to_types, name)) templated_struct.sformals in
+    let new_struct = {name = new_sname; sformals = new_formals; t_list = []} in
+    let _ = resolved_structs := (StringMap.add new_struct.name new_struct !resolved_structs) in
+    Sdecl(new_struct) :: prog
+
+  and
+
 
   (* given a list of expressions and a program (list of prog_units)
      resolve each expression and return the list of expressions and the
@@ -82,15 +114,15 @@ let detemplate (units) =
                          (Call(name, exps), p0)
     | TemplatedCall (name, ts, es) -> 
 
-      (let new_fname = get_new_function_name name ts in
-                  (* case where the function has been resolved *)
+      (let new_ts = List.map (fun typ -> potentially_templated_to_typ typ names_to_types) ts in
+       let new_fname = get_new_name name new_ts in
+                  (* case where the function has already been resolved to this set of types *)
       try let _ = StringMap.find new_fname !resolved_functions in 
-                  let (exprs, p0) = resolve_exprs es prog names_to_types in 
-                  (Call(new_fname, exprs), p0)
+          let (exprs, p0) = resolve_exprs es prog names_to_types in 
+          (Call(new_fname, exprs), p0)
               
               (* case where the function hasnt been resolved yet *)
-      with Not_found -> let new_ts = List.map (fun typ -> potentially_templated_to_typ typ names_to_types) ts in
-                        let p0 = resolve_templated_function name new_ts prog in
+      with Not_found -> let p0 = resolve_templated_function name new_ts prog in
                         let (exprs, p1) = resolve_exprs es p0 names_to_types in 
                         (Call(new_fname, exprs), p1))
 
@@ -101,8 +133,30 @@ let detemplate (units) =
                            (BindDec(ty, name), prog)
     | StructAssign (name, field, e) -> let (exp1, p0) = resolve_expr e prog names_to_types in
                                        (StructAssign(name, field, exp1), p0)
-    | BindTemplatedDec (typ, ts, name) -> raise (Failure "not implemented yet")
-    | BindTemplatedAssign (typ, ts, name, e) -> raise (Failure "not implemented yet")
+    | BindTemplatedDec (s_id, ts, name) ->
+      (let new_ts = List.map (fun typ -> potentially_templated_to_typ typ names_to_types) ts in
+       let new_sname = get_new_name s_id new_ts in
+                  (* case where the struct has already been resolved to this set of types *)
+      try let _ = StringMap.find new_sname !resolved_structs in
+          (BindDec(Struct(new_sname), name), prog)
+
+                  (* cause where the struct hasn't been resolved yet *)
+      with Not_found -> let p0 = resolve_templated_struct s_id new_ts prog in
+                        (BindDec(Struct(new_sname), name), p0))      
+    | BindTemplatedAssign (s_id, ts, name, e) ->
+
+      (let new_ts = List.map (fun typ -> potentially_templated_to_typ typ names_to_types) ts in
+       let new_sname = get_new_name s_id new_ts in
+                  (* case where the struct has already been resolved to this set of types *)
+      try let _ = StringMap.find new_sname !resolved_structs in
+          let (exp1, p0) = resolve_expr e prog names_to_types in
+          (BindAssign(Struct(new_sname), name, exp1), p0)
+
+                  (* cause where the struct hasn't been resolved yet *)
+      with Not_found -> let p0 = resolve_templated_struct s_id new_ts prog in
+                        let (exp1, p1) = resolve_expr e p0 names_to_types in
+                        (BindAssign(Struct(new_sname), name, exp1), p1))
+
     | ListExplicit (es) -> let (exps, p0) = resolve_exprs es prog names_to_types in
                            (ListExplicit(exps), p0)
     | SetExplicit (es) -> let (exps, p0) = resolve_exprs es prog names_to_types in

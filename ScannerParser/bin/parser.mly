@@ -199,7 +199,7 @@ expr:
   // Variable Declarations
   | typ ID ASSIGN expr                 { BindAssign ($1, $2, $4) }
   | typ ID                             { BindDec($1, $2) }
-  | ID DOT ID                         { StructMem ($1, $3) }
+  | ID DOT ID                          { StructMem ($1, $3) }
   
   // Struct dot assign and templating struct
   | LPAREN expr RPAREN                 { $2            }
