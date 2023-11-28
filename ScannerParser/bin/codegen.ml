@@ -186,7 +186,7 @@ let translate program =
       | env :: rest -> try StringMap.find n env
                        with Not_found -> lookup n rest
     in
-
+    (* Adds the mapping n : value into the current environment *)
     let bind n v (envs: L.llvalue StringMap.t list) = 
       match envs with
         [] -> raise (Failure ("Internal error: no environment to bind variable in"))
