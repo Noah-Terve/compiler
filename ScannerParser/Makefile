@@ -1,7 +1,7 @@
 all: toplevel
 
 # "make toplevel" compiles the Wampus compiler
-toplevel: bin/ast.ml bin/parser.mly bin/scanner.mll bin/toplevel.ml
+toplevel: bin/ast.ml bin/parser.mly bin/scanner.mll bin/toplevel.ml bin/codegen.ml bin/semant.ml
 	dune build
 
 
