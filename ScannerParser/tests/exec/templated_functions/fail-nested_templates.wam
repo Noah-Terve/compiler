@@ -1,0 +1,16 @@
+template @l T0, T1 @r
+T1 test2(THE_TEMPLATE x, T1 y) {
+    T0 w;
+    T1 z;
+    return y;
+}
+
+template @l THE_TEMPLATE, T1 @r
+THE_TEMPLATE test(THE_TEMPLATE x, T1 y) {
+    THE_TEMPLATE w = x;
+    T1 z = y;
+
+    return test2 @l string, THE_TEMPLATE @r ("hello", x);
+}
+
+test @l int, int @r (123, 45);

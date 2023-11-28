@@ -1,0 +1,7 @@
+template @l T0, T1 @r
+T0 test(T0 x, T1 y) {
+    T0 w = x;
+    T1 z = y;
+}
+
+test @l int @r (123, 45);

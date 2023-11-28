@@ -311,9 +311,11 @@ let translate program =
       | SBindDec (t, n) -> (L.const_int (ltype_of_typ t) 0, bind n (L.const_int (ltype_of_typ t) 0) envs)
       | SAssign (var_name, e) ->
           let (value_to_assign, envs) = expr builder e envs in
-
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in
           (value_to_assign, envs)
+      | SBindAssign (t, var_name, e) ->
+          let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
+          expr builder (t, SAssign (var_name, e)) envs
       | _ -> raise (Failure "Codegen: expr not implemented yet")
     in
     

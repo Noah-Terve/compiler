@@ -34,10 +34,45 @@ of running a test to a golden standard which we have created. For tests that are
 supposed to pass they are .out files of the same name as the test. We validate
 that a program that couldn't be compiled actually can't by comparing it to the
 error that it is supposed to raise, which we have generated and stored in a
-.err file. The two test files we have included exemplify both of these options,
-one passing and one failing.
-    /tests/exec/test-print_int.wam - a simple file that prints 123
-    /tests/exec/fail-print_int.wam - a file that tries to call print but gives it a bad argument
+.err file. 
+
+We have a whole set of files which test the various parts of our language we have
+implemented so far. They are noted below and seperated out by the different
+things they test. All these files are stored in the tests/exec directory or one
+of its subdirectories
+
+Basic print tests, all in:
+/tests/exec/basic_print/
+    test-print_int.wam - a simple file that prints 123
+    fail-print_int.wam - a file that tries to call print but gives it a bad argument
+    test-print_bool.wam - a simple file that prints out 1 for true and 0 for false
+    test-print_char.wam - a simple file that prints out a character
+    test-print_float.wam - a simple file that prints out a float
+    test-print_string.wam - a simple file that prints out hello world
+
+Basic Binop Literal Tests, all in:
+/tests/exec/print-binop/
+    test-print_alltypes.wam - a file that prints using all print function's of implemented types
+    test-print_float_binop.wam - a file that prints out all binops using float literals
+    test-print_float_int_arith.wam - a file that prints out float/int arithmetic
+    test-print_int_binop.wam - a file that prints out all binops using int literals
+    test-print_mod.wam - a file that prints out the mod binop
+
+Basic Uop Literal Tests, all in:
+/tests/exec/print-uop/
+    test-print_uop.wam - a file that prints out all implemented types using uops
+
+Templated function tests, all in:
+/tests/exec/templated_functions/
+    fail-nested_templates.wam - a templated function tries to access a template of an outer calling function
+    fail-templated_function.wam - tries to make a call with a template as a type passed in when the template doesn't exist (i.e. the template isn't inside a template block)
+    fail-wrong_number_of_args_for_template.wam - tries to make a call to a templated function but gives the wrong number of types to the template resolution
+    test-basic_types.wam - test a templated function with all pairs of basic types and print the results
+    test-nested_functions.wam - call a templated function from inside a templated function
 
 Things we still need to add to our compiler:
-   Functionality of all things except print and basic types.
+   Lists
+   Sets
+   Structs
+   We don't enforce reachable returns right now
+   enhanced for loops

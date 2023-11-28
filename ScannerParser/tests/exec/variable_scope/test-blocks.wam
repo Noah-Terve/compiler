@@ -1,0 +1,26 @@
+int a = 5;
+printi(a);
+
+{
+    a = 6;
+    int b;
+    b = 7;
+    /*
+    {
+        a = 8;
+        b = 9;
+        int c = 10;
+        printi(a);
+        printi(b);
+        printi(c);
+    }
+    */
+    
+    printi(a);
+
+    /*
+    printi(b);
+    */
+}
+
+printi(a);
