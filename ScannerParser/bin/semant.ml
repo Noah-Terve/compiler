@@ -83,6 +83,9 @@ let check units =
     with Not_found -> raise (Failure ("unrecognized function " ^ s))
   in
 
+  let globals : typ StringMap.t ref = ref StringMap.empty in
+
+
   (* let _ = find_func "main" in Ensure "main" is defined *)
 
   (* let check_function func =
@@ -102,7 +105,11 @@ let check units =
     let bind id (ty: typ) env = match env with
         [] -> raise (Failure ("BUG IN COMPILER: no environments"))
       | env :: envs -> StringMap.add id ty env :: envs
-    in 
+    in
+    let bind_global id (ty : typ) =
+      let env = !globals in
+      globals := StringMap.add id ty env
+    in
 
     (* let type_of_identifier s = 
       try StringMap.find s symbols
