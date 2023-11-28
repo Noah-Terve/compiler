@@ -262,7 +262,7 @@ let translate program =
           | A.Geq     -> L.build_fcmp L.Fcmp.Oge
           | A.And | A.Or ->
               raise (Failure "Internal error: semant should have rejected and/or on float")
-          | _ -> raise (Failure "not implemented yet")
+          | _ -> raise (Failure ("unimplemented float binop: " ^ (A.string_of_op op)))
           ) (L.build_sitofp e1' float_t "ItoF" builder) (L.build_sitofp e2' float_t "ItoF" builder) "tmp" builder, envs)
         else if (op = A.Add && (t1 = A.String || t1 = A.Char)) then 
           let s1 = getLit (t1, expr1) in
@@ -283,7 +283,7 @@ let translate program =
           | A.Leq     -> L.build_icmp L.Icmp.Sle
           | A.Greater -> L.build_icmp L.Icmp.Sgt
           | A.Geq     -> L.build_icmp L.Icmp.Sge
-          | _ -> raise (Failure "not implemeneted yet")
+          | _ -> raise (Failure ("unimplemented binop: " ^ (A.string_of_op op)))
         ) e1' e2' "tmp" builder, envs
       | SUnop(op, e) ->
           let (t, _) = e in
@@ -323,7 +323,7 @@ let translate program =
       | SBindAssign (t, var_name, e) ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
           expr builder (t, SAssign (var_name, e)) envs
-      | _ -> raise (Failure "Codegen: expr not implemented yet")
+      | _ -> raise (Failure ("expr in codegen not implemented yet (ignore type): " ^ (string_of_sexpr (A.Int, e))))
     in
     
     (* Each basic block in a program ends with a "terminator" instruction i.e.
