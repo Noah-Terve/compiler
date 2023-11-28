@@ -1,0 +1,5 @@
+printi (5 + 'c');
+printc('8' % '9'); /* prints out 8 */
+printb(true);
+prints("hello world");
+printf(5.9 + 5.9);

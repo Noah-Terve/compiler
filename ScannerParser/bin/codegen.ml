@@ -247,7 +247,7 @@ let translate program =
         let (e1', envs) = expr builder e1 envs in
         let (e2', envs) = expr builder e2 envs in
         
-        if (t1 = A.Float || t2 = A.Float) then (match op with 
+        if (t1 = A.Float || t2 = A.Float) then ((match op with 
             A.Add     -> L.build_fadd
           | A.Sub     -> L.build_fsub
           | A.Mult    -> L.build_fmul
@@ -258,11 +258,10 @@ let translate program =
           | A.Leq     -> L.build_fcmp L.Fcmp.Ole
           | A.Greater -> L.build_fcmp L.Fcmp.Ogt
           | A.Geq     -> L.build_fcmp L.Fcmp.Oge
-          (* | A.Pluseq  -> expr builder SAssign(e, ) *)
           | A.And | A.Or ->
               raise (Failure "Internal error: semant should have rejected and/or on float")
           | _ -> raise (Failure "not implemented yet")
-          ) e1' e2' "tmp" builder, envs
+          ) (L.build_sitofp e1' float_t "ItoF" builder) (L.build_sitofp e2' float_t "ItoF" builder) "tmp" builder, envs)
         else (match op with
             A.Add     -> L.build_add
           | A.Sub     -> L.build_sub
@@ -369,17 +368,17 @@ let translate program =
       are the build_br functions used at the end of the then and else blocks (if
       they don't already have a terminator) and the build_cond_br function at
       the end, which adds jump instructions to the "then" and "else" basic blocks *)
-      | SIf (predicate, then_stmt, else_stmt) ->
-         let bool_val = expr builder predicate in
+    | SIf (predicate, then_stmt, else_stmt) ->
+        let bool_val = expr builder predicate in
          (* Add "merge" basic block to our function's list of blocks *)
    let merge_bb = L.append_block context "merge" the_function in
          (* Partial function used to generate branch to merge block *) 
-         let branch_instr = L.build_br merge_bb in
+        let branch_instr = L.build_br merge_bb in
 
          (* Same for "then" basic block *)
    let then_bb = L.append_block context "then" the_function in
          (* Position builder in "then" block and build the statement *)
-         let then_builder = stmt (L.builder_at_end context then_bb) then_stmt in
+        let then_builder = stmt (L.builder_at_end context then_bb) then_stmt in
          (* Add a branch to the "then" block (to the merge block) 
            if a terminator doesn't already exist for the "then" block *)
    let () = add_terminal then_builder branch_instr in

@@ -264,17 +264,6 @@ let check (units : program) =
                   (envs, SReturn(e'))
     | _ -> raise (Failure "Unhandled statement")
 
-
-  (* in (* body of check_function *)
-  { styp = func.typ;
-    sfname = func.fname;
-    sformals = formals';
-    slocals  = locals';
-    sbody = match check_stmt (Block func.body) with
-      SBlock(sl) -> sl
-    | _ -> let err = "internal error: block didn't become a block?"
-    in raise (Failure err)
-  } *)
 in
 
   (* Checks that each return in a list of statements is of the correct type *)

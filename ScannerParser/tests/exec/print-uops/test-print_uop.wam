@@ -1,0 +1,5 @@
+printi(-5);
+printf(-3.15);
+printb(not true);
+printb(!false);
+printi(1 + -'c');
