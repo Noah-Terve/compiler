@@ -1,8 +1,8 @@
 int checkScope(int x)
 {
-    {
+    /*{
         int x = 10;
-    }
+    }*/
     return x;
 }
 

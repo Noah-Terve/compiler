@@ -80,7 +80,7 @@ let translate program =
   (* Gather all the functions *)
   let functions =
     List.rev (List.fold_left (fun acc units -> match units with 
-                                  SFdecl func -> func :: acc 
+                                  SFdecl func -> func :: acc
                                 | _ -> acc)
                 [main_function] program) in
 
@@ -104,10 +104,11 @@ let translate program =
   (* Define each function (arguments and return type) so we can 
    * define it's body and call it later *)
   let function_decls : ((L.llvalue * sfunc_decl) StringMap.t) =
+    let _ = Printf.fprintf stderr "generating code for function\n" in
     let function_decl m fdecl =
       let name = fdecl.sfname in
       (* print name to stderr *)
-      (* let _ = Printf.fprintf stderr "generating code for %s\n" name in *)
+      let _ = Printf.fprintf stderr "generating code for %s\n" name in
       let formal_types = 
         Array.of_list (List.map (fun (t, _) -> ltype_of_typ t) fdecl.sformals)
       in let ftype = L.function_type (ltype_of_typ fdecl.styp) formal_types in
@@ -116,7 +117,7 @@ let translate program =
   
   (* Fill in the body of the given function *)
   let build_function_body fdecl =
-    let envs : L.llvalue StringMap.t list = [StringMap.empty] in
+    let (envs : L.llvalue StringMap.t list) = [StringMap.empty] in
     let (the_function, _) = StringMap.find fdecl.sfname function_decls in
     let builder = L.builder_at_end context (L.entry_block the_function) in
     
@@ -138,16 +139,16 @@ let translate program =
       formals
     in
 
-    let add_local (t, n) builder cur_vars =
+    (* let add_local (t, n) builder cur_vars =
       let local_var = L.build_alloca (ltype_of_typ t) n builder in
       StringMap.add n local_var cur_vars
-    in
+    in *)
 
-    let lookup n cur_vars =
+    (* let lookup n cur_vars =
       try StringMap.find n cur_vars
         with Not_found -> try StringMap.find n !global_vars
           with Not_found -> raise (Failure ("Internal error: Semant should have rejected variable " ^ n ^ " in function " ^ fdecl.sfname))
-    in
+    in *)
 
 
     (* Construct the function's "locals": formal arguments and locally
