@@ -6,3 +6,4 @@ ScannerParser/testall.log
 ScannerParser/toplevel.opam
 test.log
 out/
+language_report/
