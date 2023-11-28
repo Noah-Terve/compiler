@@ -160,11 +160,11 @@ then
     files=$@
 else
     # Find all test-*.wam and fail-*.wam files in tests/
-    files="tests/exec/test-*.wam tests/exec/fail-*.wam"
+    # files="tests/exec/test-*.wam tests/exec/fail-*.wam"
 
     # Files include any test-*.wam and fail-*.wam file in tests/ or any
     # of its subdirectories.
-    # files=`find test/exec -name 'test-*.wam' -o -name 'fail-*.wam'`
+    files=`find tests/exec -name 'test-*.wam' -o -name 'fail-*.wam'`
 fi
 
 for file in $files
