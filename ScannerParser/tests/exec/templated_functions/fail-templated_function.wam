@@ -1,0 +1,8 @@
+template @l T, hello @r
+T test(T x, hello y) {
+    T w = x;
+    hello z = y;
+    return w;
+}
+
+test @l int, T @r (5, 4);

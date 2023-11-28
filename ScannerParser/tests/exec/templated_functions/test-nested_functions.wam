@@ -1,0 +1,17 @@
+template @l T0, T1 @r
+T1 test2(T0 x, T1 y) {
+    T0 w;
+    T1 z;
+    return y;
+}
+
+template @l T0, T1 @r
+T0 test(T0 x, T1 y) {
+    T0 w = x;
+    T1 z = y;
+
+    return test2 @l string, T0 @r ("hello", x);
+}
+
+printi(test @l int, int @r (123, 45));
+prints(test @l string, bool @r ("home is where the heart is", true));
