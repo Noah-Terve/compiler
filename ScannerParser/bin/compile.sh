@@ -5,11 +5,17 @@
 # output executable.
 # Usage: compile.sh <wampus source file> <output executable>
 
+# if any command fails or any unset variable is used, exit immediately
 set -euo pipefail
 
+# get the directory of this script, regardless of where it is called from
+# Info: BASH_SOURCE[0] is the path to this script. dirname strips the filename
+#       from the path, leaving the directory. We cd into that directory and
+#       pwd to get the absolute path.
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 HOME_DIR="$(dirname "$SCRIPT_DIR")"
 
+# location of our compilers (llc, cc, and wampus).
 LLC="llc"
 CC="cc"
 WAMPUS="$HOME_DIR/_build/default/bin/toplevel.exe"
@@ -20,11 +26,21 @@ usage() {
     exit 1
 }
 
+# verify llc and cc are in the path
+if ! command -v "$LLC" >/dev/null 2>&1; then
+    echo "Error: $LLC not found in path"
+    exit 1
+fi
+if ! command -v "$CC" >/dev/null 2>&1; then
+    echo "Error: $CC not found in path"
+    exit 1
+fi
+
 
 # set time limit for all operations
 ulimit -t 30
 
-# check arguments
+# check for correct number of arguments (input and output file)
 if [ $# -ne 2 ]; then
     usage
 fi
@@ -48,6 +64,8 @@ echo "$WAMPUS $wam_file > $TARGET_DIR/$name.ll"
 echo ""
 
 # Compile the llvm file to assembly
+# Info: -relocation-model=pic is used to make the assembly position independent
+#       so that it can be linked into an executable
 echo "Compiling llvm to assembly:"
 echo "$LLC -relocation-model=pic $TARGET_DIR/$name.ll -o $TARGET_DIR/$name.s"
 "$LLC" -relocation-model=pic "$TARGET_DIR/$name.ll" -o "$TARGET_DIR/$name.s"
