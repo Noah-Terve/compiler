@@ -117,7 +117,7 @@ let translate program =
   
   (* Fill in the body of the given function *)
   let build_function_body fdecl =
-    let (envs : L.llvalue StringMap.t list) = [StringMap.empty] in
+    let _ = Printf.fprintf stderr "generating code for function body\n" in
     let (the_function, _) = StringMap.find fdecl.sfname function_decls in
     let builder = L.builder_at_end context (L.entry_block the_function) in
     
@@ -126,7 +126,7 @@ let translate program =
     and string_format_str = L.build_global_stringptr "%s\n" "fmt" builder 
     and char_format_str = L.build_global_stringptr "%c\n" "fmt" builder in
 
-    let local_vars =
+    (* let local_vars =
       let add_formal m (t, n) p =
         let () = L.set_value_name n p in
         let local = L.build_alloca (ltype_of_typ t) n builder in
@@ -137,7 +137,7 @@ let translate program =
       let formals = List.fold_left2 add_formal StringMap.empty fdecl.sformals 
           (Array.to_list (L.params the_function)) in
       formals
-    in
+    in *)
 
     (* let add_local (t, n) builder cur_vars =
       let local_var = L.build_alloca (ltype_of_typ t) n builder in
@@ -157,24 +157,29 @@ let translate program =
     (* THIS LINE NEEDS TO BE UNCOMMENTED TO ADD BACK IN LOCAL VARS
        NOT NEEDED NOW, REMOVING TO REMOVE UNUSED VAR WARNING
        let local_vars = *)
-    let _ =
-      let add_formal m (t, n) p = 
-        let () = L.set_value_name n p in
-          let local = L.build_alloca (ltype_of_typ t) n builder in
-            let _  = L.build_store p local builder in
-              StringMap.add n local m 
-      in
+    let local_vars =
+          let _ = Printf.fprintf stderr "Adding formals\n" in
+          let add_formal m (t, n) p = 
+            let () = L.set_value_name n p in
+              let local = L.build_alloca (ltype_of_typ t) n builder in
+                let _  = L.build_store p local builder in
+                  StringMap.add n local m 
+          in
 
-      (* Allocate space for any locally declared variables and add the
-       * resulting registers to our map *)
-      let add_local m (t, n) =
-        let local_var = L.build_alloca (ltype_of_typ t) n builder
-          in StringMap.add n local_var m in
+          (* Allocate space for any locally declared variables and add the
+          * resulting registers to our map *)
+          let add_local m (t, n) =
+            let local_var = L.build_alloca (ltype_of_typ t) n builder
+              in StringMap.add n local_var m 
+          in
+          let formals = List.fold_left2 add_formal StringMap.empty fdecl.sformals (Array.to_list (L.params the_function)) in 
+            
+          let _ = Printf.fprintf stderr "checking if added after formals: %b s \n" (StringMap.is_empty (formals)) in
+            (* let _ = StringMap.iter (fun k v -> Printf.fprintf stderr "Adding key: %s\n" k) formals in  *)
 
-        let formals = List.fold_left2 add_formal StringMap.empty fdecl.sformals
-            (Array.to_list (L.params the_function)) in
-        List.fold_left add_local formals fdecl.slocals in
-
+          List.fold_left add_local formals fdecl.slocals in
+  (* let _ = Printf.fprintf stderr "**** checking if added after formals: %b s \n" (StringMap.is_empty (List.hd envs)) in *) 
+    let (envs : L.llvalue StringMap.t list) = [local_vars] in
     (* Return the value for a variable or formal argument. First check
      * locals, then globals *)
     (* let lookup n = try StringMap.find n local_vars
