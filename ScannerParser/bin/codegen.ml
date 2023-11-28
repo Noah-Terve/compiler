@@ -262,7 +262,7 @@ let translate program =
           | A.And | A.Or ->
               raise (Failure "Internal error: semant should have rejected and/or on float")
           | _ -> raise (Failure "not implemented yet")
-          ) e1' e2' "tmp" builder, envs
+          ) (convert_to_float (t1, e1')) (convert_to_float (t2, e2')) "tmp" builder, envs
         else (match op with
             A.Add     -> L.build_add
           | A.Sub     -> L.build_sub
