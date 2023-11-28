@@ -1,0 +1,2 @@
+prints("hello" + "hello");
+prints('c' + 'c');
