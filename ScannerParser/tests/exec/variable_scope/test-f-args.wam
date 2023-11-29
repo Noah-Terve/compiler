@@ -1,0 +1,9 @@
+int foo(int a, int b) {
+    return a + b;
+}
+
+int test_fun(int a, int b) {
+    return foo(a = a + 1, b = b + 1);
+}
+
+printi(test_fun(1, 2));

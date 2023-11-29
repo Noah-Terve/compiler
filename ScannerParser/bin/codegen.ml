@@ -279,11 +279,16 @@ let translate program =
         (L.build_call printf_func [| float_format_str ; e_llvalue |] "printf" builder, envs)
       | SCall (f, args) ->
           let (fdef, fdecl) = StringMap.find f function_decls in
-          let llargs = List.rev (List.fold_left (fun llargs (t, e) -> 
+          (* let llargs = List.rev (List.fold_left (fun llargs (t, e) -> 
+            let (e', _envs) = expr builder (t, e) envs in
+            e' :: llargs) [] args) in *)
+          let (llargs, envs) = List.fold_left (fun (llargs, envs) (t, e) -> 
             let (e', envs) = expr builder (t, e) envs in
-            e' :: llargs) [] args) in
+            (e' :: llargs, envs)) ([], envs) args in
           let result = (A.string_of_typ fdecl.styp) ^ "result" in
-          (L.build_call fdef (Array.of_list llargs) result builder, envs)
+
+          (* (L.build_call fdef (Array.of_list llargs) result builder, envs) *)
+          (L.build_call fdef (Array.of_list (List.rev llargs)) result builder, envs)
       (* | SBindDec (t, n) -> (L.const_int (ltype_of_typ t) 0, bind n (L.const_int (ltype_of_typ t) 0) envs) *)
       | SBindDec (t, n) ->
           (* let _ = Printf.fprintf stderr "generating code for binding %s\n" n in *)
@@ -339,7 +344,7 @@ let translate program =
 
           (* Generate code for this expression, return resulting builder *)
       | SReturn e -> let _ = 
-          let (e_llvalue, envs) = expr builder e envs in
+          let (e_llvalue, _envs) = expr builder e envs in
           L.build_ret e_llvalue builder in (builder, envs)
 
         
@@ -408,7 +413,7 @@ let translate program =
     (* Build the code for each statement in the function *)
     (* let builder = stmt builder (SBlock fdecl.sbody) in *)
     (* Note: envs is returned because we need to consider variable assignment *)
-    let (builder, envs) = stmt builder (SBlock fdecl.sbody) envs in
+    let (builder, _envs) = stmt builder (SBlock fdecl.sbody) envs in
 
     (* Add a return if the last block falls off the end *)
     add_terminal builder (match fdecl.styp with

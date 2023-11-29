@@ -5,12 +5,6 @@ WAMPUS := $(ROOT_DIR)/_build/default/bin/$(EXE_NAME)
 COMPILE_SCRIPT := $(ROOT_DIR)/bin/compile.sh
 OUTPUT_DIR := $(ROOT_DIR)/out
 
-temp:
-	@echo $(MAKEFILE_DIR)
-	@echo $(ROOT_DIR)
-	@echo $(WAMPUS)
-	@echo $(COMPILE_SCRIPT)
-
 all: toplevel
 
 # "make toplevel" compiles the Wampus compiler
@@ -27,16 +21,10 @@ test: all testall.sh
 .PHONY: clean
 clean:
 	dune clean
-	rm -rf testall.log *.diff toplevel.opam
-	rm *.s
-	rm *.ll
-	rm *.out
+	rm -r out/
+	rm testall.log *.diff toplevel.opam *.s *.ll *.out
 
-# Generate the output of a given test
-# The test is in the form of a full path to a .wam file
-# This rule will generate a .out file in the same directory
-# The .out file contains the output of running the test, after compiling it
-# with the Wampus compiler
+# Generate a .out file from a .wam file
 %.out: %.wam toplevel
 	$(COMPILE_SCRIPT) $< $(OUTPUT_DIR)/$(notdir $<)
 	$(OUTPUT_DIR)/$(notdir $<) > $@
