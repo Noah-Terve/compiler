@@ -16,17 +16,14 @@ intermediate files generated, run:
     > `./bin/compile.sh [.wam file] [executable name]`
 
 To run all the tests and see the status of each, use:
-    > `make test`.
-You can then see the sepcific results of all tests in the generated file: `testall.log`
+    > `make test`
+You can then see the test log in: `testall.log`
 
-You can use the `testall.sh` script for more fine-grain control. Running with
+You can use also the `testall.sh` script for more fine-grain control. Running with
 `-h` will give the help menu, where you can get more info. Running with no
 options and no test files will test all of our cases. Specifying a test file
 will run only that test.
     > `./testall.sh [options] [.wam files]`
-
-how your test script
-validates that a compiled program is correct or that an invalid program couldn’t be compiled. 
 
 Testing:
 Our testing script validates that a program is correct by comparing the results
@@ -40,6 +37,9 @@ We have a whole set of files which test the various parts of our language we hav
 implemented so far. They are noted below and seperated out by the different
 things they test. All these files are stored in the tests/exec directory or one
 of its subdirectories
+
+Number of failing tests: 5
+Number of passing tests: 20
 
 Basic print tests, all in:
 /tests/exec/basic_print/
@@ -70,9 +70,31 @@ Templated function tests, all in:
     test-basic_types.wam - test a templated function with all pairs of basic types and print the results
     test-nested_functions.wam - call a templated function from inside a templated function
 
+Variable declaration and assignment, all in: 
+/tests/exec/variable_dec_assign/
+    test-dec-assign-in-block.wam - variable declaration and assignment in non-global scope
+    test-dec-assign.wam - variable declaration and assignment in global scope
+    test-dec-in-block.wam - variable declaration in non-global scope
+    test-dec.wam - variable declaration in global scope
+
+
+Variable Scope tests, all in:
+/tests/exec/variable_scope
+    fail-test-function-scope.wam - a function tries to use the local variables of the function that called it (not passed in as formal parameters)
+    test-f-args.wam - updating environment within an expression e.g. `f(x = x + 1)`
+    test-globals-in-blocks.wam - global variables should be accessible in all scopes
+
+
 Things we still need to add to our compiler:
-   Lists
-   Sets
-   Structs
-   We don't enforce reachable returns right now
-   enhanced for loops
+    Lists
+    Sets
+    Structs
+    We don't enforce reachable returns right now
+    enhanced for loops
+
+Features added that MicroC doesn't have:
+    Function templates
+    Strings
+    Characters
+    Variable shadowing
+    Variable declaration doesn't have to be at the top of a block
