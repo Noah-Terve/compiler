@@ -59,7 +59,7 @@ let translate program =
       etc. main just uses the global environment as its local environment. *)
   let parse_main_statements sstmts =
     let parse_toplevel_statement (sstmts, global_vars) sstmt = match sstmt with
-        SExpr (t, s) -> (match s with
+        SExpr (_t, s) -> (match s with
             SBindDec (t, n) -> (sstmts, StringMap.add n (L.define_global n (L.const_int (ltype_of_typ t) 0) the_module) global_vars)
           | SBindAssign (t, n, e) ->
               let global_vars = StringMap.add n (L.define_global n (L.const_int (ltype_of_typ t) 0) the_module) global_vars in
@@ -104,11 +104,11 @@ let translate program =
   (* Define each function (arguments and return type) so we can 
    * define it's body and call it later *)
   let function_decls : ((L.llvalue * sfunc_decl) StringMap.t) =
-    let _ = Printf.fprintf stderr "generating code for function\n" in
+    (* let _ = Printf.fprintf stderr "generating code for function\n" in *)
     let function_decl m fdecl =
       let name = fdecl.sfname in
       (* print name to stderr *)
-      let _ = Printf.fprintf stderr "generating code for %s\n" name in
+      (* let _ = Printf.fprintf stderr "generating code for %s\n" name in *)
       let formal_types = 
         Array.of_list (List.map (fun (t, _) -> ltype_of_typ t) fdecl.sformals)
       in let ftype = L.function_type (ltype_of_typ fdecl.styp) formal_types in
@@ -117,7 +117,7 @@ let translate program =
   
   (* Fill in the body of the given function *)
   let build_function_body fdecl =
-    let _ = Printf.fprintf stderr "generating code for function body\n" in
+    (* let _ = Printf.fprintf stderr "generating code for function body\n" in *)
     let (the_function, _) = StringMap.find fdecl.sfname function_decls in
     let builder = L.builder_at_end context (L.entry_block the_function) in
     
@@ -126,39 +126,11 @@ let translate program =
     and string_format_str = L.build_global_stringptr "%s\n" "fmt" builder 
     and char_format_str = L.build_global_stringptr "%c\n" "fmt" builder in
 
-    (* let local_vars =
-      let add_formal m (t, n) p =
-        let () = L.set_value_name n p in
-        let local = L.build_alloca (ltype_of_typ t) n builder in
-        let _ = L.build_store p local builder in
-        StringMap.add n local m
-      in
-
-      let formals = List.fold_left2 add_formal StringMap.empty fdecl.sformals 
-          (Array.to_list (L.params the_function)) in
-      formals
-    in *)
-
-    (* let add_local (t, n) builder cur_vars =
-      let local_var = L.build_alloca (ltype_of_typ t) n builder in
-      StringMap.add n local_var cur_vars
-    in *)
-
-    (* let lookup n cur_vars =
-      try StringMap.find n cur_vars
-        with Not_found -> try StringMap.find n !global_vars
-          with Not_found -> raise (Failure ("Internal error: Semant should have rejected variable " ^ n ^ " in function " ^ fdecl.sfname))
-    in *)
-
-
     (* Construct the function's "locals": formal arguments and locally
        declared variables.  Allocate each on the stack, initialize their
        value, if appropriate, and remember their values in the "locals" map *)
-    (* THIS LINE NEEDS TO BE UNCOMMENTED TO ADD BACK IN LOCAL VARS
-       NOT NEEDED NOW, REMOVING TO REMOVE UNUSED VAR WARNING
-       let local_vars = *)
     let local_vars =
-          let _ = Printf.fprintf stderr "Adding formals\n" in
+          (* let _ = Printf.fprintf stderr "Adding formals\n" in *)
           let add_formal m (t, n) p = 
             let () = L.set_value_name n p in
               let local = L.build_alloca (ltype_of_typ t) n builder in
@@ -174,7 +146,7 @@ let translate program =
           in
           let formals = List.fold_left2 add_formal StringMap.empty fdecl.sformals (Array.to_list (L.params the_function)) in 
             
-          let _ = Printf.fprintf stderr "checking if added after formals: %b s \n" (StringMap.is_empty (formals)) in
+          (* let _ = Printf.fprintf stderr "checking if added after formals: %b s \n" (StringMap.is_empty (formals)) in *)
             (* let _ = StringMap.iter (fun k v -> Printf.fprintf stderr "Adding key: %s\n" k) formals in  *)
 
           List.fold_left add_local formals fdecl.slocals in
@@ -279,9 +251,6 @@ let translate program =
         (L.build_call printf_func [| float_format_str ; e_llvalue |] "printf" builder, envs)
       | SCall (f, args) ->
           let (fdef, fdecl) = StringMap.find f function_decls in
-          (* let llargs = List.rev (List.fold_left (fun llargs (t, e) -> 
-            let (e', _envs) = expr builder (t, e) envs in
-            e' :: llargs) [] args) in *)
           let (llargs, envs) = List.fold_left (fun (llargs, envs) (t, e) -> 
             let (e', envs) = expr builder (t, e) envs in
             (e' :: llargs, envs)) ([], envs) args in
