@@ -86,15 +86,8 @@ Variable Scope tests, all in:
 
 
 Things we still need to add to our compiler:
-    Lists
-    Sets
-    Structs
-    We don't enforce reachable returns right now
-    enhanced for loops
-
-Features added that MicroC doesn't have:
-    Function templates
-    Strings
-    Characters
-    Variable shadowing
-    Variable declaration doesn't have to be at the top of a block
+   Lists
+   Sets
+   Structs
+   We don't enforce reachable returns right now
+   enhanced for loops
