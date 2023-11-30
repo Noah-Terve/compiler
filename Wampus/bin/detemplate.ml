@@ -1,7 +1,7 @@
 open Ast
 module StringMap = Map.Make(String)
 
-let detemplate (units) = 
+let detemplate units = 
   (* functions and structs that are instatiated *)
   let resolved_functions = ref StringMap.empty in
   let resolved_structs = ref StringMap.empty in

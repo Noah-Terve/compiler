@@ -1,2 +1,2 @@
-prints("hello" + "hello");
-prints('c' + 'c');
+print @l string @r("hello" + "hello");
+print @l string @r('c' + 'c');

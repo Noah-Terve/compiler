@@ -1,15 +1,15 @@
-printi(4 + 5);
-printi(4 - 5); /* -1 */
-printi(4 * 5);
-printi(4 / 2);
-printb(4 == 5); /* false */
-printb(4 == 4); /* true */
-printb(4 != 5); /* true */
-printb(5 != 5); /* false */
-printb(4 < 5);  /* true */
-printb(4 < 3);  /* false */
-printb(4 <= 5); /* true */
-printb(4 <= 4); /* true */
-printb(4 >= 5); /* false */
-printb(4 > 5);  /* false */
-printb(5 >= 5); /* true */
+print @l int @r(4 + 5);
+print @l int @r(4 - 5); /* -1 */
+print @l int @r(4 * 5);
+print @l int @r(4 / 2);
+print @l bool @r(4 == 5); /* false */
+print @l bool @r(4 == 4); /* true */
+print @l bool @r(4 != 5); /* true */
+print @l bool @r(5 != 5); /* false */
+print @l bool @r(4 < 5);  /* true */
+print @l bool @r(4 < 3);  /* false */
+print @l bool @r(4 <= 5); /* true */
+print @l bool @r(4 <= 4); /* true */
+print @l bool @r(4 >= 5); /* false */
+print @l bool @r(4 > 5);  /* false */
+print @l bool @r(5 >= 5); /* true */

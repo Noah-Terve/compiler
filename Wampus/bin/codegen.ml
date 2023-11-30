@@ -233,19 +233,19 @@ let translate program =
           | A.Neg                  -> (L.build_neg e' "tmp" builder, envs)
           | A.Not                  -> (L.build_not e' "tmp" builder, envs)
           )
-      | SCall ("printi", [e]) | SCall ("printb", [e]) ->
+      | SCall ("_print.int", [e]) | SCall ("_print.bool", [e]) ->
         let (e_llvalue, envs) = expr builder e envs in
         (L.build_call printf_func [| int_format_str ; e_llvalue |] "printf" builder, envs)
         
     (* | SCall ("printbig", [e]) ->
       L.build_call printbig_func [| (expr builder e) |] "printbig" builder *)
-      | SCall ("prints", [e]) ->
+      | SCall ("_print.string", [e]) ->
         let (e_llvalue, envs) = expr builder e envs in
         (L.build_call printf_func [| string_format_str ; e_llvalue |] "printf" builder, envs)
-      | SCall ("printc", [e]) -> 
+      | SCall ("_print.char", [e]) -> 
         let (e_llvalue, envs) = expr builder e envs in
         (L.build_call printf_func [| char_format_str ; e_llvalue |] "printf" builder, envs)
-      | SCall ("printf", [e]) ->
+      | SCall ("_print.float", [e]) ->
         let (e_llvalue, envs) = expr builder e envs in
         (L.build_call printf_func [| float_format_str ; e_llvalue |] "printf" builder, envs)
       | SCall (f, args) ->

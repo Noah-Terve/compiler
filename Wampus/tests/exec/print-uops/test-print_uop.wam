@@ -1,5 +1,5 @@
-printi(-5);
-printf(-3.15);
-printb(not true);
-printb(!false);
-printi(1 + -'c');
+print @l int @r(-5);
+print @l float @r(-3.15);
+print @l bool @r(not true);
+print @l bool @r(!false);
+print @l int @r(1 + -'c');

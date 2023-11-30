@@ -5,35 +5,35 @@ T test(T x, hello y) {
     return x;
 }
 
-printi(test @l int, int @r (5, 4));
-printi(test @l int, int @r (4, 5));
-printi(test @l int, int @r (3, 6));
-printi(test @l int, int @r (2, 7));
-printi(test @l int, bool @r (5, true));
-printi(test @l int, char @r (3, 'a'));
-printi(test @l int, float @r (2, 7.91));
-printi(test @l int, string @r (8, "not"));
+print @l int @r(test @l int, int @r (5, 4));
+print @l int @r(test @l int, int @r (4, 5));
+print @l int @r(test @l int, int @r (3, 6));
+print @l int @r(test @l int, int @r (2, 7));
+print @l int @r(test @l int, bool @r (5, true));
+print @l int @r(test @l int, char @r (3, 'a'));
+print @l int @r(test @l int, float @r (2, 7.91));
+print @l int @r(test @l int, string @r (8, "not"));
 
-printb(test @l bool, int @r (true, 4));
-printb(test @l bool, bool @r (true, false));
-printb(test @l bool, char @r (true, 'a'));
-printb(test @l bool, float @r (false, 1.23));
-printb(test @l bool, string @r (false, "false"));
+print @l bool @r(test @l bool, int @r (true, 4));
+print @l bool @r(test @l bool, bool @r (true, false));
+print @l bool @r(test @l bool, char @r (true, 'a'));
+print @l bool @r(test @l bool, float @r (false, 1.23));
+print @l bool @r(test @l bool, string @r (false, "false"));
 
-printc(test @l char, int @r ('a', 4));
-printc(test @l char, bool @r ('w', true));
-printc(test @l char, char @r ('a', 'b'));
-printc(test @l char, float @r ('q', 3.14));
-printc(test @l char, string @r ('b', "bee"));
+print @l char @r(test @l char, int @r ('a', 4));
+print @l char @r(test @l char, bool @r ('w', true));
+print @l char @r(test @l char, char @r ('a', 'b'));
+print @l char @r(test @l char, float @r ('q', 3.14));
+print @l char @r(test @l char, string @r ('b', "bee"));
 
-printf(test @l float, int @r (1.2, 4));
-printf(test @l float, bool @r (6.78, true));
-printf(test @l float, char @r (123.456, 'y'));
-printf(test @l float, float @r (1.0, 1.0));
-printf(test @l float, string @r (08234.87, "maybe yes"));
+print @l float @r(test @l float, int @r (1.2, 4));
+print @l float @r(test @l float, bool @r (6.78, true));
+print @l float @r(test @l float, char @r (123.456, 'y'));
+print @l float @r(test @l float, float @r (1.0, 1.0));
+print @l float @r(test @l float, string @r (08234.87, "maybe yes"));
 
-prints(test @l string, int @r ("hello", 2));
-prints(test @l string, bool @r ("hello", false));
-prints(test @l string, char @r ("world", '!'));
-prints(test @l string, float @r ("alive", 456.73));
-prints(test @l string, string @r ("work", "please"));
+print @l string @r(test @l string, int @r ("hello", 2));
+print @l string @r(test @l string, bool @r ("hello", false));
+print @l string @r(test @l string, char @r ("world", '!'));
+print @l string @r(test @l string, float @r ("alive", 456.73));
+print @l string @r(test @l string, string @r ("work", "please"));

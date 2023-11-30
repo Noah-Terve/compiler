@@ -1,9 +1,9 @@
 int a = 5;
-printi(a);
+print @l int @r(a);
 
 {
     a = 6;
-    printi(a);
+    print @l int @r(a);
 }
 
-printi(a);
+print @l int @r(a);

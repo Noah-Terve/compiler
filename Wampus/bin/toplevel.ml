@@ -23,7 +23,8 @@ let () =
 
   let lexbuf = Lexing.from_channel !channel in
   let ast = Parser.program Scanner.token lexbuf in
-  let detemp = Detemplate.detemplate ast in
+  let ast_std = Std_lib.add_std_lib ast in
+  let detemp = Detemplate.detemplate ast_std in
   match !action with
     Ast -> print_string (Ast.string_of_program ast)
   | DeTemp -> print_string (Ast.string_of_program detemp)

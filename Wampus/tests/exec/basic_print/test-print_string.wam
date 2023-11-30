@@ -1,2 +1,2 @@
 "hello";
-prints("hello");
+print @l string @r("hello");

@@ -1,2 +1,2 @@
-printf(4 + 4.9);
-printf('c' + 5.9);
+print @l float @r(4 + 4.9);
+print @l float @r('c' + 5.9);

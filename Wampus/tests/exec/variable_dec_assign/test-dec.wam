@@ -1,2 +1,2 @@
 int a;
-printi(123);
+print @l int @r(123);

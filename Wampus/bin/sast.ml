@@ -15,12 +15,9 @@ and sx =
   | SUnop of uop * sexpr
   | SAssign of string * sexpr
   | SCall of string * sexpr list
-  (* | STemplatedCall of string * typ list * sexpr list *)
   | SBindAssign of typ * string * sexpr
   | SBindDec of typ * string
   | SStructAssign of string * string * sexpr
-  (* | SBindTemplatedDec of string * typ list * string *)
-  (* | SBindTemplatedAssign of string * typ list * string * sexpr *)
   | SListExplicit of sexpr list
   | SSetExplicit of sexpr list
   | SStructExplicit of sexpr list
@@ -44,13 +41,11 @@ type sfunc_decl = {
   sformals : bind list;
   slocals : bind list;
   sbody : sstmt list;
-  (* sfun_t_list : string list; *)
 }
 
 type sstruct_decl = {
   sname : string;
   ssformals : bind list;
-  (* st_list : string list; *)
 }
 
 type sunit_program = 

@@ -6,5 +6,5 @@ int checkScope(int x)
     return x;
 }
 
-printi(checkScope(3));
+print @l int @r(checkScope(3));
 

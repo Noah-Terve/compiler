@@ -1,5 +1,5 @@
-printi (5 + 'c');
-printc('8' % '9'); /* prints out 8 */
-printb(true);
-prints("hello world");
-printf(5.9 + 5.9);
+print @l int @r (5 + 'c');
+print @l char @r('8' % '9'); /* print @l string @r out 8 */
+print @l bool @r(true);
+print @l string @r("hello world");
+print @l float @r(5.9 + 5.9);

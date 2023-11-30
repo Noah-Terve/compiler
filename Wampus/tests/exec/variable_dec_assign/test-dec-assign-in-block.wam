@@ -1,7 +1,7 @@
 {
     int a;
     a = 5;
-    printi(a);
-    /*printi(5);*/
+    print @l int @r(a);
+    /*print @l int @r(5);*/
 }
 

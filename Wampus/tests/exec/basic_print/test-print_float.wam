@@ -1,1 +1,1 @@
-printf(3.14);
+print @l float @r(3.14);

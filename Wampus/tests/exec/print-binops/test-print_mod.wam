@@ -1,1 +1,1 @@
-printi(10 % 4);
+print @l int @r(10 % 4);

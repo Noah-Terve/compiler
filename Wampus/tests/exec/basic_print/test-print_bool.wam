@@ -1,2 +1,2 @@
-printb(true);
-printb(false);
+print @l bool @r(true);
+print @l bool @r(false);

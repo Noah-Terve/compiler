@@ -13,5 +13,5 @@ T0 test(T0 x, T1 y) {
     return test2 @l string, T0 @r ("hello", x);
 }
 
-printi(test @l int, int @r (123, 45));
-prints(test @l string, bool @r ("home is where the heart is", true));
+print @l int @r(test @l int, int @r (123, 45));
+print @l string @r(test @l string, bool @r ("home is where the heart is", true));
