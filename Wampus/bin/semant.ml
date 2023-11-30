@@ -38,7 +38,7 @@ let check (units : program) =
     let add_bind map (name, ty) = StringMap.add name {
       styp = Int; sfname = name; 
       sformals = [(ty, "x")];
-      sbody = []; sfun_t_list = []; slocals = []; } map
+      sbody = []; slocals = []; } map
     in List.fold_left add_bind StringMap.empty [ ("printi", Int);
                                                  ("printb", Bool);
                                                  ("printf", Float);
@@ -207,10 +207,7 @@ let check (units : program) =
         in (envs'', (ty, SBinop((t1, e1'), op, (t2, e2'))))
     | Call(fname, args) as call -> 
         let sfd = find_func fname in
-        let t_len = List.length sfd.sfun_t_list in
-        if t_len != 0 then
-          raise (Failure ("Compiler error: templates may not exist in function calls"))
-        else let param_length = List.length sfd.sformals in
+        let param_length = List.length sfd.sformals in
         if List.length args != param_length then
           raise (Failure ("expecting " ^ string_of_int param_length ^ 
                           " arguments in " ^ string_of_expr call))
@@ -310,7 +307,6 @@ in
         sformals = formals';
         slocals  = [];
         sbody = sstmt_list ;
-        sfun_t_list = [];
       }
     in let _ = add_func sfd in sfd
   in

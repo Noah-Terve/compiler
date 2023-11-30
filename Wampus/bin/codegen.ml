@@ -29,8 +29,7 @@ let translate program =
       slocals = []; (* TODO: Remove locals from functions; use environment instead*)
       sbody = List.rev (List.fold_left (fun acc units -> match units with 
                                 SStmt struc -> struc :: acc 
-                                | _ -> acc) [] program);
-      sfun_t_list = []} in (* TODO: templates are resolved BEFORE semant + codegen, so this is useless *)
+                                | _ -> acc) [] program);} in
 
   let context    = L.global_context () in
   (* Add types to the context so we can use them in our LLVM code *)
