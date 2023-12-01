@@ -120,10 +120,10 @@ let translate program =
     let (the_function, _) = StringMap.find fdecl.sfname function_decls in
     let builder = L.builder_at_end context (L.entry_block the_function) in
     
-    let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder
-    and float_format_str = L.build_global_stringptr "%g\n" "fmt" builder 
-    and string_format_str = L.build_global_stringptr "%s\n" "fmt" builder 
-    and char_format_str = L.build_global_stringptr "%c\n" "fmt" builder in
+    let int_format_str = L.build_global_stringptr "%d" "fmt" builder
+    and float_format_str = L.build_global_stringptr "%g" "fmt" builder 
+    and string_format_str = L.build_global_stringptr "%s" "fmt" builder 
+    and char_format_str = L.build_global_stringptr "%c" "fmt" builder in
 
     (* Construct the function's "locals": formal arguments and locally
        declared variables.  Allocate each on the stack, initialize their
