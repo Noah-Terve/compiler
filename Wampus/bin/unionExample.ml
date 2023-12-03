@@ -278,40 +278,40 @@ ignore(L.build_store element_ll (L.build_gep new_arr [| new_length
 "set" merge_builder) merge_builder);
 (* Create struct with the following form to represent new set:
 [<pointer to array holding set's elements>; <size of set>] *)
-let set_struct = (L.struct_type context (Array.of_list([
-L.pointer_type element_ltype;
-i32_t
-]))) in
-let set_struct_ptr = L.build_malloc set_struct "add()" merge_builder
-in
-(* Populate struct *)
-ignore(L.build_store new_arr (L.build_struct_gep
-set_struct_ptr 0 "add()" merge_builder) merge_builder);
-ignore(L.build_store new_length
-(L.build_struct_gep set_struct_ptr 1 "add()" merge_builder)
-merge_builder);
-(L.builder_at_end context merge_bb, cur_vars, set_struct_ptr)
-| SCall ("range", [x; y; step]) >
-let extract_args e = match e with
-(A.Int, SLiteral(i)) > i
-| (A.Int, SUnop(A.Neg, (A.Int, SLiteral(i)))) > i
-| _ > raise(Failure("Invalid range() arguments"))
-in
-262
-let (x', y', step') = match List.map extract_args [x; y; step] with
-[first; second; third] > (first, second, third)
-| _ > raise(Failure("Invalid range() arguments"))
-in
-let rec get_range_list i j =
-if i == j then []
-else (A.Int, SLiteral(i)) :: get_range_list (i + step') j
-in
-if (x' > y' && step' > 0) || (x' < y' && step' < 0)
-then expr builder cur_vars (A.Tuple([]), STupleLit([]))
-else
-let get_typ_list element = match element with i > A.Int in
-let range_list = get_range_list x' y' in
-expr builder cur_vars (A.Tuple(List.map get_typ_list range_list),
+    let set_struct = (L.struct_type context (Array.of_list([
+        L.pointer_type element_ltype;
+        i32_t
+    ]))) in
+    let set_struct_ptr = L.build_malloc set_struct "add()" merge_builder
+    in
+    (* Populate struct *)
+    ignore(L.build_store new_arr (L.build_struct_gep
+    set_struct_ptr 0 "add()" merge_builder) merge_builder);
+    ignore(L.build_store new_length
+    (L.build_struct_gep set_struct_ptr 1 "add()" merge_builder)
+    merge_builder);
+    (L.builder_at_end context merge_bb, cur_vars, set_struct_ptr)
+    | SCall ("range", [x; y; step]) >
+    let extract_args e = match e with
+    (A.Int, SLiteral(i)) > i
+    | (A.Int, SUnop(A.Neg, (A.Int, SLiteral(i)))) > i
+    | _ > raise(Failure("Invalid range() arguments"))
+    in
+      262
+      let (x', y', step') = match List.map extract_args [x; y; step] with
+      [first; second; third] > (first, second, third)
+      | _ > raise(Failure("Invalid range() arguments"))
+      in
+      let rec get_range_list i j =
+      if i == j then []
+      else (A.Int, SLiteral(i)) :: get_range_list (i + step') j
+      in
+      if (x' > y' && step' > 0) || (x' < y' && step' < 0)
+      then expr builder cur_vars (A.Tuple([]), STupleLit([]))
+      else
+      let get_typ_list element = match element with i > A.Int in
+      let range_list = get_range_list x' y' in
+      expr builder cur_vars (A.Tuple(List.map get_typ_list range_list),
 STupleLit(range_list))
 | SCall ("strcomp", [e1; e2]) >
 let (builder, cur_vars, e1') = (expr builder cur_vars e1)
@@ -320,10 +320,10 @@ in
 (builder', cur_vars', L.build_call strcomp_func [| e1'; e2' |]
 "strcomp" builder')
 | SCall ("rando", [e1; e2; e3]) >
-let (builder, cur_vars, e1') = (expr builder cur_vars e1)
-and (builder', cur_vars', e2') = (expr builder cur_vars e2)
-and (builder'', cur_vars'', e3') = (expr builder cur_vars e3)
-in
+  let (builder, cur_vars, e1') = (expr builder cur_vars e1)
+  and (builder', cur_vars', e2') = (expr builder cur_vars e2)
+  and (builder'', cur_vars'', e3') = (expr builder cur_vars e3)
+  in
 (builder'', cur_vars'', L.build_call rando_func [| e1'; e2'; e3'
 |] "rando" builder')
 | SCall (f, act) >
