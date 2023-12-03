@@ -272,6 +272,10 @@ let check (units : program) =
       (envs, SWhile(p', s'))
     | Return e -> let (_, e') = check_expr e envs not_toplevel in
                   (envs, SReturn(e'))
+    (* | ForEnhanced (e1, e2, st) -> *)
+    | Continue -> (envs, SContinue)
+    | Break -> (envs, SBreak)
+
     | _ -> raise (Failure "Unhandled statement")
 
 in
