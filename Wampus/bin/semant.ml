@@ -11,8 +11,8 @@ module StringMap = Map.Make(String)
    Check each global variable, then check each function *)
 
 let check (units : program) =
-  let not_toplevel = false in
-  let toplevel = true in
+  let not_toplevel = false and not_inloop = false in
+  let toplevel = true and inloop = true in
   let in_assign = ref false in
 
   (* Check if a certain kind of binding has void type or is a duplicate
@@ -235,18 +235,18 @@ let check (units : program) =
   in
 
   (* Return a semantically-checked statement i.e. containing sexprs *)
-  let rec check_stmt (envs: typ StringMap.t list) stmt is_toplevel = match stmt with
+  let rec check_stmt (envs: typ StringMap.t list) stmt is_toplevel is_inloop = match stmt with
       Block stmts ->
         (* A new block creates a new scoping, so we need to create a new
             environment for this block *)
         let rec check_stmt_list envs stmts = match stmts with
-            [Return _ as s] -> let (_, sstmt) = check_stmt envs s not_toplevel in [sstmt]
+            [Return _ as s] -> let (_, sstmt) = check_stmt envs s not_toplevel is_inloop in [sstmt]
           | Return _ :: _ -> raise (Failure "Bad coding practice! Nothing should follow a return statement")
           | Block _ as block :: stmts ->
-              let (_, sstmt) = check_stmt (StringMap.empty :: envs) block not_toplevel and
+              let (_, sstmt) = check_stmt (StringMap.empty :: envs) block not_toplevel is_inloop and
                   sstmts = check_stmt_list envs stmts in (sstmt :: sstmts)
           | stmt :: stmts ->
-              let (envs', sstmt) = check_stmt envs stmt not_toplevel in
+              let (envs', sstmt) = check_stmt envs stmt not_toplevel is_inloop in
               let sstmts = check_stmt_list envs' stmts in (sstmt :: sstmts)
           | [] -> []
         in (envs, SBlock(check_stmt_list (StringMap.empty :: envs) stmts))
@@ -257,24 +257,26 @@ let check (units : program) =
         (envs', SExpr(se))
     | If(p, b1, b2) -> 
         let (envs', p') = check_bool_expr p envs in
-        let (envs'', b1') = check_stmt envs' b1 not_toplevel  in
-        let (_, b2') = check_stmt envs'' b2 not_toplevel  in 
+        let (envs'', b1') = check_stmt envs' b1 not_toplevel is_inloop in
+        let (_, b2') = check_stmt envs'' b2 not_toplevel is_inloop in 
       (envs, SIf(p', b1', b2'))
     | For(e1, e2, e3, st) -> 
         let (envs', e1') = check_expr e1 envs not_toplevel in
         let (envs'', e2') = check_bool_expr e2 envs' in
         let (envs''', e3') = check_expr e3 envs'' not_toplevel in
-        let (_, st') = check_stmt envs''' st not_toplevel in
+        let (_, st') = check_stmt envs''' st not_toplevel inloop in
         (envs, SFor(e1', e2', e3', st'))
     | While(p, s) -> 
       let (envs', p') = check_bool_expr p envs in
-      let (_, s') = check_stmt envs' s not_toplevel in
+      let (_, s') = check_stmt envs' s not_toplevel inloop in
       (envs, SWhile(p', s'))
     | Return e -> let (_, e') = check_expr e envs not_toplevel in
                   (envs, SReturn(e'))
     (* | ForEnhanced (e1, e2, st) -> *)
-    | Continue -> (envs, SContinue)
-    | Break -> (envs, SBreak)
+    | Continue -> if is_inloop = inloop then (envs, SContinue) 
+                  else raise (Failure "Continue cannot be outside a loop")
+    | Break -> if is_inloop = inloop then (envs, SBreak)
+                else raise (Failure "Break cannot be outside a loop")
 
     | _ -> raise (Failure "Unhandled statement")
 
@@ -299,7 +301,7 @@ in
     let formals' = check_binds "formal" func.formals in
     let env = List.fold_left (fun env (ty, name) -> StringMap.add name ty env)
       StringMap.empty formals' in
-    let (_, sbody) = check_stmt [env] (Block func.body) not_toplevel in
+    let (_, sbody) = check_stmt [env] (Block func.body) not_toplevel not_inloop in
     let sstmt_list = match sbody with
         SBlock(sl) -> sl
       | _ -> raise (Failure "Internal error: block didn't become a block??") in
@@ -318,7 +320,7 @@ in
   let check_program_unit (envs, sunits) prog_unit =
     match prog_unit with
         (* TODO: Make sure envs is updated after every check *)
-        Stmt(s) -> let (envs, sstmt) = check_stmt envs s toplevel in (envs, SStmt(sstmt) :: sunits)
+        Stmt(s) -> let (envs, sstmt) = check_stmt envs s toplevel not_inloop in (envs, SStmt(sstmt) :: sunits)
       | Fdecl(f) -> let sf = check_function f in (envs, SFdecl(sf) :: sunits)
       | _ -> raise (Failure "Unimplemented units")
 

@@ -7,7 +7,7 @@
 (source
  (github Noah-Terve/compiler))
 
-(authors "Heijun Si" "Noah Tervelon" "Christopher Sasanuma" "Neil Powers")
+(authors "Haijun Si" "Noah Tervelon" "Christopher Sasanuma" "Neil Powers")
 
 (maintainers "Maintainer Name")
 
