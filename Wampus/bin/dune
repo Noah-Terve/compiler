@@ -3,11 +3,10 @@
  (name toplevel)
  (libraries toplevel))
 
-
 (ocamllex scanner)
 
 (menhir
-  (modules parser))
+ (modules parser))
 
 (env
  (dev

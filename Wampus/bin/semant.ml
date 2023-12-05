@@ -286,14 +286,16 @@ in
   (* TODO: Check that a returm statement is always reachable *)
   let check_return (sl : sstmt list) f =
     let ret_ty = f.typ in
-    let rec check_stmt_return = function
-        SReturn (t, _) when t = ret_ty -> ()
+    let rec check_stmt_return valid_return s = match s with
+        SReturn (t, _) when t = ret_ty -> true
       | SReturn (t, _) -> raise (Failure ("Function " ^ f.fname ^ " has return type " ^
                                           " " ^ string_of_typ ret_ty ^ " but expected " ^
                                           string_of_typ t ^ " in return statement"))
-      | SBlock sl -> List.iter check_stmt_return sl
-      | _ -> ()
-    in List.iter check_stmt_return sl
+      | SIf (_, s1, s2) -> (check_stmt_return valid_return s1) && (check_stmt_return valid_return s2)
+      | SBlock sl -> (List.fold_left (fun acc stmt -> check_stmt_return acc stmt) valid_return sl)
+      | _ -> valid_return
+    in let has_valid_return = List.fold_left (fun valid_return stmt -> check_stmt_return valid_return stmt || valid_return ) false sl  in
+    if has_valid_return then () else raise (Failure ("Function " ^ f.fname ^ " return is not exhaustive"))
   in 
 
   let check_function func =
@@ -305,7 +307,7 @@ in
     let sstmt_list = match sbody with
         SBlock(sl) -> sl
       | _ -> raise (Failure "Internal error: block didn't become a block??") in
-    let _ = check_return sstmt_list func in
+    let _ = check_return (List.rev sstmt_list) func in
     let sfd = 
       { 
         styp = func.typ;
