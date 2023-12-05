@@ -37,6 +37,13 @@ let translate program =
   and i8_t       = L.i8_type     context
   and i1_t       = L.i1_type     context
   and float_t    = L.double_type context
+  (* Types for representation of lists  *)
+  and voidptr_t  = L.pointer_type (L.i8_type context) 
+  and nodeptr_t  = L.pointer_type (L.named_struct_type context "Node")  
+  let list_t     = L.pointer_type (L.struct_type context [| voidptr_t; nodeptr_t |]) in 
+
+
+  
   (* Create an LLVM module -- this is a "container" into which we'll 
     generate actual code *)
   and the_module = L.create_module context "Wampus" 
@@ -49,6 +56,7 @@ let translate program =
     | A.Float -> float_t
     | A.Char  -> i8_t
     | A.String -> pointer_t i8_t
+    | A.ListExplicit _ -> list_t
     | _ -> raise (Failure "types not implemented yet")
   in
 
@@ -270,6 +278,17 @@ let translate program =
       | SBindAssign (t, var_name, e) ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
           expr builder (t, SAssign (var_name, e)) envs
+
+          (* let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with *)
+      | SListExplicit l -> 
+          let (llvals, envs) = List.fold_left 
+                  (fun (list_accum, envs') sex =   
+                      let (llval, envs'') = expr builder sex envs'
+
+                  ([], envs)
+
+
+
       | _ -> raise (Failure ("expr in codegen not implemented yet (ignore type): " ^ (string_of_sexpr (A.Int, e))))
     in
     
