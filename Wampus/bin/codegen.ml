@@ -345,12 +345,16 @@ let translate program =
              into head  *)
           let _ = L.build_store (L.const_null list_t) head builder in
           
-          (* 1) Fold through the list containing pointers to the llvals 
-             2) Cast the pointeres to llvals as void
-             3)  
-             
-             *)
+          (* Inserting all list element
+             Pre-process:
+               - Maps through the list of malloced pointer. Replaces the current 
+                 element with a tuple of (index, malloced pointer to the node)
 
+             1) Fold through the list containing pointers to the llvals 
+             2) Cast the pointers to llvals as void
+             3) Loads the value of list_ptr into listval variable
+             4) Calls list_insert_func with (head, index of insertion, node to insert)
+             *)
           let _ = List.fold_left (fun _ (i, llval) -> 
             (* Cast each llval to a void * before inserting it into the list *)
             let void_cast = L.build_bitcast llval voidptr_t "voidptr" builder in
