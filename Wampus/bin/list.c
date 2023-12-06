@@ -13,7 +13,7 @@ bool _list_empty(node **head) {
     return head == NULL || *head == NULL;
 }
 
-void _list_insert(node **head, int idx, void *data) {
+void _list_insert(node **head, unsigned int idx, void *data) {
         int* len = (int*) _list_len(head); 
 
         assert((idx >= 0) && (idx <= *len));
@@ -42,23 +42,30 @@ void _list_insert(node **head, int idx, void *data) {
         }
 }
 
-void _list_remove(node **head, int idx) {
+void _list_remove(node **head, unsigned int idx) {
     if (_list_empty(head)) {
         return;
     }
 
-    for (node *curr = *head; curr != NULL; curr = curr->next) {
-        if (idx == 0) {
-            node *next = curr->next;
-            free(curr);
-            curr = next;
-            return;
-        }
+    node *curr = *head;
+    node *prev = NULL;
 
-        idx--;
+    for (int i = 0; i < idx && curr != NULL; i++) {
+        prev = curr;
+        curr = curr->next;
     }
 
-    return;
+    if (curr == NULL) {
+        return;
+    }
+
+    if (prev == NULL) {
+        *head = curr->next;
+    } else {
+        prev->next = curr->next;
+    }
+
+    free(curr);
 }
 
 void *_list_at(node **head, int idx) {

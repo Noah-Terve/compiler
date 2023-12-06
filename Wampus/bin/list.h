@@ -11,9 +11,9 @@ typedef struct node {
 
 bool _list_empty(node **head);
 
-void _list_insert(node **head, int idx, void *data);
+void _list_insert(node **head, unsigned int idx, void *data);
 
-void _list_remove(node **head, int idx);
+void _list_remove(node **head, unsigned int idx);
 
 void *_list_at(node **head, int idx);
 
