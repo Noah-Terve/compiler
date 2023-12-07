@@ -48,8 +48,8 @@ let translate program =
   
   (* Create an LLVM module -- this is a "container" into which we'll 
     generate actual code *)
-  and the_module = L.create_module context "Wampus" 
-  and pointer_t = L.pointer_type in
+  let the_module = L.create_module context "Wampus" in
+  let pointer_t = L.pointer_type in
 
   (* Convert MicroC types to LLVM types *)
   let ltype_of_typ = function
@@ -58,10 +58,9 @@ let translate program =
     | A.Float -> float_t
     | A.Char  -> i8_t
     | A.String -> pointer_t i8_t
-    | A.ListExplicit _ -> list_t
+    | A.List _ -> list_t
     | _ -> raise (Failure "types not implemented yet")
   in
-
 
   (******  Function to extract global variables  *****)
   (* Extract global variables from main, declaring them, in essense. This means
@@ -120,10 +119,10 @@ let translate program =
   let list_len_t           = L.function_type i32_t [| (L.pointer_type list_t) |] in
   let list_len_func        = L.declare_function "_list_len" list_len_t the_module in
 
-  let list_remove_t       = L.function_type quack_t [| (L.pointer_type list_t); i32_t |] in
+  let list_remove_t       = L.function_type void_t [| (L.pointer_type list_t); i32_t |] in
   let list_remove_func    = L.declare_function "_list_remove" list_remove_t the_module in
 
-  let list_replace_t     = L.function_type quack_t [| (L.pointer_type list_t); i32_t; voidptr_t |] in
+  let list_replace_t     = L.function_type void_t [| (L.pointer_type list_t); i32_t; voidptr_t |] in
   let list_replace_func  = L.declare_function "_list_replace" list_replace_t the_module in
 
   let list_at_t          = L.function_type voidptr_t [| (L.pointer_type list_t); i32_t |] in
@@ -319,13 +318,14 @@ let translate program =
           (* Fold through the list 'l' and recursively runs expr builder -> 
              returns tuple of list of llvals and environment *)
           let (llvals, envs''') = List.fold_left 
-                  (fun (list_accum, envs') sex =   
-                      let (llval, envs'') = expr builder sex envs'
+                  (fun (list_accum, envs') sex ->   
+                      let (llval, envs'') = expr builder sex envs' in
                       (* Return updated list and updated envs *)
-                      (llval::llvals, envs'')
+                      (llval :: list_accum, envs'')
                   )
                   ([], envs)
                   l
+          in
           (* Map through the llvals, create malloc instruction for that llval, then store
              the pointer to that memory in the list for later reference *)
           let malloced_ptrs = List.map (build_malloc builder) llvals in

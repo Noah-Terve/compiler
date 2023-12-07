@@ -21,14 +21,12 @@ int main() {
     test_list_empty(&head, true);
 
       
-
     // Insert elements into the linked list
     _list_insert(&head, 0, (void*)10);
     _list_insert(&head, 1, (void*)20);
     _list_insert(&head, 2, (void*)30);
 
-     
-
+    
     // Test _list_empty function again
     test_list_empty(&head, false);
 

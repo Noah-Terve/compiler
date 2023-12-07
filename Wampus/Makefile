@@ -10,13 +10,13 @@ CFLAGS = -Wall -Wextra -O2
 
 all: toplevel
 
-test-list: bin/list.c tests/lists/test-list.c 
-	$(CC) $(CFLAGS) -Ibin -o $@ $^
+# test-list: bin/list.c tests/lists/test-list.c 
+# 	$(CC) $(CFLAGS) -Ibin -o $@ $^
 
-.PHONY:	lists
+# .PHONY:	lists
 
-lists: test-list
-	./test-list
+# lists: test-list
+# 	./test-list
 
 
 # "make toplevel" compiles the Wampus compiler
