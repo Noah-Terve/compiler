@@ -62,11 +62,31 @@ let check (units : program) =
       | _ when n = "main" -> make_err dup_main_err
       | _ -> function_decls := StringMap.add n fd !function_decls
   in
+  (* Struct Decl map for statement use *)
+  let struct_decls = ref StringMap.empty in
+  (* Struct helper functions*)
+  let find_struc strucname = 
+    (* let _ = StringMap.iter (fun k v -> Printf.fprintf stderr "Structs in list: %s\n" k) !struct_decls in *)
+    try StringMap.find strucname !struct_decls
+    with Not_found -> raise (Failure ("unrecognized struct " ^ strucname))
+  in
+  let find_struct_id sd id =
+    try List.find (fun (_, s) -> s = id) sd.ssformals 
+    with Not_found -> raise (Failure ("Unrecognized struct identifier " ^ id))
+  in
+  let find_struc_from_typ = function
+      Struct(s) -> find_struc s
+    | _ -> raise (Failure ("Should not be in here"))
+  in
+  let add_struc (sd: sstruct_decl)= 
+    let n = sd.sname in
+    match sd with
+      _ -> struct_decls := StringMap.add n sd !struct_decls
+  in
 
   (* Collect all other function names into one symbol table *)
   (* let function_decls = List.fold_left add_func built_in_decls functions
   in *)
-  
   (* Return a function from our symbol table *)
   let find_func fname = 
     try StringMap.find fname !function_decls
@@ -97,7 +117,7 @@ let check (units : program) =
     | env :: envs -> 
       (* let _ = Printf.printf "Binding %s to %s\n" id (string_of_typ ty) in *)
       StringMap.add id ty env :: envs
-  in
+    in
 
   let bind_global id (ty : typ) =
     let env = !globals in
@@ -142,6 +162,12 @@ let check (units : program) =
               (envs', (typ, SBindAssign(typ, id ,(t, e1')))))
         
     | BindDec (typ, id) -> 
+        (* check if the typ is struct that it is in the struct map *)
+        let _ = 
+          (match typ with 
+              Struct(s) -> let _ = find_struc s in ()
+            | _ -> () )
+        in
         (match is_toplevel with 
           (* Not at top level *)
           false -> 
@@ -152,6 +178,7 @@ let check (units : program) =
           (* At top level *)
         | true ->  
               let _ = bind_global id typ in 
+              let _ = StringMap.iter (fun k v -> Printf.printf "Key: %s, Value: %s\n" k (string_of_typ v)) !globals in
               (envs, (typ, SBindDec(typ, id))))
 
     | Assign(var, e) as ex -> 
@@ -222,6 +249,19 @@ let check (units : program) =
         in
       let (_, args') = List.fold_left2 check_call (envs, []) sfd.sformals args
       in (envs, (sfd.styp, SCall(fname, List.rev args')))
+    | StructAssign (sname, sid, e) ->
+      (* Check that the struct name is in the env *)
+        let ltyp = type_of_identifier sname envs in
+        let struc = find_struc_from_typ ltyp in
+      (* Check that the struct id is in the struct *)
+        let (lt, _) = find_struct_id struc sid in
+        let (envs'', (rt, e')) = check_expr e envs not_toplevel in
+        let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
+          string_of_typ rt ^ " in " ^ string_of_expr e in
+        let _ = check_assign lt rt err in
+        (envs'', (lt, SStructAssign(sname, sid, (rt, e'))))
+
+
 
 
     | TemplatedCall _ -> raise (Failure "there should be no templated calls at semant")
@@ -283,7 +323,6 @@ let check (units : program) =
 in
 
   (* Checks that each return in a list of statements is of the correct type *)
-  (* TODO: Check that a returm statement is always reachable *)
   let check_return (sl : sstmt list) f =
     let ret_ty = f.typ in
     let rec check_stmt_return valid_return s = match s with
@@ -318,13 +357,25 @@ in
       }
     in let _ = add_func sfd in sfd
   in
+  (* TODO: Make sure there are no duplicate templated structs *)
+  let check_struct (struc : struct_decl) = 
+    let sformals' = check_binds "sformal" struc.sformals in
+    let _ = Printf.fprintf stderr "Adding struct %s\n" struc.name in
+    let ssd = 
+      {
+        sname = struc.name;
+        ssformals = sformals';
+      }
+      (* TODO Struct_decls isnt being updated *)
+    in let _ = add_struc ssd in ssd
+  in
 
   let check_program_unit (envs, sunits) prog_unit =
     match prog_unit with
         (* TODO: Make sure envs is updated after every check *)
         Stmt(s) -> let (envs, sstmt) = check_stmt envs s toplevel not_inloop in (envs, SStmt(sstmt) :: sunits)
       | Fdecl(f) -> let sf = check_function f in (envs, SFdecl(sf) :: sunits)
-      | _ -> raise (Failure "Unimplemented units")
+      | Sdecl(s) -> let ss = check_struct s in (envs, SSdecl(ss) :: sunits)
 
     (* | Fdecl(f) -> raise (Failure "Unimplemented functions")
     | Sdecl(st) -> raise (Failure "Unimplemented structs") *)

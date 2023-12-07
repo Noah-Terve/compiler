@@ -1,0 +1,7 @@
+struct dog {
+    int a;
+    int b;
+};
+dog d; 
+d.a = 5;
+d.b = 2;

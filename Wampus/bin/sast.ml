@@ -72,6 +72,7 @@ let rec string_of_sexpr (t, e) =
   | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
   | SBindDec (_, id) -> id
   | SBindAssign (_, id, e) -> id ^ " = " ^ string_of_sexpr e
+  | SStructAssign (struct_id, id1, e) -> struct_id ^ "."^ id1 ^ " = " ^ string_of_sexpr e
   | SCall(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
   | SNoexpr -> ""
@@ -99,11 +100,12 @@ let string_of_sfdecl fdecl =
   ")\n{\n" ^
   String.concat "" (List.map string_of_sstmt fdecl.sbody) ^
   "}\n"
-
+let string_of_ssdecl sdecl = 
+  "struct " ^ sdecl.sname ^ " { \n" ^ String.concat ";\n " (List.map (fun (t, s) -> string_of_typ t ^ " " ^ s) sdecl.ssformals) ^ ";\n};\n"
 let string_of_sunit = function
    SStmt(stmt) -> string_of_sstmt stmt
   | SFdecl(fdecl) -> string_of_sfdecl fdecl
-  | _ ->  "Sdecl Not Implemented in the SAST" 
+  | SSdecl (sdecl) -> string_of_ssdecl sdecl
   (* 
   | SSdecl(sdecl) -> "Not implemented" *)
 
