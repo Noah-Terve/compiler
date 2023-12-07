@@ -42,9 +42,9 @@ let translate program =
   and i1_t       = L.i1_type     context
   and float_t    = L.double_type context
   and void_t     = L.void_type   context 
-  and voidptr_t  = L.pointer_type (L.i8_type context) 
-  and nodeptr_t  = L.pointer_type (L.named_struct_type context "Node") in
-  let list_t     = L.pointer_type (L.struct_type context [| voidptr_t; nodeptr_t |]) in 
+  and voidptr_t  = L.pointer_type (L.i8_type context) in
+  let nodeptr_t  = L.pointer_type (L.named_struct_type context "Node") in
+  let list_t     = L.pointer_type (L.struct_type context [| voidptr_t; nodeptr_t |]) in
   
   (* Create an LLVM module -- this is a "container" into which we'll 
     generate actual code *)
@@ -110,7 +110,6 @@ let translate program =
    * define it's body and call it later *)
 
   let printf_t : L.lltype =  L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
-
   let printf_func : L.llvalue =  L.declare_function "printf" printf_t the_module in
 
   let list_insert_t        = L.function_type void_t [| (L.pointer_type list_t); i32_t; voidptr_t |] in
@@ -326,6 +325,12 @@ let translate program =
                   ([], envs)
                   l
           in
+
+          (* Builds a malloc instruction for a given llvalue *)
+          let build_malloc builder llvalue = 
+            let heap = L.build_malloc (L.type_of llvalue) "heap" builder in
+            let _    = L.build_store llvalue heap builder in heap in
+
           (* Map through the llvals, create malloc instruction for that llval, then store
              the pointer to that memory in the list for later reference *)
           let malloced_ptrs = List.map (build_malloc builder) llvals in
@@ -358,12 +363,10 @@ let translate program =
           let _ = List.fold_left (fun _ (i, llval) -> 
             (* Cast each llval to a void * before inserting it into the list *)
             let void_cast = L.build_bitcast llval voidptr_t "voidptr" builder in
-
             let listval = L.build_load list_ptr "listval" builder in
-
             L.build_call list_insert_func [| listval; L.const_int i32_t i; void_cast |] "" builder
-
-            ) list_ptr (List.mapi (fun i llval -> (i, llval)) malloced_ptrs) in L.build_load list_ptr "listlit" builder
+            ) list_ptr (List.mapi (fun i llval -> (i, llval)) malloced_ptrs) in 
+          (L.build_load list_ptr "listlit" builder, envs''')
             
             (* let list_t     = L.pointer_type (L.struct_type context [| voidptr_t; nodeptr_t |])  *)
 

@@ -111,6 +111,10 @@ let check (units : program) =
 
 
     (* Return a semantically-checked expression, i.e., with a type *)
+  (* let rec check_stmt_expr: This should allow bindings. It matches against bindings, and semantically checks those.
+     Everything else uses regular check_expr. Then, bindings in check_expr should raise an error 
+     A for loop needs to use check_stmt_expr
+    in check_stmt, expression case just uses check_stmt_expr *)
   let rec check_expr e envs is_toplevel = match e with
       Literal  l -> (envs, (Int, SLiteral l))
     | Fliteral l -> (envs, (Float, SFliteral l))
@@ -205,7 +209,7 @@ let check (units : program) =
                       string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
                       string_of_typ t2 ^ " in " ^ string_of_expr e))
         in (envs'', (ty, SBinop((t1, e1'), op, (t2, e2'))))
-    | Call(fname, args) as call -> 
+    | Call (fname, args) as call -> 
         let sfd = find_func fname in
         let param_length = List.length sfd.sformals in
         if List.length args != param_length then
@@ -223,7 +227,19 @@ let check (units : program) =
       let (_, args') = List.fold_left2 check_call (envs, []) sfd.sformals args
       in (envs, (sfd.styp, SCall(fname, List.rev args')))
 
+      (* TODO: For now, we assume any list is not empty.
+         Empty lists will require some sort of type inference *)
+      | ListExplicit [] -> (raise (Failure "Zero element lists are not yet implemented!")) 
+      | ListExplicit exprs ->
+          let (envs, (ty, sx)) = check_expr e envs is_toplevel in        
 
+          let check_list_expr envs exprs sx =
+            let (envs', (ty', sx')) = check_expr e envs is_toplevel in
+            if ty == ty' then (envs', (ty, sx' :: sx))
+                         else (Failure "This expression's type does not match the list's type!")
+        in List.fold_left check_list_exprs envs exprs [sx]
+
+        
     | TemplatedCall _ -> raise (Failure "there should be no templated calls at semant")
     | _  -> raise (Failure "Expr not handled yet")
   in

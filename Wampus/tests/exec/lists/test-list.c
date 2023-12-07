@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <assert.h>
-#include "../../bin/list.h"
+#include "../../../bin/list.h"
 
 void test_list_empty(node **head, bool expected) {
     assert(_list_empty(head) == expected);
