@@ -5,7 +5,7 @@
 #include "list.h"
 
 // typedef struct node {
-//     void data;
+//     void* data;
 //     struct node *next;
 // } node;
 
@@ -14,9 +14,10 @@ bool _list_empty(node **head) {
 }
 
 void _list_insert(node **head, unsigned int idx, void *data) {
-        int* len = (int*) _list_len(head); 
 
-        assert((idx >= 0) && (idx <= *len));
+        int len = _list_len(head); 
+
+        assert((idx >= 0) && (idx <= len));
         
         node *curr = *head; 
         
@@ -28,9 +29,9 @@ void _list_insert(node **head, unsigned int idx, void *data) {
             curr = curr->next;
         }
 
+        // printf("Size of struct being allocated: %d \n", sizeof(*new_node));
         node *new_node = malloc(sizeof(*new_node)); 
         assert(new_node); 
-
         new_node->data = data; 
         new_node->next = curr;
 
@@ -73,29 +74,32 @@ void *_list_at(node **head, int idx) {
         return NULL;
     }
 
-    for (node *curr = *head; curr != NULL; curr = curr->next) {
+    node * curr = *head;
+
+    for (int i = 0; i < idx; i++) {
         if (idx == 0) {
             return curr->data;
         }
 
-        idx--;
-    }
+        curr = curr -> next;
 
-    return NULL;
+    }
+    return curr -> data;
 }
 
-void *_list_len(node **head) {
+int _list_len(node **head) {
     if (_list_empty(head)) {
         return 0;
     }
 
-    int* len = malloc(sizeof(int));
+    int len = 0;
+    // int* len = malloc(sizeof(int));
     
     for (node *curr = *head; curr != NULL; curr = curr->next) {
-        (*len)++;
+        len++;
     }
 
-    printf("Length: %d\n", *len);
+    // printf("Length: %d\n", len);
 
     return len;
 }
