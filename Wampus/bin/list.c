@@ -15,7 +15,7 @@ bool _list_empty(node **head) {
 
 void _list_insert(node **head, unsigned int idx, void *data) {
 
-        int len = _list_len(head); 
+        unsigned int len = _list_len(head); 
 
         assert((idx >= 0) && (idx <= len));
         
@@ -24,7 +24,7 @@ void _list_insert(node **head, unsigned int idx, void *data) {
         node *prev = NULL;
         
         // Finding insertion index
-        for (int i = 0; i < idx; i++) {
+        for (unsigned int i = 0; i < idx; i++) {
             prev = curr;
             curr = curr->next;
         }
@@ -51,7 +51,7 @@ void _list_remove(node **head, unsigned int idx) {
     node *curr = *head;
     node *prev = NULL;
 
-    for (int i = 0; i < idx && curr != NULL; i++) {
+    for (unsigned int i = 0; i < idx && curr != NULL; i++) {
         prev = curr;
         curr = curr->next;
     }
@@ -69,14 +69,14 @@ void _list_remove(node **head, unsigned int idx) {
     free(curr);
 }
 
-void *_list_at(node **head, int idx) {
+void *_list_at(node **head, unsigned int idx) {
     if (_list_empty(head)) {
         return NULL;
     }
 
     node * curr = *head;
 
-    for (int i = 0; i < idx; i++) {
+    for (unsigned int i = 0; i < idx; i++) {
         if (idx == 0) {
             return curr->data;
         }
@@ -87,12 +87,12 @@ void *_list_at(node **head, int idx) {
     return curr -> data;
 }
 
-int _list_len(node **head) {
+unsigned int _list_len(node **head) {
     if (_list_empty(head)) {
         return 0;
     }
 
-    int len = 0;
+    unsigned int len = 0;
     // int* len = malloc(sizeof(int));
     
     for (node *curr = *head; curr != NULL; curr = curr->next) {

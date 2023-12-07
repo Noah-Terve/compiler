@@ -15,8 +15,8 @@ void _list_insert(node **head, unsigned int idx, void *data);
 
 void _list_remove(node **head, unsigned int idx);
 
-void *_list_at(node **head, int idx);
+void *_list_at(node **head, unsigned int idx);
 
-int _list_len(node **head);
+unsigned int _list_len(node **head);
 
 #endif // LIST_H
