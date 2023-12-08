@@ -111,72 +111,34 @@ let check (units : program) =
 
 
     (* Return a semantically-checked expression, i.e., with a type *)
-  (* let rec check_stmt_expr: This should allow bindings. It matches against bindings, and semantically checks those.
-     Everything else uses regular check_expr. Then, bindings in check_expr should raise an error 
-     A for loop needs to use check_stmt_expr
-    in check_stmt, expression case just uses check_stmt_expr *)
   let rec check_expr e envs is_toplevel = match e with
-      Literal  l -> (envs, (Int, SLiteral l))
-    | Fliteral l -> (envs, (Float, SFliteral l))
-    | BoolLit l  -> (envs, (Bool, SBoolLit l))
-    | CharLit l -> (envs, (Char, SCharlit l))
-    | StringLit l -> (envs, (String, SStringlit l))
-    | Noexpr     -> (envs, (Int, SNoexpr))
-    | Id s       -> (envs, (type_of_identifier s envs, SId s))
-    (* Bind the variable in the topmost environment. *)
-    | BindAssign (typ, id, e1) ->
-        if !in_assign then raise (Failure "Nested assigns are not allowed")
-        else
-        (match is_toplevel with 
-          (* Not at top level *)
-          false -> 
-              let _ = in_assign := true in
-              let envs' = bind id typ envs in
-              let (envs'', (t, e1')) = check_expr e1 envs' not_toplevel in
-              let err = "illegal assignment " ^ string_of_typ typ ^ " = " ^ string_of_typ t ^ " in " ^ string_of_expr e in
-              let _ = check_assign typ t err in
-              let _ = in_assign := false in
-              (envs'', (typ, SBindAssign(typ, id, (t, e1')))) 
-          (* At top level *)
-        | true -> 
-              let _ = in_assign := true in
-              let _ = bind_global id typ in 
-              let (envs', (t, e1')) = check_expr e1 envs not_toplevel in
-              let _ = in_assign := false in
-              (envs', (typ, SBindAssign(typ, id ,(t, e1')))))
-        
-    | BindDec (typ, id) -> 
-        (match is_toplevel with 
-          (* Not at top level *)
-          false -> 
-            let envs' = bind id typ envs in
-            (* let first_env = List.hd envs' in
-            let _ = StringMap.iter (fun k v -> Printf.printf "Key: %s, Value: %s\n" k (string_of_typ v)) first_env in *)
-            envs', (typ, SBindDec(typ, id))
-          (* At top level *)
-        | true ->  
-              let _ = bind_global id typ in 
-              (envs, (typ, SBindDec(typ, id))))
-
+      Literal  l -> (Int, SLiteral l)
+    | Fliteral l -> (Float, SFliteral l)
+    | BoolLit l  -> (Bool, SBoolLit l)
+    | CharLit l ->  (Char, SCharlit l)
+    | StringLit l -> (String, SStringlit l)
+    | Noexpr     ->  (Int, SNoexpr)
+    | Id s       -> (type_of_identifier s envs, SId s)
+      
     | Assign(var, e) as ex -> 
         let lt = type_of_identifier var envs in
-        let (envs'', (rt, e')) = check_expr e envs not_toplevel in
+        let (rt, e') = check_expr e envs not_toplevel in
         let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
           string_of_typ rt ^ " in " ^ string_of_expr ex in
         let _ = check_assign lt rt err 
-        in (envs'', (lt, SAssign(var, (rt, e'))))
+        in (lt, SAssign(var, (rt, e')))
     | Unop(op, e) as ex -> 
-        let (envs', (t, e')) = check_expr e envs not_toplevel in
+        let (t, e') = check_expr e envs not_toplevel in
         let ty = match op with
           Neg when t = Int || t = Float || t = Char -> t
         | Not when t = Bool -> Bool
         | _ -> raise (Failure ("illegal unary operator " ^ 
                                 string_of_uop op ^ string_of_typ t ^
                                 " in " ^ string_of_expr ex))
-        in (envs', (ty, SUnop(op, (t, e'))))
+        in (ty, SUnop(op, (t, e')))
     | Binop(e1, op, e2) as e -> 
-        let (envs', (t1, e1'))  = check_expr e1 envs not_toplevel in
-        let (envs'', (t2, e2')) = check_expr e2 envs' not_toplevel in
+        let (t1, e1')  = check_expr e1 envs not_toplevel in
+        let (t2, e2') = check_expr e2 envs not_toplevel in
         (* All binary operators require operands of the same type *)
         let same = t1 = t2 in
         (* Determine expression type based on operator and operand types *)
@@ -208,7 +170,7 @@ let check (units : program) =
             Failure ("illegal binary operator " ^
                       string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
                       string_of_typ t2 ^ " in " ^ string_of_expr e))
-        in (envs'', (ty, SBinop((t1, e1'), op, (t2, e2'))))
+        in (ty, SBinop((t1, e1'), op, (t2, e2')))
     | Call (fname, args) as call -> 
         let sfd = find_func fname in
         let param_length = List.length sfd.sformals in
@@ -216,28 +178,28 @@ let check (units : program) =
           raise (Failure ("expecting " ^ string_of_int param_length ^ 
                           " arguments in " ^ string_of_expr call))
         (* Compare types of arguments to expected types of functions *)
-        else let check_call (envs, (args: sexpr list)) (formal_t, _) e = 
+        else let check_call (args: sexpr list) (formal_t, _) e = 
           (* Ensure that templated calls work here *)
-          let (envs', ((et, _) as se)) = check_expr e envs not_toplevel in 
+          let ((et, _) as se) = check_expr e envs not_toplevel in 
           let err = "illegal argument found " ^ string_of_typ et ^
             " expected " ^ string_of_typ formal_t ^ " in " ^ string_of_expr e in
           let _ = check_assign formal_t et err
-          in (envs', se::args)
+          in (se::args)
         in
-      let (_, args') = List.fold_left2 check_call (envs, []) sfd.sformals args
-      in (envs, (sfd.styp, SCall(fname, List.rev args')))
+      let args' = List.fold_left2 check_call [] sfd.sformals args
+      in (sfd.styp, SCall(fname, List.rev args'))
 
       (* TODO: For now, we assume any list is not empty.
          Empty lists will require some sort of type inference *)
-      | ListExplicit [] -> (raise (Failure "Zero element lists are not yet implemented!")) 
+      (* | ListExplicit [] -> (raise (Failure "Zero element lists are not yet implemented!")) 
       | ListExplicit exprs ->
-          let (envs, (ty, sx)) = check_expr e envs is_toplevel in        
+          let (ty, sx) = check_expr e envs is_toplevel in        
 
           let check_list_expr envs exprs sx =
-            let (envs', (ty', sx')) = check_expr e envs is_toplevel in
-            if ty == ty' then (envs', (ty, sx' :: sx))
+            let (ty', sx') = check_expr e envs is_toplevel in
+            if ty == ty' then (ty, sx' :: sx)
                          else (Failure "This expression's type does not match the list's type!")
-        in List.fold_left check_list_exprs envs exprs [sx]
+        in List.fold_left check_list_exprs envs exprs [sx] *)
 
         
     | TemplatedCall _ -> raise (Failure "there should be no templated calls at semant")
@@ -245,10 +207,51 @@ let check (units : program) =
   in
 
   let check_bool_expr e envs = 
-    let (envs', (t', e')) = check_expr e envs not_toplevel
+    let (t', e') = check_expr e envs not_toplevel
     and err = "expected Boolean expression in " ^ string_of_expr e
-    in if t' != Bool then raise (Failure err) else (envs', (t', e'))
+    in if t' != Bool then raise (Failure err) else (t', e')
   in
+
+  (* let rec check_stmt_expr: This should allow bindings. It matches against bindings, and semantically checks those.
+    Everything else uses regular check_expr. Then, bindings in check_expr should raise an error 
+    A for loop needs to use check_stmt_expr
+  in check_stmt, expression case just uses check_stmt_expr *)
+  let check_stmt_expr e envs is_toplevel = match e with 
+    (* Bind the variable in the topmost environment. *)
+     BindAssign (typ, id, e1) ->
+          if !in_assign then raise (Failure "Nested assigns are not allowed")
+          else
+          (match is_toplevel with 
+            (* Not at top level *)
+            false -> 
+                let _ = in_assign := true in
+                let envs' = bind id typ envs in
+                let (t, e1') = check_expr e1 envs' not_toplevel in
+                let err = "illegal assignment " ^ string_of_typ typ ^ " = " ^ string_of_typ t ^ " in " ^ string_of_expr e in
+                let _ = check_assign typ t err in
+                let _ = in_assign := false in
+                (envs', (typ, SBindAssign(typ, id, (t, e1')))) 
+            (* At top level *)
+          | true -> 
+                let _ = in_assign := true in
+                let _ = bind_global id typ in 
+                let (t, e1') = check_expr e1 envs not_toplevel in
+                let _ = in_assign := false in
+                (envs, (typ, SBindAssign(typ, id ,(t, e1')))))
+    |BindDec (typ, id) -> 
+          (match is_toplevel with 
+            (* Not at top level *)
+            false -> 
+              let envs' = bind id typ envs in
+              (* let first_env = List.hd envs' in
+              let _ = StringMap.iter (fun k v -> Printf.printf "Key: %s, Value: %s\n" k (string_of_typ v)) first_env in *)
+              envs', (typ, SBindDec(typ, id))
+            (* At top level *)
+          | true ->  
+                let _ = bind_global id typ in 
+                (envs, (typ, SBindDec(typ, id))))
+
+    | _ -> (envs, check_expr e envs is_toplevel) in
 
   (* Return a semantically-checked statement i.e. containing sexprs *)
   let rec check_stmt (envs: typ StringMap.t list) stmt is_toplevel is_inloop = match stmt with
@@ -267,26 +270,26 @@ let check (units : program) =
           | [] -> []
         in (envs, SBlock(check_stmt_list (StringMap.empty :: envs) stmts))
     | Expr e -> 
-        let (envs', se) = check_expr e envs is_toplevel in
+        let (envs', se) = check_stmt_expr e envs is_toplevel in
         (* let first_env = List.hd envs' in
         let _ = StringMap.iter (fun k v -> Printf.printf "expr Key: %s, Value: %s\n" k (string_of_typ v)) first_env in *)
         (envs', SExpr(se))
     | If(p, b1, b2) -> 
-        let (envs', p') = check_bool_expr p envs in
-        let (envs'', b1') = check_stmt envs' b1 not_toplevel is_inloop in
-        let (_, b2') = check_stmt envs'' b2 not_toplevel is_inloop in 
+        let p' = check_bool_expr p envs in
+        let (envs', b1') = check_stmt envs b1 not_toplevel is_inloop in
+        let (_, b2') = check_stmt envs' b2 not_toplevel is_inloop in 
       (envs, SIf(p', b1', b2'))
     | For(e1, e2, e3, st) -> 
-        let (envs', e1') = check_expr e1 envs not_toplevel in
-        let (envs'', e2') = check_bool_expr e2 envs' in
-        let (envs''', e3') = check_expr e3 envs'' not_toplevel in
-        let (_, st') = check_stmt envs''' st not_toplevel inloop in
+        let (envs', e1') = check_stmt_expr e1 envs not_toplevel in
+        let e2' = check_bool_expr e2 envs' in
+        let e3' = check_expr e3 envs' not_toplevel in
+        let (_, st') = check_stmt envs' st not_toplevel inloop in
         (envs, SFor(e1', e2', e3', st'))
     | While(p, s) -> 
-      let (envs', p') = check_bool_expr p envs in
-      let (_, s') = check_stmt envs' s not_toplevel inloop in
+      let p' = check_bool_expr p envs in
+      let (_, s') = check_stmt envs s not_toplevel inloop in
       (envs, SWhile(p', s'))
-    | Return e -> let (_, e') = check_expr e envs not_toplevel in
+    | Return e -> let e' = check_expr e envs not_toplevel in
                   (envs, SReturn(e'))
     (* | ForEnhanced (e1, e2, st) -> *)
     | Continue -> if is_inloop = inloop then (envs, SContinue) 

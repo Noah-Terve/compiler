@@ -74,7 +74,7 @@ echo ""
 # Compile the assembly file to an executable
 echo "Compiling assembly into an executable:"
 echo "$CC -O2 $TARGET_DIR/$name.s -o $exe_file"
-"$CC" -O2 "$TARGET_DIR/$name.s" "list.o" -o "$exe_file"
+"$CC" -O2 "$TARGET_DIR/$name.s" -o "$exe_file"
 echo ""
 echo "Run your the program with:"
 echo "./$exe_file"

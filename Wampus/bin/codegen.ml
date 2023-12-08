@@ -313,7 +313,7 @@ let translate program =
           expr builder (t, SAssign (var_name, e)) envs
 
           (* let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with *)
-      | SListExplicit l -> 
+      (* | SListExplicit l -> 
           (* Fold through the list 'l' and recursively runs expr builder -> 
              returns tuple of list of llvals and environment *)
           let (llvals, envs''') = List.fold_left 
@@ -366,7 +366,7 @@ let translate program =
             let listval = L.build_load list_ptr "listval" builder in
             L.build_call list_insert_func [| listval; L.const_int i32_t i; void_cast |] "" builder
             ) list_ptr (List.mapi (fun i llval -> (i, llval)) malloced_ptrs) in 
-          (L.build_load list_ptr "listlit" builder, envs''')
+          (L.build_load list_ptr "listlit" builder, envs''') *)
             
             (* let list_t     = L.pointer_type (L.struct_type context [| voidptr_t; nodeptr_t |])  *)
 
