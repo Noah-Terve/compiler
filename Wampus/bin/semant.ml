@@ -79,9 +79,11 @@ let check (units : program) =
     | _ -> raise (Failure ("Should not be in here"))
   in
   let add_struc (sd: sstruct_decl)= 
-    let n = sd.sname in
-    match sd with
-      _ -> struct_decls := StringMap.add n sd !struct_decls
+    let name = sd.sname in
+    if StringMap.mem name !struct_decls then
+      raise (Failure ("Error: Duplicate named struct '" ^ name ^ "'"))
+    else
+      struct_decls := StringMap.add name sd !struct_decls
   in
 
   (* Collect all other function names into one symbol table *)

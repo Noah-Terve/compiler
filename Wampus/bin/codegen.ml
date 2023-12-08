@@ -30,6 +30,11 @@ let translate program =
       sbody = List.rev (List.fold_left (fun acc units -> match units with 
                                 SStmt struc -> struc :: acc 
                                 | _ -> acc) [] program);} in
+  let struct_decls =
+    List.fold_left (fun acc units -> match units with 
+                                  SSdecl struc -> StringMap.add struc.sname struc.ssformals acc
+                                | _ -> acc)
+                StringMap.empty program in
 
   let context    = L.global_context () in
   (* Add types to the context so we can use them in our LLVM code *)
@@ -37,10 +42,16 @@ let translate program =
   and i8_t       = L.i8_type     context
   and i1_t       = L.i1_type     context
   and float_t    = L.double_type context
+  and struct_t   = L.named_struct_type context
   (* Create an LLVM module -- this is a "container" into which we'll 
     generate actual code *)
   and the_module = L.create_module context "Wampus" 
   and pointer_t = L.pointer_type in
+  (* Creating a map of structs *)
+  let struct_types =
+    let make_empty_struct name _ = struct_t name in
+    StringMap.mapi make_empty_struct struct_decls
+  in 
 
   (* Convert MicroC types to LLVM types *)
   let ltype_of_typ = function
@@ -49,9 +60,18 @@ let translate program =
     | A.Float -> float_t
     | A.Char  -> i8_t
     | A.String -> pointer_t i8_t
+    | A.Struct(s) -> try pointer_t (StringMap.find s struct_types)
+      with _ -> raise (Failure (s ^ " is not a valid struct type"))
     | _ -> raise (Failure "types not implemented yet")
   in
-
+  (* Makes the struct body *)
+  let make_struct_body name ssformals = 
+    let (types, _) = List.split ssformals in
+    let ltypes_list = List.map ltype_of_typ types in
+    let ltypes = Array.of_list ltypes_list in
+    L.struct_set_body (StringMap.find name struct_types) ltypes false
+  in
+  let _ = StringMap.mapi make_struct_body struct_decls in
   (* Extract global variables from main, declaring them, in essense. This means
       that all variables declared in main will be global variables. Since they
       are being declared here, we also convert all bindassigs to assignments,
@@ -258,10 +278,19 @@ let translate program =
           (* (L.build_call fdef (Array.of_list llargs) result builder, envs) *)
           (L.build_call fdef (Array.of_list (List.rev llargs)) result builder, envs)
       (* | SBindDec (t, n) -> (L.const_int (ltype_of_typ t) 0, bind n (L.const_int (ltype_of_typ t) 0) envs) *)
-      | SBindDec (t, n) ->
+      | SBindDec (t, n) -> (match t with 
+            A.Struct(_) -> 
+              let pty = ltype_of_typ t in
+              let lty = L.element_type pty in (* getting the type of the struct *)
+              ()
+            (* get the pointer type *)
+            (* create const_named_struct with initial values of zero *)
+            (* build a struct pointer with size of pointer's type *)
+            (* store empty struct in the struct pointer *)
+          | _ -> 
           (* let _ = Printf.fprintf stderr "generating code for binding %s\n" n in *)
           let local_var = L.build_alloca (ltype_of_typ t) n builder in
-          (L.const_int (ltype_of_typ t) 0, bind n local_var envs)
+          (L.const_int (ltype_of_typ t) 0, bind n local_var envs))
           
       | SAssign (var_name, e) ->
           let (value_to_assign, envs) = expr builder e envs in
