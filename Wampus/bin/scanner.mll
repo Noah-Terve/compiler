@@ -19,7 +19,7 @@ rule token = parse
   [' ' '\t' '\r' '\n'] { token lexbuf } (* Whitespace *)
 | "/*"     { comment lexbuf }           (* Comments *)
 (* Our edits *)
-
+| "->"     { ARROW }
 | "and"    { AND }
 | "or"     { OR }
 | "not"    { NOT }

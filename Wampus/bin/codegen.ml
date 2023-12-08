@@ -35,6 +35,9 @@ let translate program =
                                   SSdecl struc -> StringMap.add struc.sname struc.ssformals acc
                                 | _ -> acc)
                 StringMap.empty program in
+  (* let struct_indices = StringMap.iter  *)
+    
+
 
   let context    = L.global_context () in
   (* Add types to the context so we can use them in our LLVM code *)
@@ -60,18 +63,30 @@ let translate program =
     | A.Float -> float_t
     | A.Char  -> i8_t
     | A.String -> pointer_t i8_t
-    | A.Struct(s) -> try pointer_t (StringMap.find s struct_types)
-      with _ -> raise (Failure (s ^ " is not a valid struct type"))
+    | A.Struct(s) | A.Templated(s)-> (try pointer_t (StringMap.find s struct_types)
+      with _ -> raise (Failure (s ^ " is not a valid struct type")))
     | _ -> raise (Failure "types not implemented yet")
   in
   (* Makes the struct body *)
   let make_struct_body name ssformals = 
     let (types, _) = List.split ssformals in
+    (* let _ = print_endline "Making a struct body" in *)
     let ltypes_list = List.map ltype_of_typ types in
+    (* let _ = print_endline "Finished mapping the types" in *)
     let ltypes = Array.of_list ltypes_list in
     L.struct_set_body (StringMap.find name struct_types) ltypes false
   in
   let _ = StringMap.mapi make_struct_body struct_decls in
+
+  let init t = match t with
+     A.Float -> L.const_float (ltype_of_typ t) 0.0
+    | A.Struct(name) -> L.const_pointer_null (ltype_of_typ (A.Struct name))
+    | _ -> L.const_int (ltype_of_typ t) 0
+  in
+  let rec find_index lst sid i = match lst with
+      [] -> raise(Failure "Not in list")
+    | (_, n)::rest -> if (n = sid) then i else find_index rest sid (i +1)
+  in
   (* Extract global variables from main, declaring them, in essense. This means
       that all variables declared in main will be global variables. Since they
       are being declared here, we also convert all bindassigs to assignments,
@@ -279,15 +294,19 @@ let translate program =
           (L.build_call fdef (Array.of_list (List.rev llargs)) result builder, envs)
       (* | SBindDec (t, n) -> (L.const_int (ltype_of_typ t) 0, bind n (L.const_int (ltype_of_typ t) 0) envs) *)
       | SBindDec (t, n) -> (match t with 
-            A.Struct(_) -> 
+            A.Struct(name) | A.Templated (name) -> 
+              (* let _ = Printf.fprintf stderr "inhere" in *)
               let pty = ltype_of_typ t in
               let lty = L.element_type pty in (* getting the type of the struct *)
-              ()
-            (* get the pointer type *)
-            (* create const_named_struct with initial values of zero *)
-            (* build a struct pointer with size of pointer's type *)
-            (* store empty struct in the struct pointer *)
+              let (types, _) = try List.split (StringMap.find name struct_decls)
+                          with Not_found -> raise(Failure("Struct name is not a valid struct")) in
+              let arr_types = Array.of_list (List.map init types) in
+              let lstruct = L.const_named_struct lty arr_types in
+              let str_ptr = L.build_alloca lty n builder in
+              let _ = L.build_store lstruct str_ptr builder in
+              (str_ptr, bind n str_ptr envs)
           | _ -> 
+            (* let _ = print_endline (A.string_of_typ t) in *)
           (* let _ = Printf.fprintf stderr "generating code for binding %s\n" n in *)
           let local_var = L.build_alloca (ltype_of_typ t) n builder in
           (L.const_int (ltype_of_typ t) 0, bind n local_var envs))
@@ -296,6 +315,25 @@ let translate program =
           let (value_to_assign, envs) = expr builder e envs in
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in
           (value_to_assign, envs)
+      | SStructAssign (name, sname, sid, e) ->
+        (* let _ = print_endline "Assigning a struct value" in *)
+        let llstruct = lookup sname envs in
+        (* environments could be an issue here *)
+        let (llvalue, envs) = expr builder e envs in
+        (* get the formals of sname *)
+
+        let sformals = StringMap.find name struct_decls in
+        let index = find_index sformals sid 0 in
+        let elm_ptr = L.build_struct_gep llstruct index sid builder in 
+        (L.build_store llvalue elm_ptr builder, envs)
+        (* let index = List.find_index  *)
+      | SStructAccess (name, sname, sid) ->
+        let llstruct = lookup sname envs in
+        (* environments could be an issue here *)
+        let sformals = StringMap.find name struct_decls in
+        let index = find_index sformals sid 0 in
+        let elm_ptr = L.build_struct_gep llstruct index sid builder in 
+        (L.build_load elm_ptr sid builder, envs)
       | SBindAssign (t, var_name, e) ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
           expr builder (t, SAssign (var_name, e)) envs

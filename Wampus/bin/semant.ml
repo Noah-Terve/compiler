@@ -75,7 +75,9 @@ let check (units : program) =
     with Not_found -> raise (Failure ("Unrecognized struct identifier " ^ id))
   in
   let find_struc_from_typ = function
-      Struct(s) -> find_struc s
+  (* fix this later TODO *)
+      Struct(s) -> (s, find_struc s)
+    | Templated(s) -> (s, find_struc s)
     | _ -> raise (Failure ("Should not be in here"))
   in
   let add_struc (sd: sstruct_decl)= 
@@ -167,7 +169,9 @@ let check (units : program) =
         (* check if the typ is struct that it is in the struct map *)
         let _ = 
           (match typ with 
-              Struct(s) -> let _ = find_struc s in ()
+              Struct(s) -> 
+                let _ = print_endline id in 
+                let _ = find_struc s in ()
             | _ -> () )
         in
         (match is_toplevel with 
@@ -254,15 +258,21 @@ let check (units : program) =
     | StructAssign (sname, sid, e) ->
       (* Check that the struct name is in the env *)
         let ltyp = type_of_identifier sname envs in
-        let struc = find_struc_from_typ ltyp in
+        let (name, struc) = find_struc_from_typ ltyp in
       (* Check that the struct id is in the struct *)
         let (lt, _) = find_struct_id struc sid in
         let (envs'', (rt, e')) = check_expr e envs not_toplevel in
         let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
           string_of_typ rt ^ " in " ^ string_of_expr e in
         let _ = check_assign lt rt err in
-        (envs'', (lt, SStructAssign(sname, sid, (rt, e'))))
-
+        (envs'', (lt, SStructAssign(name, sname, sid, (rt, e'))))
+    | StructAccess (sname, sid) ->
+      (* Check that the struct name is in the env *)
+      let ltyp = type_of_identifier sname envs in
+      let (name, struc) = find_struc_from_typ ltyp in
+      (* Check that the struct id is in the struct *)
+      let (lt, _) = find_struct_id struc sid in
+      (envs, (lt, SStructAccess(name, sname, sid)))
 
 
 
@@ -362,7 +372,7 @@ in
   (* TODO: Make sure there are no duplicate templated structs *)
   let check_struct (struc : struct_decl) = 
     let sformals' = check_binds "sformal" struc.sformals in
-    let _ = Printf.fprintf stderr "Adding struct %s\n" struc.name in
+    (* let _ = Printf.fprintf stderr "Adding struct %s\n" struc.name in *)
     let ssd = 
       {
         sname = struc.name;

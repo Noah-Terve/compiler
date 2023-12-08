@@ -12,7 +12,7 @@ open Ast
 %token NOT EQ NEQ LEQ GEQ AND OR TIMESEQ DIVIDEEQ INTERSECTEQ UNIONEQ MODEQ MINUSEQ PLUSEQ
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT STRING CHAR
 %token LBRACK RBRACK LARROW RARROW IN MOD TEMPLATE UNION INTERSECT ISIN
-%token LIST SET BREAK CONTINUE STRUCT DOT LTAGS RTAGS LAT RAT
+%token LIST SET BREAK CONTINUE STRUCT DOT LTAGS RTAGS LAT RAT ARROW
 %token <int> LITERAL
 %token <bool> BLIT
 %token <string> ID FLIT
@@ -25,6 +25,7 @@ open Ast
 
 %nonassoc NOELSE
 %nonassoc ELSE
+%right NOASSIGN
 %right ASSIGN 
 %right UNIONEQ 
 %right INTERSECTEQ
@@ -183,6 +184,7 @@ expr:
   // Assignment Operators
   | ID ASSIGN expr               { Assign($1, $3)         }
   | ID DOT ID ASSIGN expr        { StructAssign($1, $3, $5) }
+  | ID ARROW ID                  { StructAccess($1, $3)}
   | ID DIVIDEEQ expr { Assign($1, Binop (Id($1), Div, $3))}
   | ID TIMESEQ expr  { Assign($1, Binop (Id($1), Mult, $3)) }
   | ID INTERSECTEQ expr { Assign($1, Binop (Id($1), Intersect, $3))}

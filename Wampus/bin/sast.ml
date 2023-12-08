@@ -4,6 +4,7 @@ open Ast
 
 type sexpr = typ * sx
 and sx =
+
     SLiteral of int
   | SFliteral of string
   | SBoolLit of bool
@@ -17,7 +18,8 @@ and sx =
   | SCall of string * sexpr list
   | SBindAssign of typ * string * sexpr
   | SBindDec of typ * string
-  | SStructAssign of string * string * sexpr
+  | SStructAssign of string * string * string * sexpr
+  | SStructAccess of string * string * string
   | SListExplicit of sexpr list
   | SSetExplicit of sexpr list
   | SStructExplicit of sexpr list
@@ -72,7 +74,7 @@ let rec string_of_sexpr (t, e) =
   | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
   | SBindDec (_, id) -> id
   | SBindAssign (_, id, e) -> id ^ " = " ^ string_of_sexpr e
-  | SStructAssign (struct_id, id1, e) -> struct_id ^ "."^ id1 ^ " = " ^ string_of_sexpr e
+  | SStructAssign (_, struct_id, id1, e) -> struct_id ^ "."^ id1 ^ " = " ^ string_of_sexpr e
   | SCall(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
   | SNoexpr -> ""

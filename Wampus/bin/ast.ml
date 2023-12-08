@@ -29,6 +29,7 @@ type expr =
   | BindAssign of typ * string * expr
   | BindDec of typ * string
   | StructAssign of string * string * expr
+  | StructAccess of string * string
   | BindTemplatedDec of string * typ list * string
   | BindTemplatedAssign of string * typ list * string * expr
   | ListExplicit of expr list
@@ -111,8 +112,8 @@ let string_of_uop = function
 | Char -> "char"
 | List(t) -> "list @l " ^ string_of_typ t ^ " @r"
 | Set(t) -> "set @l " ^ string_of_typ t ^ " @r"
-| Templated(t) -> t
-| Struct(t) -> t
+| Templated(t) -> "templated" ^ t
+| Struct(t) -> "Struct" ^ t
 
 let rec string_of_expr = function
   Literal(l) -> string_of_int l
@@ -127,13 +128,14 @@ let rec string_of_expr = function
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
 | Unop(o, e) -> string_of_uop o ^ string_of_expr e
 | Assign(v, e) -> v ^ " = " ^ string_of_expr e
-| Call(f, el) ->
+| Call(f, el) -> "yo" ^
     f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 | TemplatedCall(f, tl, el) ->
     f ^ "@l " ^ String.concat ", "(List.map string_of_typ tl) ^ " @r  (" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 | BindAssign(t, id, e) -> string_of_typ t ^ " "^ id ^ " = " ^ string_of_expr e
 | BindDec (t, id) -> string_of_typ t ^ " " ^ id
 | StructAssign (struct_id, id1, e) -> struct_id ^ "."^ id1 ^ " = " ^ string_of_expr e
+| StructAccess (sname, sid) -> sname ^ "->" ^sid
 | BindTemplatedDec (struct_id, t_list, id) ->  struct_id ^ " @l " ^ String.concat ", " (List.map string_of_typ t_list) ^ " @r " ^ id
 | BindTemplatedAssign (struct_id, t_list, id, e) -> struct_id ^ " @l " ^ String.concat ", " (List.map string_of_typ t_list) ^ " @r " ^ id ^ " = " ^ string_of_expr e
 | ListExplicit(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"

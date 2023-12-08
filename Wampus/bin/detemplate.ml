@@ -42,7 +42,7 @@ let detemplate units =
                           raise (Failure msg))
     | List (t) -> List (potentially_templated_to_typ t names_to_types)
     | Set (t) -> Set (potentially_templated_to_typ t names_to_types)
-    | _ -> typ
+    | _ ->  typ
   in
   
   let rec resolve_templated_function name types prog = 
