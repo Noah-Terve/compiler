@@ -87,10 +87,19 @@ let translate program =
       [] -> raise(Failure "Not in list")
     | (_, n)::rest -> if (n = sid) then i else find_index rest sid (i +1)
   in
+  let instantitate_struct t n values builder =
+      let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
+      let lty = L.element_type pty in (* getting the type of the struct *)
+      let lstruct = L.const_named_struct lty values in
+      let str_ptr = L.build_alloca lty n builder in
+      let _ = L.build_store lstruct str_ptr builder in
+      str_ptr
+  in
   (* Extract global variables from main, declaring them, in essense. This means
       that all variables declared in main will be global variables. Since they
       are being declared here, we also convert all bindassigs to assignments,
-      etc. main just uses the global environment as its local environment. *)
+      etc. main just uses the global environment as its local environment.
+      TODO: Make structs global *)
   let parse_main_statements sstmts =
     let parse_toplevel_statement (sstmts, global_vars) sstmt = match sstmt with
         SExpr (_t, s) -> (match s with
@@ -296,14 +305,10 @@ let translate program =
       | SBindDec (t, n) -> (match t with 
             A.Struct(name) | A.Templated (name) -> 
               (* let _ = Printf.fprintf stderr "inhere" in *)
-              let pty = ltype_of_typ t in
-              let lty = L.element_type pty in (* getting the type of the struct *)
               let (types, _) = try List.split (StringMap.find name struct_decls)
-                          with Not_found -> raise(Failure("Struct name is not a valid struct")) in
-              let arr_types = Array.of_list (List.map init types) in
-              let lstruct = L.const_named_struct lty arr_types in
-              let str_ptr = L.build_alloca lty n builder in
-              let _ = L.build_store lstruct str_ptr builder in
+                with Not_found -> raise(Failure("Struct name is not a valid struct")) in
+              let arr_type = Array.of_list(List.map init types) in
+              let str_ptr = instantitate_struct t n arr_type builder in
               (str_ptr, bind n str_ptr envs)
           | _ -> 
             (* let _ = print_endline (A.string_of_typ t) in *)
@@ -334,9 +339,16 @@ let translate program =
         let index = find_index sformals sid 0 in
         let elm_ptr = L.build_struct_gep llstruct index sid builder in 
         (L.build_load elm_ptr sid builder, envs)
-      | SBindAssign (t, var_name, e) ->
+      | SBindAssign (t, var_name, e) -> (match t with 
+          A.Struct(name) | A.Templated (name) -> raise (Failure ("Not implemented"))
+          (* let (types, _) = try List.split (StringMap.find name struct_decls)
+              with Not_found -> raise(Failure("Struct name is not a valid struct")) in
+          (* e should be a struct explicit list
+             The list should be of string * expr (which the expr evaluates to a literal) *)
+          () *)
+        | _ ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
-          expr builder (t, SAssign (var_name, e)) envs
+          expr builder (t, SAssign (var_name, e)) envs)
       | _ -> raise (Failure ("expr in codegen not implemented yet (ignore type): " ^ (string_of_sexpr (A.Int, e))))
     in
     

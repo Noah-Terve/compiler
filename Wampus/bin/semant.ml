@@ -147,6 +147,8 @@ let check (units : program) =
     | BindAssign (typ, id, e1) ->
         if !in_assign then raise (Failure "Nested assigns are not allowed")
         else
+        (* let _ = (match typ with 
+                  Struct(s) ->) *)
         (match is_toplevel with 
           (* Not at top level *)
           false -> 
@@ -170,7 +172,7 @@ let check (units : program) =
         let _ = 
           (match typ with 
               Struct(s) -> 
-                let _ = print_endline id in 
+                (* let _ = print_endline id in  *)
                 let _ = find_struc s in ()
             | _ -> () )
         in
