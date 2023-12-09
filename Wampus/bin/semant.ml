@@ -325,7 +325,7 @@ let check (units : program) =
           (* At top level *)
         | true ->  
               let _ = bind_global id typ in 
-              let _ = StringMap.iter (fun k v -> Printf.printf "Key: %s, Value: %s\n" k (string_of_typ v)) !globals in
+              (* let _ = StringMap.iter (fun k v -> Printf.printf "Key: %s, Value: %s\n" k (string_of_typ v)) !globals in *)
               (envs, (typ, SBindDec(typ, id))))    
     | _ -> (envs, check_expr e envs is_toplevel)
   in

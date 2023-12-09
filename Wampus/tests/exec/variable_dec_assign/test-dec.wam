@@ -1,2 +1,1 @@
 int a;
-print @l int @r(123);
