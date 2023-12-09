@@ -79,7 +79,7 @@ let translate program =
   let _ = StringMap.mapi make_struct_body struct_decls in
 
   let init t = match t with
-     A.Float -> L.const_float (ltype_of_typ t) 0.0
+      A.Float -> L.const_float (ltype_of_typ t) 0.0
     | A.Struct(name) -> L.const_pointer_null (ltype_of_typ (A.Struct name))
     | _ -> L.const_int (ltype_of_typ t) 0
   in
@@ -317,10 +317,12 @@ let translate program =
           (L.const_int (ltype_of_typ t) 0, bind n local_var envs))
           
       | SAssign (var_name, e) ->
+        let _ = print_endline "in here" in
           let (value_to_assign, envs) = expr builder e envs in
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in
           (value_to_assign, envs)
       | SStructAssign (name, sname, sid, e) ->
+        let _ = print_endline "in here2" in
         (* let _ = print_endline "Assigning a struct value" in *)
         let llstruct = lookup sname envs in
         (* environments could be an issue here *)
@@ -339,19 +341,23 @@ let translate program =
         let index = find_index sformals sid 0 in
         let elm_ptr = L.build_struct_gep llstruct index sid builder in 
         (L.build_load elm_ptr sid builder, envs)
-      | SBindAssign (t, var_name, e) -> (match t with 
-          A.Struct(name) | A.Templated (name) -> raise (Failure ("Not implemented"))
-          (* let (types, _) = try List.split (StringMap.find name struct_decls)
+     | SBindAssign (t, var_name, e) -> 
+        let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
+        (expr builder (t, SAssign (var_name, e)) envs)
+        (* (match t with 
+          A.Struct(name) | A.Templated (name) -> 
+            (* raise (Failure ("Not implemented")) *)
+          let (types, _) = try List.split (StringMap.find name struct_decls)
               with Not_found -> raise(Failure("Struct name is not a valid struct")) in
-          let array = (match e with
-              SStructExplicit(el) -> Array.of_list (List.map (fun e -> let (e1, _) = expr builder e envs) el)
-            | _ -> raise (Failure("Should've been caught in semantic phase"))) in
-          () *)
           (* e should be a struct explicit list
              The list should be of string * expr (which the expr evaluates to a literal) *)
-        | _ ->
-          let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
-          expr builder (t, SAssign (var_name, e)) envs)
+        | _ -> *)
+      | SStructExplicit(t, n, el) ->
+        let array = Array.of_list (List.map (fun e -> let (e1, _) = expr builder e envs in e1) el) in
+        let str_ptr = instantitate_struct t n array builder in
+        (str_ptr, bind n str_ptr envs)
+        (* let _ = (List.map2 (fun sid e -> expr builder (t, SStructAssign(name, n, sid, e)) envs) names el) in *)
+              (* (str_ptr, envs) *)
       | _ -> raise (Failure ("expr in codegen not implemented yet (ignore type): " ^ (string_of_sexpr (A.Int, e))))
     in
     

@@ -157,7 +157,7 @@ let check (units : program) =
           else
             bind id typ envs
         in
-        let (envs'', (t, e1')) = (match typ with
+        (match typ with
           Struct(s) | Templated(s) -> 
             let struc_body = find_struc s in
             let struc_formals = struc_body.ssformals in
@@ -174,15 +174,17 @@ let check (units : program) =
             let sstruct_explicit = List.map (fun e -> let (_, e2) = check_expr e envs not_toplevel in e2) struct_explicit in
             (* check for equal types *)
             let _ = List.map2 (fun (lt, _) (rt, _) -> 
-              let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ string_of_typ rt in
+              let err = "illegal assignment d" ^ string_of_typ lt ^ " = " ^ string_of_typ rt in
               check_assign lt rt err
               ) struc_formals sstruct_explicit in
-            (envs', (Struct(s), SStructExplicit(sstruct_explicit)))
-        | _ -> check_expr e1 envs' not_toplevel) in
-        let err = "illegal assignment " ^ string_of_typ typ ^ " = " ^ string_of_typ t ^ " in " ^ string_of_expr e in
-        let _ = check_assign typ t err in
-        let _ = in_assign := false in
-        (envs'', (typ, SBindAssign(typ, id, (t, e1'))))
+            let _ = in_assign := false in
+            (envs', (Templated(s), SStructExplicit(typ, id, sstruct_explicit)))
+          | _ ->  
+            let (envs'', (t, e1')) =  check_expr e1 envs' not_toplevel in
+            let err = "illegal assignment c" ^ string_of_typ typ ^ " = " ^ string_of_typ t ^ " in " ^ string_of_expr e in
+            let _ = check_assign typ t err in
+            let _ = in_assign := false in
+            (envs'', (typ, SBindAssign(typ, id, (t, e1')))))
         
     | BindDec (typ, id) -> 
         (* check if the typ is struct that it is in the struct map *)
@@ -209,7 +211,7 @@ let check (units : program) =
     | Assign(var, e) as ex -> 
         let lt = type_of_identifier var envs in
         let (envs'', (rt, e')) = check_expr e envs not_toplevel in
-        let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
+        let err = "illegal assignment b" ^ string_of_typ lt ^ " = " ^ 
           string_of_typ rt ^ " in " ^ string_of_expr ex in
         let _ = check_assign lt rt err 
         in (envs'', (lt, SAssign(var, (rt, e'))))
@@ -281,7 +283,7 @@ let check (units : program) =
       (* Check that the struct id is in the struct *)
         let (lt, _) = find_struct_id struc sid in
         let (envs'', (rt, e')) = check_expr e envs not_toplevel in
-        let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
+        let err = "illegal assignment a" ^ string_of_typ lt ^ " = " ^ 
           string_of_typ rt ^ " in " ^ string_of_expr e in
         let _ = check_assign lt rt err in
         (envs'', (lt, SStructAssign(name, sname, sid, (rt, e'))))
