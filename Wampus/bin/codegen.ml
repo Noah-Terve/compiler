@@ -168,6 +168,9 @@ let translate program =
   let list_at_t          = L.function_type voidptr_t [| (L.pointer_type list_t); i32_t |] in
   let list_at_func       = L.declare_function "_list_at" list_at_t the_module in
 
+  let list_print        = L.function_type void_t [| (L.pointer_type list_t) |] in 
+  let list_print_func   = L.declare_function "_list_int_print" list_print the_module in
+
   (* TODO: ADD THE SET BUILT-INS HERE *)
 
 
@@ -385,20 +388,17 @@ let translate program =
         let str_ptr = instantitate_struct t n array builder in
         (str_ptr, bind n str_ptr envs)
 
-          (* let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with *)
-      (* | SListExplicit l -> 
+        (* let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with *)
+      | SListExplicit l -> 
           (* Fold through the list 'l' and recursively runs expr builder -> 
              returns tuple of list of llvals and environment *)
-          let (llvals, envs''') = List.fold_left 
-                  (fun (list_accum, envs') sex ->   
-                      let (llval, envs'') = expr builder sex envs' in
-                      (* Return updated list and updated envs *)
-                      (llval :: list_accum, envs'')
-                  )
-                  ([], envs)
-                  l
+          let llvals = List.fold_left 
+                        (fun list_accum sex ->   
+                            let (llval, _) = expr builder sex envs in
+                            (* Return updated list and updated envs *)
+                            llval :: list_accum
+                        ) [] l
           in
-
           (* Builds a malloc instruction for a given llvalue *)
           let build_malloc builder llvalue = 
             let heap = L.build_malloc (L.type_of llvalue) "heap" builder in
@@ -433,15 +433,22 @@ let translate program =
              3) Loads the value of list_ptr into listval variable
              4) Calls list_insert_func with (head, index of insertion, node to insert)
              *)
-          let _ = List.fold_left (fun _ (i, llval) -> 
-            (* Cast each llval to a void * before inserting it into the list *)
-            let void_cast = L.build_bitcast llval voidptr_t "voidptr" builder in
-            let listval = L.build_load list_ptr "listval" builder in
-            L.build_call list_insert_func [| listval; L.const_int i32_t i; void_cast |] "" builder
-            ) list_ptr (List.mapi (fun i llval -> (i, llval)) malloced_ptrs) in 
-          (L.build_load list_ptr "listlit" builder, envs''') *)
+          let _ = List.fold_left 
+            (fun _ (i, llval) -> 
+              (* Cast each llval to a void * before inserting it into the list *)
+              let void_cast = L.build_bitcast llval voidptr_t "voidptr" builder in
+              let listval = L.build_load list_ptr "listval" builder in
+              L.build_call list_insert_func [| listval; L.const_int i32_t i; void_cast |] "" builder
+              )
+              list_ptr
+              (List.mapi (fun i llval -> (i, llval)) malloced_ptrs) in 
+          (* let finalList = (L.build_load list_ptr "listlit" builder, envs) in  *)
+          let listval = L.build_load list_ptr "listval" builder in
+          let _ = L.build_call list_print_func [| listval |] "" builder in 
+          (L.build_load list_ptr "listlit" builder, envs)
+
             
-            (* let list_t     = L.pointer_type (L.struct_type context [| voidptr_t; nodeptr_t |])  *)
+             (* let list_t     = L.pointer_type (L.struct_type context [| voidptr_t; nodeptr_t |])  *)
 
       | _ -> raise (Failure ("expr in codegen not implemented yet (ignore type): " ^ (string_of_sexpr (A.Int, e))))
     in

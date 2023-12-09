@@ -103,3 +103,23 @@ unsigned int _list_len(node **head) {
 
     return len;
 }
+
+void _list_int_print(node **l)
+{
+    if (!l || !*l) {
+        printf("[]\n");
+        return;
+    }
+    
+    node *t = *l;
+    int i = 0;
+    int len = _list_len(l);
+    printf("[ ");
+    while (i < len) {
+        int *data = (int *)_list_at(l, i); 
+        printf("%d ", *data);
+        t = t->next;
+        i = i + 1;
+    }
+    printf("]\n");
+}
