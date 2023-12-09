@@ -249,6 +249,7 @@ let check (units : program) =
 
         
     | TemplatedCall _ -> raise (Failure "there should be no templated calls at semant")
+    | BindAssign _  | BindDec _ -> raise (Failure "Nested BindDec and BindAssign are not permitted")
     | _  -> raise (Failure "Expr not handled yet")
   in
 
