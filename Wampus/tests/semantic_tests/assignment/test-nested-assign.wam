@@ -1,0 +1,8 @@
+int a = 1; 
+int b = 2; 
+
+int x = a = b;
+
+print @l int @r (x); 
+print @l int @r (a); 
+print @l int @r (b); 
