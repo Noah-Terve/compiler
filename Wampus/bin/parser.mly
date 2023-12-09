@@ -25,7 +25,6 @@ open Ast
 
 %nonassoc NOELSE
 %nonassoc ELSE
-%right NOASSIGN
 %right ASSIGN 
 %right UNIONEQ 
 %right INTERSECTEQ

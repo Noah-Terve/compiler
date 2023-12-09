@@ -63,6 +63,32 @@ let check (units : program) =
       | _ -> function_decls := StringMap.add n fd !function_decls
   in
 
+  (* Struct Decl map for statement use *)
+  let struct_decls = ref StringMap.empty in
+  (* Struct helper functions*)
+  let find_struc strucname = 
+    (* let _ = StringMap.iter (fun k v -> Printf.fprintf stderr "Structs in list: %s\n" k) !struct_decls in *)
+    try StringMap.find strucname !struct_decls
+    with Not_found -> raise (Failure ("unrecognized struct " ^ strucname))
+  in
+  let find_struct_id sd id =
+    try List.find (fun (_, s) -> s = id) sd.ssformals 
+    with Not_found -> raise (Failure ("Unrecognized struct identifier " ^ id))
+  in
+  let find_struc_from_typ = function
+  (* fix this later TODO *)
+      Struct(s) -> (s, find_struc s)
+    | Templated(s) -> (s, find_struc s)
+    | _ -> raise (Failure ("Should not be in here"))
+  in
+  let add_struc (sd: sstruct_decl)= 
+    let name = sd.sname in
+    if StringMap.mem name !struct_decls then
+      raise (Failure ("Error: Duplicate named struct '" ^ name ^ "'"))
+    else
+      struct_decls := StringMap.add name sd !struct_decls
+  in
+
   (* Collect all other function names into one symbol table *)
   (* let function_decls = List.fold_left add_func built_in_decls functions
   in *)
@@ -273,7 +299,7 @@ let check (units : program) =
                   let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ string_of_typ rt in
                   check_assign lt rt err
                   ) struc_formals sstruct_explicit in
-                (Struct(s), SStructExplicit(sstruct_explicit))
+                (Struct(s), SStructExplicit(typ, id, sstruct_explicit))
             | _ -> check_expr e1 envs' not_toplevel)
           
           in

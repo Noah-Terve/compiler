@@ -351,7 +351,7 @@ let translate program =
           (value_to_assign, envs)
       | SBindAssign (t, var_name, e) ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
-          expr builder (t, SAssign (var_name, e)) envs)
+          expr builder (t, SAssign (var_name, e)) envs
 
           (* let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with *)
       (* | SListExplicit l -> 
