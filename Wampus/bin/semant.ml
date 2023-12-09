@@ -247,7 +247,7 @@ let check (units : program) =
         let (t, _) = List.hd sexprs in
         let _ = List.map (fun (ty, _) -> check_assign t ty ("Types of elements in list do not match: " ^ string_of_typ t ^ " != " ^ string_of_typ ty)) sexprs in
         (List(t), SListExplicit sexprs)
-    | StructAssign (sname, sid, e) ->
+    (* | StructAssign (sname, sid, e) ->
       (* Check that the struct name is in the env *)
         let ltyp = type_of_identifier sname envs in
         let (name, struc) = find_struc_from_typ ltyp in
@@ -265,7 +265,7 @@ let check (units : program) =
       (* Check that the struct id is in the struct *)
       let (lt, _) = find_struct_id struc sid in
       (lt, SStructAccess(name, sname, sid))
-
+ *)
 
         
     | TemplatedCall _ -> raise (Failure "there should be no templated calls at semant")

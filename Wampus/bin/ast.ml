@@ -27,8 +27,8 @@ type expr =
   | TemplatedCall of string * typ list * expr list
   | BindAssign of typ * string * expr
   | BindDec of typ * string
-  | StructAssign of string * string * expr
-  | StructAccess of string * string
+  | StructAccess of string list
+  | StructAssign of string list * expr
   | BindTemplatedDec of string * typ list * string
   | BindTemplatedAssign of string * typ list * string * expr
   | ListExplicit of expr list
@@ -131,8 +131,8 @@ let rec string_of_expr = function
     f ^ " @l " ^ String.concat ", "(List.map string_of_typ tl) ^ " @r (" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 | BindAssign(t, id, e) -> string_of_typ t ^ " "^ id ^ " = " ^ string_of_expr e
 | BindDec (t, id) -> string_of_typ t ^ " " ^ id
-| StructAssign (struct_id, id1, e) -> struct_id ^ "." ^ id1 ^ " = " ^ string_of_expr e
-| StructAccess (sname, sid) -> sname ^ "->" ^sid
+| StructAssign (ids, e) -> String.concat "." ids ^ " = " ^ string_of_expr e
+| StructAccess (ids) -> String.concat "." ids
 | BindTemplatedDec (struct_id, t_list, id) ->  struct_id ^ " @l " ^ String.concat ", " (List.map string_of_typ t_list) ^ " @r " ^ id
 | BindTemplatedAssign (struct_id, t_list, id, e) -> struct_id ^ " @l " ^ String.concat ", " (List.map string_of_typ t_list) ^ " @r " ^ id ^ " = " ^ string_of_expr e
 | ListExplicit(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
@@ -182,8 +182,10 @@ let rec string_of_program = function
     [] -> ""
   | e :: rest -> (string_of_unit e) ^ (string_of_program rest)
   
-
-
+let info_of_strings = function
+    [] -> "[]"
+  | types -> "[\"" ^ String.concat "\"; \"" (List.map (fun s -> s) types) ^ "\"]"
+  
   let info_of_op = function
     Add -> "Add"
   | Sub -> "Sub"
@@ -236,8 +238,8 @@ let rec info_of_expr = function
   | TemplatedCall(f, tl, el) -> "TemplatedCall(\"" ^ f ^ "\", " ^ info_of_typs tl ^ ", " ^ info_of_exprs el ^ ")"
   | BindAssign(t, id, e) -> "BindAssign(" ^ info_of_typ t ^ ", \"" ^ id ^ "\", " ^ info_of_expr e ^ ")"
   | BindDec (t, id) -> "BindDec(" ^ info_of_typ t ^ ", \"" ^ id ^ "\")"
-  | StructAssign (struct_id, id1, e) -> "StructAccess(\"" ^ struct_id ^ "\", \"" ^ id1 ^ "\", " ^ info_of_expr e ^ ")"
-  | StructAccess (sname, sid) -> "StructAccess(\"" ^ sname ^ "\", \"" ^ sid ^ "\")"
+  | StructAssign (ids, e) -> "StructAccess(" ^ info_of_strings ids ^ ", " ^ info_of_expr e ^ ")"
+  | StructAccess (ids) -> "StructAccess(" ^info_of_strings ids ^ ")"
   | BindTemplatedDec (struct_id, t_list, id) -> "BindTemplatedDec(\"" ^ struct_id ^ "\", " ^ info_of_typs t_list ^ ", \"" ^ id ^ "\")"
   | BindTemplatedAssign (struct_id, t_list, id, e) -> "BindTemplatedAssign(\"" ^ struct_id ^ "\", " ^ info_of_typs t_list ^ ", \"" ^ id ^ "\"" ^ info_of_expr e ^ ")"
   | ListExplicit(el) -> "ListExplicit(" ^ info_of_exprs el ^ ")"
@@ -271,19 +273,16 @@ and info_of_stmts = function
     [] -> "[]"
   | stmts -> "[\"" ^ String.concat "; " (List.map info_of_stmt stmts) ^ "\"]"
 
-let info_of_template = function
-    [] -> "[]"
-  | types -> "[\"" ^ String.concat "\"; \"" (List.map (fun s -> s) types) ^ "\"]"
 
 let info_of_binds = function
     [] -> "[]"
   | types -> "[(" ^ String.concat "); (" (List.map (fun (t, s) -> info_of_typ t ^ ", \"" ^ s ^ "\"") types) ^ ")]"
 
 let info_of_fdecl fdecl =
-  "{name = \"" ^ fdecl.fname ^ "\"; typ = " ^ info_of_typ fdecl.typ ^ "; formals = " ^ info_of_binds fdecl.formals ^ "; fun_t_list = " ^ info_of_template fdecl.fun_t_list ^ "; body = " ^ info_of_stmts fdecl.body ^ "}\n"
+  "{name = \"" ^ fdecl.fname ^ "\"; typ = " ^ info_of_typ fdecl.typ ^ "; formals = " ^ info_of_binds fdecl.formals ^ "; fun_t_list = " ^ info_of_strings fdecl.fun_t_list ^ "; body = " ^ info_of_stmts fdecl.body ^ "}\n"
 
 let info_of_sdecl sdecl = 
-  "{name = \"" ^ sdecl.name ^ "\"; t_list = " ^ info_of_template sdecl.t_list ^ "; sformals = " ^ info_of_binds sdecl.sformals ^ "}\n"
+  "{name = \"" ^ sdecl.name ^ "\"; t_list = " ^ info_of_strings sdecl.t_list ^ "; sformals = " ^ info_of_binds sdecl.sformals ^ "}\n"
 
 let info_of_unit = function
   Stmt(stmt) -> info_of_stmt stmt ^ "\n"

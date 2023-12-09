@@ -131,8 +131,8 @@ let detemplate units =
                                  (BindAssign(ty, name, exp1), p0)
     | BindDec (t, name) -> let ty = potentially_templated_to_typ t names_to_types in
                            (BindDec(ty, name), prog)
-    | StructAssign (name, field, e) -> let (exp1, p0) = resolve_expr e prog names_to_types in
-                                       (StructAssign(name, field, exp1), p0)
+    | StructAssign (names, e) -> let (exp1, p0) = resolve_expr e prog names_to_types in
+                                       (StructAssign(names, exp1), p0)
     | BindTemplatedDec (s_id, ts, name) ->
       (let new_ts = List.map (fun typ -> potentially_templated_to_typ typ names_to_types) ts in
        let new_sname = get_new_name s_id new_ts in
@@ -203,9 +203,12 @@ let detemplate units =
   
   let resolveTemplates prog prog_unit = match prog_unit with 
       Fdecl (func) -> (match func.fun_t_list with
-           [] -> let (new_body, p0) = resolve_stmts func.body prog StringMap.empty in
-                 let new_func = {typ = func.typ; fname = func.fname; formals = func.formals; body = new_body; fun_t_list = func.fun_t_list} in
-                 let _ = resolved_functions := (StringMap.add func.fname new_func !resolved_functions) in Fdecl(new_func) :: p0
+                 (* if the function exists already that is against our rules *)
+            [] -> ( try let _ = StringMap.find func.fname !resolved_functions in raise (Failure "You can't overload functions")
+                    with Not_found ->
+                      let (new_body, p0) = resolve_stmts func.body prog StringMap.empty in
+                      let new_func = {typ = func.typ; fname = func.fname; formals = func.formals; body = new_body; fun_t_list = func.fun_t_list} in
+                      let _ = resolved_functions := (StringMap.add func.fname new_func !resolved_functions) in Fdecl(new_func) :: p0)
           | _ -> let _ = known_templated_funcs := (StringMap.add func.fname func !known_templated_funcs) in prog)
         
     | Sdecl (struc) -> (match struc.t_list with

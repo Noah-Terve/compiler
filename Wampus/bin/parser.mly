@@ -194,13 +194,19 @@ expr:
   | templated_expr { $1 }
 
 templated_expr:
-    ID LAT typ_list RAT ID                     { BindTemplatedDec ($1, $3, $5) }
-  | ID LAT typ_list RAT ID ASSIGN expr         { BindTemplatedAssign ($1, $3, $5, $7)}
-  | ID LAT typ_list RAT LPAREN args_opt RPAREN { TemplatedCall ($1, List.rev $3, $6) } 
+    ID LAT typ_list RAT ID                     { BindTemplatedDec    ($1, List.rev $3, $5)     }
+  | ID LAT typ_list RAT ID ASSIGN expr         { BindTemplatedAssign ($1, List.rev $3, $5, $7) }
+  | ID LAT typ_list RAT LPAREN args_opt RPAREN { TemplatedCall       ($1, List.rev $3, $6)     } 
 
 struct_expr:
-    ID DOT ID ASSIGN expr { StructAssign($1, $3, $5) }
-  | ID DOT ID             { StructAccess ($1, $3) }
+    // for structs you must have at least one level of access and then 
+    // you can continue going to deeper levels after that
+    ID struct_opts             { StructAccess ($1 :: List.rev $2)     }
+  | ID struct_opts ASSIGN expr { StructAssign ($1 :: List.rev $2, $4) }
+
+struct_opts:
+    DOT ID             { [$2]     }
+  | struct_opts DOT ID { $3 :: $1 }
 
 typ_list:
     typ                { [$1]     }
