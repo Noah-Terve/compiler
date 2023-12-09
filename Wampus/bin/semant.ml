@@ -278,7 +278,6 @@ let check (units : program) =
               else
                 bind id typ envs
             in
-            let (t, e1') = 
               (match typ with
               Struct(s) | Templated(s) -> 
                 let struc_body = find_struc s in
@@ -299,14 +298,12 @@ let check (units : program) =
                   let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ string_of_typ rt in
                   check_assign lt rt err
                   ) struc_formals sstruct_explicit in
-                (Struct(s), SStructExplicit(typ, id, sstruct_explicit))
-            | _ -> check_expr e1 envs' not_toplevel)
-          
-          in
+                (envs', (Struct(s), SStructExplicit(typ, id, sstruct_explicit)))
+            | _ -> let (t, e1') = check_expr e1 envs' not_toplevel in 
             let err = "illegal assignment " ^ string_of_typ typ ^ " = " ^ string_of_typ t ^ " in " ^ string_of_expr e in
             let _ = check_assign typ t err in
             (* let _ = in_assign := false in *)
-            (envs', (typ, SBindAssign(typ, id, (t, e1'))))
+            (envs', (typ, SBindAssign(typ, id, (t, e1')))))
       
   | BindDec (typ, id) -> 
       (* check if the typ is struct that it is in the struct map *)
@@ -413,13 +410,25 @@ in
       }
     in let _ = add_func sfd in sfd
   in
+  (* TODO: Make sure there are no duplicate templated structs *)
+  let check_struct (struc : struct_decl) = 
+    let sformals' = check_binds "sformal" struc.sformals in
+    (* let _ = Printf.fprintf stderr "Adding struct %s\n" struc.name in *)
+    let ssd = 
+      {
+        sname = struc.name;
+        ssformals = sformals';
+      }
+      (* TODO Struct_decls isnt being updated *)
+    in let _ = add_struc ssd in ssd
+  in
 
   let check_program_unit (envs, sunits) prog_unit =
     match prog_unit with
         (* TODO: Make sure envs is updated after every check *)
         Stmt(s) -> let (envs, sstmt) = check_stmt envs s toplevel not_inloop in (envs, SStmt(sstmt) :: sunits)
       | Fdecl(f) -> let sf = check_function f in (envs, SFdecl(sf) :: sunits)
-      | _ -> raise (Failure "Unimplemented units")
+      | Sdecl(s) -> let ss = check_struct s in (envs, SSdecl(ss) :: sunits)
 
     (* | Fdecl(f) -> raise (Failure "Unimplemented functions")
     | Sdecl(st) -> raise (Failure "Unimplemented structs") *)
