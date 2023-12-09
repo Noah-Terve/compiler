@@ -1,0 +1,5 @@
+(list @l int @r : a = (list @l int @r : []));
+(list @l int @r : b = (list @l int @r : [(int : 1), (int : 2), (int : 100)]));
+(list @l char @r : c = (list @l char @r : []));
+(list @l char @r : d = (list @l char @r : [(char : 97), (char : 98), (char : 99)]));
+(list @l char @r : c = (list @l char @r : d));

@@ -1,0 +1,4 @@
+list @l int @r a;
+
+a = ["Hello"];
+

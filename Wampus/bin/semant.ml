@@ -146,19 +146,20 @@ let check (units : program) =
     | Noexpr     -> (Int, SNoexpr)
     | Id s       -> (type_of_identifier s envs, SId s)
     (* Bind the variable in the topmost environment. *)
-    | Assign (var, ListExplicit exprs) ->
+    (* | Assign (var, ListExplicit exprs) ->
         let lt = type_of_identifier var envs in
         let (rt, sxs) = check_expr (ListExplicit exprs) envs not_toplevel in
         (* Empty lists default to a list of integers, so we need to modify
             r_ty to be equal to ty if so *)
         let rt = (match sxs with
-            SListExplicit [] -> lt
+            SListExplicit [] -> let _ = Printf.printf ("In the empty list case") in lt
           | _ -> rt) in
-        let _ = check_assign lt rt "List type should match List Explicit'" in
-        (rt, SAssign(var, (rt, sxs)))
+        let _ = check_assign lt rt ("List type should match List Explicit: " ^ string_of_typ lt ^ " != " ^ string_of_typ rt) in
+        (rt, SAssign(var, (rt, sxs))) *)
     | Assign (var, e) as ex -> 
         let lt = type_of_identifier var envs in
         let (rt, e') = check_expr e envs not_toplevel in
+        let rt = (match e' with SListExplicit [] -> lt | _ -> rt) in
         let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
           string_of_typ rt ^ " in " ^ string_of_expr ex in
         let _ = check_assign lt rt err 
@@ -244,7 +245,7 @@ let check (units : program) =
     | ListExplicit exprs ->
         let sexprs = List.map(fun e -> check_expr e envs not_toplevel) exprs in
         let (t, _) = List.hd sexprs in
-        let _ = List.map (fun (ty, _) -> check_assign t ty "Types of elements in list do not match") sexprs in
+        let _ = List.map (fun (ty, _) -> check_assign t ty ("Types of elements in list do not match: " ^ string_of_typ t ^ " != " ^ string_of_typ ty)) sexprs in
         (List(t), SListExplicit sexprs)
     | StructAssign (sname, sid, e) ->
       (* Check that the struct name is in the env *)
@@ -299,29 +300,30 @@ let check (units : program) =
             bind id typ envs
         in
         let (t, e1') = 
-            (match typ with
-            Struct(s) | Templated(s) -> 
-              let struc_body = find_struc s in
-              let struc_formals = struc_body.ssformals in
-              let formals_length = List.length struc_formals in
-              let struct_explicit = (match e1 with 
-                  StructExplicit(l) -> l
-                | _ -> raise(Failure("Not Struct explicit"))) 
-              in
-              if List.length struct_explicit != formals_length then
-                raise (Failure ("expecting " ^ string_of_int formals_length ^ 
-                                " arguments in struct" ^ struc_body.sname))
-              else 
-              (* build sexpr list *)
-              let sstruct_explicit = List.map (fun e -> let (e2) = check_expr e envs not_toplevel in e2) struct_explicit in
-              (* check for equal types *)
-              let _ = List.map2 (fun (lt, _) (rt, _) -> 
-                let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ string_of_typ rt in
-                check_assign lt rt err
-                ) struc_formals sstruct_explicit in
-              (Struct(s), SStructExplicit(typ, id, sstruct_explicit))
-          | _ -> check_expr e1 envs' not_toplevel)
+          (match typ with
+              Struct(s) | Templated(s) -> 
+                let struc_body = find_struc s in
+                let struc_formals = struc_body.ssformals in
+                let formals_length = List.length struc_formals in
+                let struct_explicit = (match e1 with 
+                    StructExplicit(l) -> l
+                  | _ -> raise(Failure("Not Struct explicit"))) 
+                in
+                if List.length struct_explicit != formals_length then
+                  raise (Failure ("expecting " ^ string_of_int formals_length ^ 
+                                  " arguments in struct" ^ struc_body.sname))
+                else 
+                (* build sexpr list *)
+                let sstruct_explicit = List.map (fun e -> let (e2) = check_expr e envs not_toplevel in e2) struct_explicit in
+                (* check for equal types *)
+                let _ = List.map2 (fun (lt, _) (rt, _) -> 
+                  let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ string_of_typ rt in
+                  check_assign lt rt err
+                  ) struc_formals sstruct_explicit in
+                (Struct(s), SStructExplicit(typ, id, sstruct_explicit))
+            | _ -> check_expr e1 envs' not_toplevel)
         in
+        let t = (match e1' with SListExplicit [] -> typ | _ -> t) in
         let err = "illegal assignment " ^ string_of_typ typ ^ " = " ^ string_of_typ t ^ " in " ^ string_of_expr e in
         let _ = check_assign typ t err in
         (* let _ = in_assign := false in *)

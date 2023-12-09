@@ -1,0 +1,6 @@
+list @l int @r a = [];
+list @l int @r b = [1, 2, 100];
+list @l char @r c = [];
+list @l char @r d = ['a', 'b', 'c'];
+
+c = d;

@@ -79,8 +79,9 @@ let rec string_of_sexpr (t, e) =
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
   | SNoexpr -> ""
   | SStructExplicit (_, n, el)-> n ^ "#l" ^ String.concat ", " (List.map string_of_sexpr el) ^ "#r"
-  | _ -> "Sast expr printing Not implemented"	     
-				  ) ^ ")"			
+  | SListExplicit el -> "[" ^ String.concat ", " (List.map string_of_sexpr el) ^ "]"
+  | _ -> "Sast expr printing Not implemented"         
+                  ) ^ ")"
 
 let rec string_of_sstmt = function
     SBlock(stmts) ->
@@ -95,7 +96,7 @@ let rec string_of_sstmt = function
       "for (" ^ string_of_sexpr e1  ^ " ; " ^ string_of_sexpr e2 ^ " ; " ^
       string_of_sexpr e3  ^ ") " ^ string_of_sstmt s
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
-  | _ -> "Not implemented"	
+  | _ -> "Not implemented"    
 
 let string_of_sfdecl fdecl =
   string_of_typ fdecl.styp ^ " " ^
