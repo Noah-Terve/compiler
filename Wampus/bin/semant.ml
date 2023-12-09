@@ -172,10 +172,11 @@ let check (units : program) =
             else 
             (* build sexpr list *)
             let sstruct_explicit = List.map (fun e -> let (_, e2) = check_expr e envs not_toplevel in e2) struct_explicit in
-              let _ = List.map2 (fun (lt, _) (rt, _) -> 
-                let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ string_of_typ rt in
-                check_assign lt rt err
-                ) struc_formals sstruct_explicit in
+            (* check for equal types *)
+            let _ = List.map2 (fun (lt, _) (rt, _) -> 
+              let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ string_of_typ rt in
+              check_assign lt rt err
+              ) struc_formals sstruct_explicit in
             (envs', (Struct(s), SStructExplicit(sstruct_explicit)))
         | _ -> check_expr e1 envs' not_toplevel) in
         let err = "illegal assignment " ^ string_of_typ typ ^ " = " ^ string_of_typ t ^ " in " ^ string_of_expr e in
