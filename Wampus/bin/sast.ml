@@ -22,7 +22,7 @@ and sx =
   | SStructAccess of string * string * string
   | SListExplicit of sexpr list
   | SSetExplicit of sexpr list
-  | SStructExplicit of sexpr list
+  | SStructExplicit of typ * string * sexpr list
   | SNoexpr
 
 type sstmt =
@@ -78,7 +78,7 @@ let rec string_of_sexpr (t, e) =
   | SCall(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
   | SNoexpr -> ""
-  | SStructExplicit (el)-> "#l" ^ String.concat ", " (List.map string_of_sexpr el) ^ "#r"
+  | SStructExplicit (_, n, el)-> n ^ "#l" ^ String.concat ", " (List.map string_of_sexpr el) ^ "#r"
   | _ -> "Sast expr printing Not implemented"	     
 				  ) ^ ")"			
 

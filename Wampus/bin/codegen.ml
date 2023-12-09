@@ -107,8 +107,7 @@ let translate program =
   (* Extract global variables from main, declaring them, in essense. This means
       that all variables declared in main will be global variables. Since they
       are being declared here, we also convert all bindassigs to assignments,
-      etc. main just uses the global environment as its local environment.
-      TODO: Make structs global *)
+      etc. main just uses the global environment as its local environment. *)
   let parse_main_statements sstmts =
         let parse_toplevel_statement (sstmts, global_vars) sstmt = match sstmt with
             SExpr (_t, s) -> (match s with
@@ -341,54 +340,16 @@ let translate program =
           (* (L.build_call fdef (Array.of_list llargs) result builder, envs) *)
           (L.build_call fdef (Array.of_list (List.rev llargs)) result builder, envs)
       (* | SBindDec (t, n) -> (L.const_int (ltype_of_typ t) 0, bind n (L.const_int (ltype_of_typ t) 0) envs) *)
-      | SBindDec (t, n) -> (match t with 
-            A.Struct(name) | A.Templated (name) -> 
-              (* let _ = Printf.fprintf stderr "inhere" in *)
-              let (types, _) = try List.split (StringMap.find name struct_decls)
-                with Not_found -> raise(Failure("Struct name is not a valid struct")) in
-              let arr_type = Array.of_list(List.map init types) in
-              let str_ptr = instantitate_struct t n arr_type builder in
-              (str_ptr, bind n str_ptr envs)
-          | _ -> 
-            (* let _ = print_endline (A.string_of_typ t) in *)
+      | SBindDec (t, n) ->
           (* let _ = Printf.fprintf stderr "generating code for binding %s\n" n in *)
           let local_var = L.build_alloca (ltype_of_typ t) n builder in
-          (L.const_int (ltype_of_typ t) 0, bind n local_var envs))
+          (L.const_int (ltype_of_typ t) 0, bind n local_var envs)
           
       | SAssign (var_name, e) ->
           let (value_to_assign, envs) = expr builder e envs in
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in
           (value_to_assign, envs)
-      | SStructAssign (name, sname, sid, e) ->
-        (* let _ = print_endline "Assigning a struct value" in *)
-        let llstruct = lookup sname envs in
-        (* environments could be an issue here *)
-        let (llvalue, envs) = expr builder e envs in
-        (* get the formals of sname *)
-
-        let sformals = StringMap.find name struct_decls in
-        let index = find_index sformals sid 0 in
-        let elm_ptr = L.build_struct_gep llstruct index sid builder in 
-        (L.build_store llvalue elm_ptr builder, envs)
-        (* let index = List.find_index  *)
-      | SStructAccess (name, sname, sid) ->
-        let llstruct = lookup sname envs in
-        (* environments could be an issue here *)
-        let sformals = StringMap.find name struct_decls in
-        let index = find_index sformals sid 0 in
-        let elm_ptr = L.build_struct_gep llstruct index sid builder in 
-        (L.build_load elm_ptr sid builder, envs)
-      | SBindAssign (t, var_name, e) -> (match t with 
-          A.Struct(name) | A.Templated (name) -> raise (Failure ("Not implemented"))
-          (* let (types, _) = try List.split (StringMap.find name struct_decls)
-              with Not_found -> raise(Failure("Struct name is not a valid struct")) in
-          let array = (match e with
-              SStructExplicit(el) -> Array.of_list (List.map (fun e -> let (e1, _) = expr builder e envs) el)
-            | _ -> raise (Failure("Should've been caught in semantic phase"))) in
-          () *)
-          (* e should be a struct explicit list
-             The list should be of string * expr (which the expr evaluates to a literal) *)
-        | _ ->
+      | SBindAssign (t, var_name, e) ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
           expr builder (t, SAssign (var_name, e)) envs)
 
