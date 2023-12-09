@@ -1,0 +1,9 @@
+struct dog {
+    int legs;
+    string name;
+    bool alive;
+};
+
+dog d;
+d.legs;
+d->legs;

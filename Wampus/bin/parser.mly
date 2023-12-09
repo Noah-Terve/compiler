@@ -162,7 +162,7 @@ expr:
   | SLIT             { StringLit($1)          }
   | CLIT             { CharLit($1)            }
 
-  | ID   { Id($1)                 }
+  | ID               { Id($1)                 }
 
   // Binary Operators
   | expr PLUS   expr { Binop($1, Add,   $3)   }
@@ -184,13 +184,13 @@ expr:
   | ID ASSIGN expr               { Assign($1, $3)         }
   | ID DOT ID ASSIGN expr        { StructAssign($1, $3, $5) }
   | ID ARROW ID                  { StructAccess($1, $3)}
-  | ID DIVIDEEQ expr { Assign($1, Binop (Id($1), Div, $3))}
-  | ID TIMESEQ expr  { Assign($1, Binop (Id($1), Mult, $3)) }
-  | ID INTERSECTEQ expr { Assign($1, Binop (Id($1), Intersect, $3))}
-  | ID UNIONEQ expr  { Assign($1, Binop (Id($1), Union, $3))}
-  | ID MODEQ expr    { Assign($1, Binop (Id($1), Mod, $3))}
-  | ID MINUSEQ expr { Assign($1, Binop (Id($1), Sub, $3))}
-  | ID PLUSEQ expr { Assign($1, Binop (Id($1), Add, $3))}
+  | ID DIVIDEEQ expr             { Assign($1, Binop (Id($1), Div, $3))}
+  | ID TIMESEQ expr              { Assign($1, Binop (Id($1), Mult, $3)) }
+  | ID INTERSECTEQ expr          { Assign($1, Binop (Id($1), Intersect, $3))}
+  | ID UNIONEQ expr              { Assign($1, Binop (Id($1), Union, $3))}
+  | ID MODEQ expr                { Assign($1, Binop (Id($1), Mod, $3))}
+  | ID MINUSEQ expr              { Assign($1, Binop (Id($1), Sub, $3))}
+  | ID PLUSEQ expr               { Assign($1, Binop (Id($1), Add, $3))}
 
   // Set and List Operators
   | expr INTERSECT expr {Binop ($1, Intersect, $3) }

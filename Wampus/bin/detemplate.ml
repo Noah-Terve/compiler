@@ -8,7 +8,7 @@ let detemplate units =
   (* functions and structs that are templated *)
   let known_templated_funcs = ref StringMap.empty in
   let known_templated_structs = ref StringMap.empty in
-  
+
   let rec typ_to_new_name = function
       Int -> "int"
     | Bool -> "bool"
@@ -42,7 +42,7 @@ let detemplate units =
                           raise (Failure msg))
     | List (t) -> List (potentially_templated_to_typ t names_to_types)
     | Set (t) -> Set (potentially_templated_to_typ t names_to_types)
-    | _ ->  typ
+    | _ -> typ
   in
   
   let rec resolve_templated_function name types prog = 
@@ -205,7 +205,7 @@ let detemplate units =
       Fdecl (func) -> (match func.fun_t_list with
            [] -> let (new_body, p0) = resolve_stmts func.body prog StringMap.empty in
                  let new_func = {typ = func.typ; fname = func.fname; formals = func.formals; body = new_body; fun_t_list = func.fun_t_list} in
-                 let _ = resolved_functions := (StringMap.add func.fname new_func !resolved_functions) in Fdecl(func) :: p0
+                 let _ = resolved_functions := (StringMap.add func.fname new_func !resolved_functions) in Fdecl(new_func) :: p0
           | _ -> let _ = known_templated_funcs := (StringMap.add func.fname func !known_templated_funcs) in prog)
         
     | Sdecl (struc) -> (match struc.t_list with

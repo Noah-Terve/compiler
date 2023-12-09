@@ -112,8 +112,8 @@ let string_of_uop = function
 | Char -> "char"
 | List(t) -> "list @l " ^ string_of_typ t ^ " @r"
 | Set(t) -> "set @l " ^ string_of_typ t ^ " @r"
-| Templated(t) -> "templated" ^ t
-| Struct(t) -> "Struct" ^ t
+| Templated(t) -> "tmpl -> " ^ t 
+| Struct(t) -> "stru -> " ^ t
 
 let rec string_of_expr = function
   Literal(l) -> string_of_int l
@@ -128,10 +128,9 @@ let rec string_of_expr = function
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
 | Unop(o, e) -> string_of_uop o ^ string_of_expr e
 | Assign(v, e) -> v ^ " = " ^ string_of_expr e
-| Call(f, el) -> "yo" ^
-    f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+| Call(f, el) -> f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 | TemplatedCall(f, tl, el) ->
-    f ^ "@l " ^ String.concat ", "(List.map string_of_typ tl) ^ " @r  (" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+    f ^ " @l " ^ String.concat ", "(List.map string_of_typ tl) ^ " @r (" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 | BindAssign(t, id, e) -> string_of_typ t ^ " "^ id ^ " = " ^ string_of_expr e
 | BindDec (t, id) -> string_of_typ t ^ " " ^ id
 | StructAssign (struct_id, id1, e) -> struct_id ^ "."^ id1 ^ " = " ^ string_of_expr e
@@ -184,6 +183,119 @@ let string_of_unit = function
 let rec string_of_program = function
     [] -> ""
   | e :: rest -> (string_of_unit e) ^ (string_of_program rest)
+  
+
+
+  let info_of_op = function
+    Add -> "Add"
+  | Sub -> "Sub"
+  | Mult -> "Mult"
+  | Div -> "Div"
+  | Equal -> "Equal"
+  | Neq -> "Neq"
+  | Less -> "Less"
+  | Leq -> "Leq"
+  | Greater -> "Greater"
+  | Geq -> "Geq"
+  | And -> "And"
+  | Or -> "Or"
+  | Mod -> "Mod"
+  | Intersect -> "Intersect"
+  | Union -> "Union"
+  | Isin -> "Isin"
+
+  let info_of_uop = function
+    Neg -> "Neg"
+  | Not -> "Not"
+
+let rec info_of_typ = function
+    Int -> "Int"
+  | Bool -> "Bool"
+  | Float -> "Float"
+  | String -> "String"
+  | Char -> "Char"
+  | List(t) -> "List(" ^ info_of_typ t ^ ")"
+  | Set(t) -> "Set(" ^ info_of_typ t ^ ")"
+  | Templated(t) -> "Templated(\"" ^ t ^ "\")" 
+  | Struct(t) -> "Struct(\"" ^ t ^ "\")"
+
+let info_of_typs = function
+    [] -> "[]"
+  | typs -> "[\"" ^ String.concat "; " (List.map info_of_typ typs) ^ "\"]"
+
+let rec info_of_expr = function
+    Literal(l) -> string_of_int l
+  | Fliteral(l) -> l
+  | BoolLit(true) -> "BoolLit(true)"
+  | BoolLit(false) -> "BoolLit(false)"
+  | StringLit(s) -> "StringLit(\"" ^ String.escaped s ^ "\")"
+  | CharLit(c) -> "CharLit('" ^ Char.escaped c ^ "')"
+  | Id(s) -> "Id(\"" ^ s ^ "\")"
+  | StructMem(s1, s2) -> "StructMem(\"" ^ s1 ^ "\", \"" ^ s2 ^ "\")" 
+  | Binop(e1, o, e2) -> "Binop(" ^ info_of_expr e1 ^ ", " ^ info_of_op o ^ ", " ^ info_of_expr e2 ^ ")"
+  | Unop(o, e) -> "Unop(" ^ info_of_uop o ^ ", " ^ info_of_expr e ^ ")"
+  | Assign(v, e) -> "Assign(\"" ^ v ^ "\", " ^ info_of_expr e ^ ")"
+  | Call(f, el) -> "Call(\"" ^ f ^ "\", " ^ info_of_exprs el ^ ")"
+  | TemplatedCall(f, tl, el) -> "TemplatedCall(\"" ^ f ^ "\", " ^ info_of_typs tl ^ ", " ^ info_of_exprs el ^ ")"
+  | BindAssign(t, id, e) -> "BindAssign(" ^ info_of_typ t ^ ", \"" ^ id ^ "\", " ^ info_of_expr e ^ ")"
+  | BindDec (t, id) -> "BindDec(" ^ info_of_typ t ^ ", \"" ^ id ^ "\")"
+  | StructAssign (struct_id, id1, e) -> "StructAccess(\"" ^ struct_id ^ "\", \"" ^ id1 ^ "\", " ^ info_of_expr e ^ ")"
+  | StructAccess (sname, sid) -> "StructAccess(\"" ^ sname ^ "\", \"" ^ sid ^ "\")"
+  | BindTemplatedDec (struct_id, t_list, id) -> "BindTemplatedDec(\"" ^ struct_id ^ "\", " ^ info_of_typs t_list ^ ", \"" ^ id ^ "\")"
+  | BindTemplatedAssign (struct_id, t_list, id, e) -> "BindTemplatedAssign(\"" ^ struct_id ^ "\", " ^ info_of_typs t_list ^ ", \"" ^ id ^ "\"" ^ info_of_expr e ^ ")"
+  | ListExplicit(el) -> "ListExplicit(" ^ info_of_exprs el ^ ")"
+  | SetExplicit (el) -> "SetExplicit(" ^ info_of_exprs el ^ ")"
+  | StructExplicit (el) -> "StructExplicit(" ^ info_of_exprs el ^ ")"
+  | Noexpr -> "Noexpr"
+
+and info_of_exprs = function 
+    [] -> "[]"
+  | exprs -> "[\"" ^ String.concat "; " (List.map info_of_expr exprs) ^ "\"]"
+
+let rec info_of_stmt = function
+    Block(stmts) ->
+      "Block(" ^ info_of_stmts stmts ^ ")"
+  | Expr(expr) -> "Expr(" ^ info_of_expr expr ^ ")"
+  | Return(expr) -> "Return(" ^ info_of_expr expr ^ ")"
+  | If(e, s, Block([])) -> "If(" ^ info_of_expr e ^ ", " ^ info_of_stmt s ^ ", Block([]))"
+  | If(e, s1, s2) ->  "If(" ^ info_of_expr e ^ ", " ^
+      info_of_stmt s1 ^ ", " ^ info_of_stmt s2 ^ ")"
+  | For(e1, e2, e3, s) ->
+      "For(" ^ info_of_expr e1  ^ ", " ^ info_of_expr e2 ^ ", " ^
+      info_of_expr e3  ^ ", " ^ info_of_stmt s ^ ")"
+  | ForEnhanced (e1, e2, s) -> "ForEnhanced(" ^ info_of_expr e1 ^ ", " ^ 
+      info_of_expr e2 ^ ", " ^ info_of_stmt s ^ ")"
+  | While(e, s) -> "While(" ^ info_of_expr e ^ ", " ^ info_of_stmt s ^ ")"
+  | Break -> "Break"
+  | Continue -> "Continue"
+  | NullStatement -> "NullStatement"
+
+and info_of_stmts = function
+    [] -> "[]"
+  | stmts -> "[\"" ^ String.concat "; " (List.map info_of_stmt stmts) ^ "\"]"
+
+let info_of_template = function
+    [] -> "[]"
+  | types -> "[\"" ^ String.concat "\"; \"" (List.map (fun s -> s) types) ^ "\"]"
+
+let info_of_binds = function
+    [] -> "[]"
+  | types -> "[(" ^ String.concat "); (" (List.map (fun (t, s) -> info_of_typ t ^ ", \"" ^ s ^ "\"") types) ^ ")]"
+
+let info_of_fdecl fdecl =
+  "{name = \"" ^ fdecl.fname ^ "\"; typ = " ^ info_of_typ fdecl.typ ^ "; formals = " ^ info_of_binds fdecl.formals ^ "; fun_t_list = " ^ info_of_template fdecl.fun_t_list ^ "; body = " ^ info_of_stmts fdecl.body ^ "}\n"
+
+let info_of_sdecl sdecl = 
+  "{name = \"" ^ sdecl.name ^ "\"; t_list = " ^ info_of_template sdecl.t_list ^ "; sformals = " ^ info_of_binds sdecl.sformals ^ "}\n"
+
+let info_of_unit = function
+  Stmt(stmt) -> info_of_stmt stmt ^ "\n"
+| Fdecl(fdecl) -> info_of_fdecl fdecl
+| Sdecl(sdecl) -> info_of_sdecl sdecl
+
+let rec info_of_program = function
+    [] -> ""
+  | e :: rest -> (info_of_unit e) ^ (info_of_program rest)
   
 (* let string_of_program (stmts, (funcs, structs)) =
   String.concat "" (List.map string_of_stmt stmts)  ^
