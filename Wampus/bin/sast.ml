@@ -11,7 +11,6 @@ and sx =
   | SCharlit of char
   | SStringlit of string
   | SId of string
-  | SStructMem of string * string
   | SBinop of sexpr * op * sexpr
   | SUnop of uop * sexpr
   | SAssign of string * sexpr

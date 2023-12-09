@@ -20,7 +20,6 @@ type expr =
   | CharLit of char
   | StringLit of string
   | Id of string
-  | StructMem of string * string
   | Binop of expr * op * expr
   | Unop of uop * expr
   | Assign of string * expr
@@ -123,7 +122,6 @@ let rec string_of_expr = function
 | StringLit(s) -> "\"" ^ String.escaped s ^ "\""
 | CharLit(c) -> "'" ^ Char.escaped c ^ "'"
 | Id(s) -> s
-| StructMem(s1, s2) -> s1 ^ "." ^ s2
 | Binop(e1, o, e2) ->
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
 | Unop(o, e) -> string_of_uop o ^ string_of_expr e
@@ -133,7 +131,7 @@ let rec string_of_expr = function
     f ^ " @l " ^ String.concat ", "(List.map string_of_typ tl) ^ " @r (" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 | BindAssign(t, id, e) -> string_of_typ t ^ " "^ id ^ " = " ^ string_of_expr e
 | BindDec (t, id) -> string_of_typ t ^ " " ^ id
-| StructAssign (struct_id, id1, e) -> struct_id ^ "."^ id1 ^ " = " ^ string_of_expr e
+| StructAssign (struct_id, id1, e) -> struct_id ^ "." ^ id1 ^ " = " ^ string_of_expr e
 | StructAccess (sname, sid) -> sname ^ "->" ^sid
 | BindTemplatedDec (struct_id, t_list, id) ->  struct_id ^ " @l " ^ String.concat ", " (List.map string_of_typ t_list) ^ " @r " ^ id
 | BindTemplatedAssign (struct_id, t_list, id, e) -> struct_id ^ " @l " ^ String.concat ", " (List.map string_of_typ t_list) ^ " @r " ^ id ^ " = " ^ string_of_expr e
@@ -231,7 +229,6 @@ let rec info_of_expr = function
   | StringLit(s) -> "StringLit(\"" ^ String.escaped s ^ "\")"
   | CharLit(c) -> "CharLit('" ^ Char.escaped c ^ "')"
   | Id(s) -> "Id(\"" ^ s ^ "\")"
-  | StructMem(s1, s2) -> "StructMem(\"" ^ s1 ^ "\", \"" ^ s2 ^ "\")" 
   | Binop(e1, o, e2) -> "Binop(" ^ info_of_expr e1 ^ ", " ^ info_of_op o ^ ", " ^ info_of_expr e2 ^ ")"
   | Unop(o, e) -> "Unop(" ^ info_of_uop o ^ ", " ^ info_of_expr e ^ ")"
   | Assign(v, e) -> "Assign(\"" ^ v ^ "\", " ^ info_of_expr e ^ ")"

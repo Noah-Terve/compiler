@@ -5,5 +5,5 @@ struct dog {
 };
 
 dog d;
+d.legs = 4;
 d.legs;
-d->legs;
