@@ -326,9 +326,7 @@ let check (units : program) =
       | true ->  
             let _ = bind_global id typ in 
             let _ = StringMap.iter (fun k v -> Printf.printf "Key: %s, Value: %s\n" k (string_of_typ v)) !globals in
-            (envs, (typ, SBindDec(typ, id))))
-
-    
+            (envs, (typ, SBindDec(typ, id))))    
   |_ -> raise (Failure "No nested expr_stmt_expr") in
 
   (* Return a semantically-checked statement i.e. containing sexprs *)
