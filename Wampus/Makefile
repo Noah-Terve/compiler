@@ -5,12 +5,26 @@ WAMPUS := $(ROOT_DIR)/_build/default/bin/$(EXE_NAME)
 COMPILE_SCRIPT := $(ROOT_DIR)/bin/compile.sh
 OUTPUT_DIR := $(ROOT_DIR)/out
 
+CC = gcc
+CFLAGS = -Wall -Wextra -O2
+
 all: toplevel
+
+# test-list: bin/list.c tests/lists/test-list.c 
+# 	$(CC) $(CFLAGS) -Ibin -o $@ $^
+
+# .PHONY:	lists
+
+# lists: test-list
+# 	./test-list
+
 
 # "make toplevel" compiles the Wampus compiler
 toplevel: bin/ast.ml bin/parser.mly bin/scanner.mll bin/toplevel.ml bin/codegen.ml bin/semant.ml
 	dune build
 
+%.o: bin/%.c
+	$(CC) $(CFLAGS) -c -o bin/$@ $<
 
 # "make test" Compiles everything and runs the regression tests
 .PHONY: test

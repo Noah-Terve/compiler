@@ -22,6 +22,8 @@ module StringMap = Map.Make(String)
 (* Code Generation from the SAST. Returns an LLVM module if successful,
    throws an exception if something is wrong. *)
 let translate program =
+
+  (*** Top level main function that contains top level statements ***)
   let main_function = 
     { styp = A.Int;
       sfname = "main";
@@ -30,26 +32,25 @@ let translate program =
       sbody = List.rev (List.fold_left (fun acc units -> match units with 
                                 SStmt struc -> struc :: acc 
                                 | _ -> acc) [] program);} in
-  let struct_decls =
-    List.fold_left (fun acc units -> match units with 
-                                  SSdecl struc -> StringMap.add struc.sname struc.ssformals acc
-                                | _ -> acc)
-                StringMap.empty program in
-  (* let struct_indices = StringMap.iter  *)
-    
 
-
+  (*  Creates the one context that will be used throughout the translation function *)
   let context    = L.global_context () in
+
   (* Add types to the context so we can use them in our LLVM code *)
   let i32_t      = L.i32_type    context
   and i8_t       = L.i8_type     context
   and i1_t       = L.i1_type     context
   and float_t    = L.double_type context
   and struct_t   = L.named_struct_type context
+  and void_t     = L.void_type   context 
+  and voidptr_t  = L.pointer_type (L.i8_type context) in
+  let nodeptr_t  = L.pointer_type (L.named_struct_type context "Node") in
+  let list_t     = L.pointer_type (L.struct_type context [| voidptr_t; nodeptr_t |]) in
+  
   (* Create an LLVM module -- this is a "container" into which we'll 
     generate actual code *)
-  and the_module = L.create_module context "Wampus" 
-  and pointer_t = L.pointer_type in
+  let the_module = L.create_module context "Wampus" in
+  let pointer_t = L.pointer_type in
   (* Creating a map of structs *)
   let struct_types =
     let make_empty_struct name _ = struct_t name in
@@ -65,6 +66,7 @@ let translate program =
     | A.String -> pointer_t i8_t
     | A.Struct(s) | A.Templated(s)-> (try pointer_t (StringMap.find s struct_types)
       with _ -> raise (Failure (s ^ " is not a valid struct type")))
+    | A.List _ -> list_t
     | _ -> raise (Failure "types not implemented yet")
   in
   (* Makes the struct body *)
@@ -95,70 +97,101 @@ let translate program =
       let _ = L.build_store lstruct str_ptr builder in
       str_ptr
   in
+  (******  Function to extract global variables  *****)
   (* Extract global variables from main, declaring them, in essense. This means
       that all variables declared in main will be global variables. Since they
       are being declared here, we also convert all bindassigs to assignments,
       etc. main just uses the global environment as its local environment.
       TODO: Make structs global *)
   let parse_main_statements sstmts =
-    let parse_toplevel_statement (sstmts, global_vars) sstmt = match sstmt with
-        SExpr (_t, s) -> (match s with
-            SBindDec (t, n) -> (sstmts, StringMap.add n (L.define_global n (L.const_int (ltype_of_typ t) 0) the_module) global_vars)
-          | SBindAssign (t, n, e) ->
-              let global_vars = StringMap.add n (L.define_global n (L.const_int (ltype_of_typ t) 0) the_module) global_vars in
-              let e = (t, SAssign (n, e)) in
-              ((SExpr e) :: sstmts, global_vars)
-          | _ -> (sstmt :: sstmts, global_vars))
-      | _ -> (sstmt :: sstmts, global_vars)
-    in
-    let global_vars = StringMap.empty in
-    let (sstmts, global_vars) = List.fold_left parse_toplevel_statement ([], global_vars) sstmts in
-    (List.rev sstmts, global_vars)
+        let parse_toplevel_statement (sstmts, global_vars) sstmt = match sstmt with
+            SExpr (_t, s) -> (match s with
+                SBindDec (t, n) -> (sstmts, StringMap.add n (L.define_global n (L.const_int (ltype_of_typ t) 0) the_module) global_vars)
+              | SBindAssign (t, n, e) ->
+                  let global_vars = StringMap.add n (L.define_global n (L.const_int (ltype_of_typ t) 0) the_module) global_vars in
+                  let e = (t, SAssign (n, e)) in
+                  ((SExpr e) :: sstmts, global_vars)
+              | _ -> (sstmt :: sstmts, global_vars))
+          | _ -> (sstmt :: sstmts, global_vars)
+        in
+        let global_vars = StringMap.empty in
+        let (sstmts, global_vars) = List.fold_left parse_toplevel_statement ([], global_vars) sstmts in
+        (List.rev sstmts, global_vars)
   in
 
   (* Update mains sbody and get the global vars *)
   let (main_function_stmts, global_vars) = parse_main_statements main_function.sbody in
   let main_function = { main_function with sbody = main_function_stmts } in
 
-  (* Gather all the functions *)
+
+  (* Gather all the functions from main_function *)
   let functions =
     List.rev (List.fold_left (fun acc units -> match units with 
                                   SFdecl func -> func :: acc
                                 | _ -> acc)
                 [main_function] program) in
 
-  (* let global_vars : L.llvalue StringMap.t ref = ref StringMap.empty in *)
+  (*  Takes the extracted global variables from main_function and adds it to a 
+      reference to make it accessable globally *)
   let global_vars : L.llvalue StringMap.t ref = ref global_vars in
 
+  (*** Utility functions for global_vars ***)
   (* Print all the global variable names *)
   (* let _ = StringMap.iter (fun name _ -> Printf.fprintf stderr "global var: %s\n" name) !global_vars in *)
+
+
+  (**********  Processing functions (both external and internal) ********)
 
   (* Define each function (arguments and return type) so we can 
    * define it's body and call it later *)
 
-  let printf_t : L.lltype = 
-      L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
-  let printf_func : L.llvalue = 
-     L.declare_function "printf" printf_t the_module in
+  let printf_t : L.lltype =  L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
+  let printf_func : L.llvalue =  L.declare_function "printf" printf_t the_module in
 
-  (* let printbig_t = L.function_type i32_t [| i32_t |] in
-  let printbig_func = L.declare_function "printbig" printbig_t the_module in *)
+  let list_insert_t        = L.function_type void_t [| (L.pointer_type list_t); i32_t; voidptr_t |] in
+  let list_insert_func     = L.declare_function "_list_insert" list_insert_t the_module in
+
+  let list_len_t           = L.function_type i32_t [| (L.pointer_type list_t) |] in
+  let list_len_func        = L.declare_function "_list_len" list_len_t the_module in
+
+  let list_remove_t       = L.function_type void_t [| (L.pointer_type list_t); i32_t |] in
+  let list_remove_func    = L.declare_function "_list_remove" list_remove_t the_module in
+
+  let list_replace_t     = L.function_type void_t [| (L.pointer_type list_t); i32_t; voidptr_t |] in
+  let list_replace_func  = L.declare_function "_list_replace" list_replace_t the_module in
+
+  let list_at_t          = L.function_type voidptr_t [| (L.pointer_type list_t); i32_t |] in
+  let list_at_func       = L.declare_function "_list_at" list_at_t the_module in
+
+  (* TODO: ADD THE SET BUILT-INS HERE *)
+
+
 
   (* Define each function (arguments and return type) so we can 
    * define it's body and call it later *)
   let function_decls : ((L.llvalue * sfunc_decl) StringMap.t) =
     (* let _ = Printf.fprintf stderr "generating code for function\n" in *)
+
+    (*  *)
     let function_decl m fdecl =
-      let name = fdecl.sfname in
-      (* print name to stderr *)
-      (* let _ = Printf.fprintf stderr "generating code for %s\n" name in *)
-      let formal_types = 
-        Array.of_list (List.map (fun (t, _) -> ltype_of_typ t) fdecl.sformals)
-      in let ftype = L.function_type (ltype_of_typ fdecl.styp) formal_types in
-      StringMap.add name (L.define_function name ftype the_module, fdecl) m in
+        let name = fdecl.sfname in
+        (* print name to stderr *)
+        (* let _ = Printf.fprintf stderr "generating code for %s\n" name in *)
+
+        (* Converts list of function's sformal params into array of sformals *)
+        let formal_types = 
+            Array.of_list (List.map (fun (t, _) -> ltype_of_typ t) fdecl.sformals) in 
+
+        (* Returns the function type in lltype *)
+        let ftype = L.function_type (ltype_of_typ fdecl.styp) formal_types in
+
+        (* Adds the function definition into the StringMap  *)
+        StringMap.add name (L.define_function name ftype the_module, fdecl) m in
+
     List.fold_left function_decl StringMap.empty functions in
   
-  (* Fill in the body of the given function *)
+
+  (****  Fill/build the body of the given function ****)
   let build_function_body fdecl =
     (* let _ = Printf.fprintf stderr "generating code for function body\n" in *)
     let (the_function, _) = StringMap.find fdecl.sfname function_decls in
@@ -189,24 +222,23 @@ let translate program =
           in
           let formals = List.fold_left2 add_formal StringMap.empty fdecl.sformals (Array.to_list (L.params the_function)) in 
             
-          (* let _ = Printf.fprintf stderr "checking if added after formals: %b s \n" (StringMap.is_empty (formals)) in *)
-            (* let _ = StringMap.iter (fun k v -> Printf.fprintf stderr "Adding key: %s\n" k) formals in  *)
-
+        (* This is the return value of local vars!! i.e. End of block *)
           List.fold_left add_local formals fdecl.slocals in
-  (* let _ = Printf.fprintf stderr "**** checking if added after formals: %b s \n" (StringMap.is_empty (List.hd envs)) in *) 
+
+      
+    (* Stores the local_vars from above as the environment of this function *)
     let (envs : L.llvalue StringMap.t list) = [local_vars] in
-    (* Return the value for a variable or formal argument. First check
-     * locals, then globals *)
-    (* let lookup n = try StringMap.find n local_vars
-                   with Not_found -> StringMap.find n global_vars
-    in *)
+
+    (* Look up and return the value for a variable or formal argument. First check
+      * locals, then globals *)
     let rec lookup n (envs: L.llvalue StringMap.t list) = 
       match envs with
         [] -> (try StringMap.find n !global_vars
-             with Not_found -> raise (Failure ("Internal error: Semant should have rejected variable " ^ n ^ " in function " ^ fdecl.sfname)))
+              with Not_found -> raise (Failure ("Internal error: Semant should have rejected variable " ^ n ^ " in function " ^ fdecl.sfname)))
       | env :: rest -> try StringMap.find n env
-                       with Not_found -> lookup n rest
+                        with Not_found -> lookup n rest
     in
+
     (* Adds the mapping n : value into the current environment *)
     let bind n v (envs: L.llvalue StringMap.t list) = 
       match envs with
@@ -219,6 +251,7 @@ let translate program =
           (_, SCharlit l) -> (String.make 1 l)
         | (_, SStringlit s) -> s
         | (t, sx) -> getLit (t, sx) in
+
     let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with
         SLiteral i -> (L.const_int i32_t i, envs)
       | SBoolLit b -> (L.const_int i1_t (if b then 1 else 0), envs)
@@ -352,6 +385,65 @@ let translate program =
         | _ ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
           expr builder (t, SAssign (var_name, e)) envs)
+
+          (* let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with *)
+      (* | SListExplicit l -> 
+          (* Fold through the list 'l' and recursively runs expr builder -> 
+             returns tuple of list of llvals and environment *)
+          let (llvals, envs''') = List.fold_left 
+                  (fun (list_accum, envs') sex ->   
+                      let (llval, envs'') = expr builder sex envs' in
+                      (* Return updated list and updated envs *)
+                      (llval :: list_accum, envs'')
+                  )
+                  ([], envs)
+                  l
+          in
+
+          (* Builds a malloc instruction for a given llvalue *)
+          let build_malloc builder llvalue = 
+            let heap = L.build_malloc (L.type_of llvalue) "heap" builder in
+            let _    = L.build_store llvalue heap builder in heap in
+
+          (* Map through the llvals, create malloc instruction for that llval, then store
+             the pointer to that memory in the list for later reference *)
+          let malloced_ptrs = List.map (build_malloc builder) llvals in
+
+          (* Creates instruction to allocate space declares a pointer to a list_t type, i.e. a Node **l;
+             which is a double pointer because list_t itself is a pointer to a struct_type *)
+          let list_ptr = L.build_alloca (L.pointer_type list_t) "list_ptr" builder in 
+          
+          (* Create a malloc instruction for a list_t. I.e. mallocs new list*)
+          let head = L.build_malloc list_t "head" builder in
+          
+          (* Stores the value of head into the memory location list_ptr, i.e. It connects list_ptr to head *)
+          (* Mini diagram: list_ptr |  head  | ----> { voidptr_t, nodeptr_t } *)
+          let _ = L.build_store head list_ptr builder in
+          
+          (* Const null returns an empty/null pointer of a list_t, then build_store copies the null pointer
+             into head  *)
+          let _ = L.build_store (L.const_null list_t) head builder in
+          
+          (* Inserting all list element
+             Pre-process:
+               - Maps through the list of malloced pointer. Replaces the current 
+                 element with a tuple of (index, malloced pointer to the node)
+
+             1) Fold through the list containing pointers to the llvals 
+             2) Cast the pointers to llvals as void
+             3) Loads the value of list_ptr into listval variable
+             4) Calls list_insert_func with (head, index of insertion, node to insert)
+             *)
+          let _ = List.fold_left (fun _ (i, llval) -> 
+            (* Cast each llval to a void * before inserting it into the list *)
+            let void_cast = L.build_bitcast llval voidptr_t "voidptr" builder in
+            let listval = L.build_load list_ptr "listval" builder in
+            L.build_call list_insert_func [| listval; L.const_int i32_t i; void_cast |] "" builder
+            ) list_ptr (List.mapi (fun i llval -> (i, llval)) malloced_ptrs) in 
+          (L.build_load list_ptr "listlit" builder, envs''') *)
+            
+            (* let list_t     = L.pointer_type (L.struct_type context [| voidptr_t; nodeptr_t |])  *)
+
       | _ -> raise (Failure ("expr in codegen not implemented yet (ignore type): " ^ (string_of_sexpr (A.Int, e))))
     in
     

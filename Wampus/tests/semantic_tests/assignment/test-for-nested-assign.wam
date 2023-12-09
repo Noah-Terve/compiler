@@ -1,0 +1,10 @@
+int b; 
+int c; 
+int d;
+int e;
+
+for (int i = b = c = d = e; i < 5; i += 1){
+    i;
+}
+
+int x = int y = z = 5;
