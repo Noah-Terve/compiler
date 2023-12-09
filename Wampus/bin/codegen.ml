@@ -75,7 +75,7 @@ let translate program =
     | A.List _ -> list_t
     | _ -> raise (Failure "types not implemented yet")
   in
-  (* Makes the struct body *)
+  (* Makes the struct declaration body *)
   let make_struct_body name ssformals = 
     let (types, _) = List.split ssformals in
     (* let _ = print_endline "Making a struct body" in *)
@@ -85,16 +85,18 @@ let translate program =
     L.struct_set_body (StringMap.find name struct_types) ltypes false
   in
   let _ = StringMap.mapi make_struct_body struct_decls in
-
+  (* Default values *)
   let init t = match t with
      A.Float -> L.const_float (ltype_of_typ t) 0.0
     | A.Struct(name) -> L.const_pointer_null (ltype_of_typ (A.Struct name))
     | _ -> L.const_int (ltype_of_typ t) 0
   in
+  (* Index finder *)
   let rec find_index lst sid i = match lst with
       [] -> raise(Failure "Not in list")
     | (_, n)::rest -> if (n = sid) then i else find_index rest sid (i +1)
   in
+  (* Builds a struct with name n and body of values *)
   let instantitate_struct t n values builder =
       let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
       let lty = L.element_type pty in (* getting the type of the struct *)
@@ -361,7 +363,6 @@ let translate program =
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in
           (value_to_assign, envs)
       | SStructAssign (name, sname, sid, e) ->
-        let _ = print_endline "in here2" in
         (* let _ = print_endline "Assigning a struct value" in *)
         let llstruct = lookup sname envs in
         (* environments could be an issue here *)
@@ -384,7 +385,9 @@ let translate program =
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
           expr builder (t, SAssign (var_name, e)) envs
       | SStructExplicit(t, n, el) ->
+        (* Build the array of values for struct *)
         let array = Array.of_list (List.map (fun e -> let (e1, _) = expr builder e envs in e1) el) in
+        (* Build the struct *)
         let str_ptr = instantitate_struct t n array builder in
         (str_ptr, bind n str_ptr envs)
 
