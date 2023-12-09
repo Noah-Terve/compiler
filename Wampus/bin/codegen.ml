@@ -343,9 +343,12 @@ let translate program =
           A.Struct(name) | A.Templated (name) -> raise (Failure ("Not implemented"))
           (* let (types, _) = try List.split (StringMap.find name struct_decls)
               with Not_found -> raise(Failure("Struct name is not a valid struct")) in
+          let array = (match e with
+              SStructExplicit(el) -> Array.of_list (List.map (fun e -> let (e1, _) = expr builder e envs) el)
+            | _ -> raise (Failure("Should've been caught in semantic phase"))) in
+          () *)
           (* e should be a struct explicit list
              The list should be of string * expr (which the expr evaluates to a literal) *)
-          () *)
         | _ ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
           expr builder (t, SAssign (var_name, e)) envs)
