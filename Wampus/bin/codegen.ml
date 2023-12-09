@@ -32,6 +32,12 @@ let translate program =
       sbody = List.rev (List.fold_left (fun acc units -> match units with 
                                 SStmt struc -> struc :: acc 
                                 | _ -> acc) [] program);} in
+    let struct_decls =
+      List.fold_left (fun acc units -> match units with 
+                                    SSdecl struc -> StringMap.add struc.sname struc.ssformals acc
+                                  | _ -> acc)
+                  StringMap.empty program in
+          
 
   (*  Creates the one context that will be used throughout the translation function *)
   let context    = L.global_context () in

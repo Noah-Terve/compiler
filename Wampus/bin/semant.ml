@@ -13,7 +13,7 @@ module StringMap = Map.Make(String)
 let check (units : program) =
   let not_toplevel = false and not_inloop = false in
   let toplevel = true and inloop = true in
-  let in_assign = ref false in
+  (* let in_assign = ref false in *)
 
   (* Check if a certain kind of binding has void type or is a duplicate
      of another, previously checked binding *)
@@ -136,76 +136,15 @@ let check (units : program) =
 
     (* Return a semantically-checked expression, i.e., with a type *)
   let rec check_expr e envs is_toplevel = match e with
-      Literal  l -> (envs, (Int, SLiteral l))
-    | Fliteral l -> (envs, (Float, SFliteral l))
-    | BoolLit l  -> (envs, (Bool, SBoolLit l))
-    | CharLit l -> (envs, (Char, SCharlit l))
-    | StringLit l -> (envs, (String, SStringlit l))
-    | Noexpr     -> (envs, (Int, SNoexpr))
-    | Id s       -> (envs, (type_of_identifier s envs, SId s))
+      Literal  l -> (Int, SLiteral l)
+    | Fliteral l -> (Float, SFliteral l)
+    | BoolLit l  -> (Bool, SBoolLit l)
+    | CharLit l -> (Char, SCharlit l)
+    | StringLit l -> (String, SStringlit l)
+    | Noexpr     -> (Int, SNoexpr)
+    | Id s       -> (type_of_identifier s envs, SId s)
     (* Bind the variable in the topmost environment. *)
-    | BindAssign (typ, id, e1) ->
-        if !in_assign then raise (Failure "Nested assigns are not allowed")
-        else
-        (* let _ = (match typ with 
-                  Struct(s) ->) *)
-        (* difference is the binds *)
-        let _ = in_assign := true in
-        let envs' = 
-          if is_toplevel then
-            let _ = bind_global id typ in envs
-          else
-            bind id typ envs
-        in
-        let (envs'', (t, e1')) = (match typ with
-          Struct(s) | Templated(s) -> 
-            let struc_body = find_struc s in
-            let struc_formals = struc_body.ssformals in
-            let formals_length = List.length struc_formals in
-            let struct_explicit = (match e1 with 
-                StructExplicit(l) -> l
-              | _ -> raise(Failure("Not Struct explicit"))) 
-            in
-            if List.length struct_explicit != formals_length then
-              raise (Failure ("expecting " ^ string_of_int formals_length ^ 
-                              " arguments in struct" ^ struc_body.sname))
-            else 
-            (* build sexpr list *)
-            let sstruct_explicit = List.map (fun e -> let (_, e2) = check_expr e envs not_toplevel in e2) struct_explicit in
-            (* check for equal types *)
-            let _ = List.map2 (fun (lt, _) (rt, _) -> 
-              let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ string_of_typ rt in
-              check_assign lt rt err
-              ) struc_formals sstruct_explicit in
-            (envs', (Struct(s), SStructExplicit(sstruct_explicit)))
-        | _ -> check_expr e1 envs' not_toplevel) in
-        let err = "illegal assignment " ^ string_of_typ typ ^ " = " ^ string_of_typ t ^ " in " ^ string_of_expr e in
-        let _ = check_assign typ t err in
-        let _ = in_assign := false in
-        (envs'', (typ, SBindAssign(typ, id, (t, e1'))))
-        
-    | BindDec (typ, id) -> 
-        (* check if the typ is struct that it is in the struct map *)
-        let _ = 
-          (match typ with 
-              Struct(s) -> 
-                (* let _ = print_endline id in  *)
-                let _ = find_struc s in ()
-            | _ -> () )
-        in
-        (match is_toplevel with 
-          (* Not at top level *)
-          false -> 
-            let envs' = bind id typ envs in
-            (* let first_env = List.hd envs' in
-            let _ = StringMap.iter (fun k v -> Printf.printf "Key: %s, Value: %s\n" k (string_of_typ v)) first_env in *)
-            envs', (typ, SBindDec(typ, id))
-          (* At top level *)
-        | true ->  
-              let _ = bind_global id typ in 
-              let _ = StringMap.iter (fun k v -> Printf.printf "Key: %s, Value: %s\n" k (string_of_typ v)) !globals in
-              (envs, (typ, SBindDec(typ, id))))
-
+    
     | Assign(var, e) as ex -> 
         let lt = type_of_identifier var envs in
         let (rt, e') = check_expr e envs not_toplevel in
@@ -292,18 +231,18 @@ let check (units : program) =
         let (name, struc) = find_struc_from_typ ltyp in
       (* Check that the struct id is in the struct *)
         let (lt, _) = find_struct_id struc sid in
-        let (envs'', (rt, e')) = check_expr e envs not_toplevel in
+        let (rt, e') = check_expr e envs not_toplevel in
         let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
           string_of_typ rt ^ " in " ^ string_of_expr e in
         let _ = check_assign lt rt err in
-        (envs'', (lt, SStructAssign(name, sname, sid, (rt, e'))))
+        (lt, SStructAssign(name, sname, sid, (rt, e')))
     | StructAccess (sname, sid) ->
       (* Check that the struct name is in the env *)
       let ltyp = type_of_identifier sname envs in
       let (name, struc) = find_struc_from_typ ltyp in
       (* Check that the struct id is in the struct *)
       let (lt, _) = find_struct_id struc sid in
-      (envs, (lt, SStructAccess(name, sname, sid)))
+      (lt, SStructAccess(name, sname, sid))
 
 
         
@@ -323,40 +262,74 @@ let check (units : program) =
   in check_stmt, expression case just uses check_stmt_expr *)
   let check_stmt_expr e envs is_toplevel = match e with 
     (* Bind the variable in the topmost environment. *)
-     BindAssign (typ, id, e1) ->
-          if !in_assign then raise (Failure "Nested assigns are not allowed")
-          else
-          (match is_toplevel with 
-            (* Not at top level *)
-            false -> 
-                let _ = in_assign := true in
-                let envs' = bind id typ envs in
-                let (t, e1') = check_expr e1 envs' not_toplevel in
-                let err = "illegal assignment " ^ string_of_typ typ ^ " = " ^ string_of_typ t ^ " in " ^ string_of_expr e in
-                let _ = check_assign typ t err in
-                let _ = in_assign := false in
-                (envs', (typ, SBindAssign(typ, id, (t, e1')))) 
-            (* At top level *)
-          | true -> 
-                let _ = in_assign := true in
-                let _ = bind_global id typ in 
-                let (t, e1') = check_expr e1 envs not_toplevel in
-                let _ = in_assign := false in
-                (envs, (typ, SBindAssign(typ, id ,(t, e1')))))
-    |BindDec (typ, id) -> 
-          (match is_toplevel with 
-            (* Not at top level *)
-            false -> 
-              let envs' = bind id typ envs in
-              (* let first_env = List.hd envs' in
-              let _ = StringMap.iter (fun k v -> Printf.printf "Key: %s, Value: %s\n" k (string_of_typ v)) first_env in *)
-              envs', (typ, SBindDec(typ, id))
-            (* At top level *)
-          | true ->  
-                let _ = bind_global id typ in 
-                (envs, (typ, SBindDec(typ, id))))
 
-    | _ -> (envs, check_expr e envs is_toplevel) in
+    | BindAssign (typ, id, e1) ->
+            (* if !in_assign then raise (Failure "Nested assigns are not allowed")
+            else *)
+            (* let _ = (match typ with 
+                      Struct(s) ->) *)
+            (* difference is the binds *)
+            (* let _ = in_assign := true in *)
+            let envs' = 
+              if is_toplevel then
+                let _ = bind_global id typ in envs
+              else
+                bind id typ envs
+            in
+            let (t, e1') = 
+              (match typ with
+              Struct(s) | Templated(s) -> 
+                let struc_body = find_struc s in
+                let struc_formals = struc_body.ssformals in
+                let formals_length = List.length struc_formals in
+                let struct_explicit = (match e1 with 
+                    StructExplicit(l) -> l
+                  | _ -> raise(Failure("Not Struct explicit"))) 
+                in
+                if List.length struct_explicit != formals_length then
+                  raise (Failure ("expecting " ^ string_of_int formals_length ^ 
+                                  " arguments in struct" ^ struc_body.sname))
+                else 
+                (* build sexpr list *)
+                let sstruct_explicit = List.map (fun e -> let (e2) = check_expr e envs not_toplevel in e2) struct_explicit in
+                (* check for equal types *)
+                let _ = List.map2 (fun (lt, _) (rt, _) -> 
+                  let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ string_of_typ rt in
+                  check_assign lt rt err
+                  ) struc_formals sstruct_explicit in
+                (Struct(s), SStructExplicit(sstruct_explicit))
+            | _ -> check_expr e1 envs' not_toplevel)
+          
+          in
+            let err = "illegal assignment " ^ string_of_typ typ ^ " = " ^ string_of_typ t ^ " in " ^ string_of_expr e in
+            let _ = check_assign typ t err in
+            (* let _ = in_assign := false in *)
+            (envs', (typ, SBindAssign(typ, id, (t, e1'))))
+      
+  | BindDec (typ, id) -> 
+      (* check if the typ is struct that it is in the struct map *)
+      let _ = 
+        (match typ with 
+            Struct(s) -> 
+              (* let _ = print_endline id in  *)
+              let _ = find_struc s in ()
+          | _ -> () )
+      in
+      (match is_toplevel with 
+        (* Not at top level *)
+        false -> 
+          let envs' = bind id typ envs in
+          (* let first_env = List.hd envs' in
+          let _ = StringMap.iter (fun k v -> Printf.printf "Key: %s, Value: %s\n" k (string_of_typ v)) first_env in *)
+          (envs', (typ, SBindDec(typ, id)))
+        (* At top level *)
+      | true ->  
+            let _ = bind_global id typ in 
+            let _ = StringMap.iter (fun k v -> Printf.printf "Key: %s, Value: %s\n" k (string_of_typ v)) !globals in
+            (envs, (typ, SBindDec(typ, id))))
+
+    
+  |_ -> raise (Failure "No nested expr_stmt_expr") in
 
   (* Return a semantically-checked statement i.e. containing sexprs *)
   let rec check_stmt (envs: typ StringMap.t list) stmt is_toplevel is_inloop = match stmt with
