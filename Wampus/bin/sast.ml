@@ -17,8 +17,8 @@ and sx =
   | SCall of string * sexpr list
   | SBindAssign of typ * string * sexpr
   | SBindDec of typ * string
-  | SStructAssign of string * string * string * sexpr
-  | SStructAccess of string * string * string
+  | SStructAssign of string list * string list * sexpr
+  | SStructAccess of string list * string list
   | SListExplicit of sexpr list
   | SSetExplicit of sexpr list
   | SStructExplicit of typ * string * sexpr list
@@ -73,7 +73,7 @@ let rec string_of_sexpr (t, e) =
   | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
   | SBindDec (_, id) -> id
   | SBindAssign (_, id, e) -> id ^ " = " ^ string_of_sexpr e
-  | SStructAssign (_, struct_id, id1, e) -> struct_id ^ "."^ id1 ^ " = " ^ string_of_sexpr e
+  | SStructAssign (_, ids, e) -> String.concat "." ids ^ " = " ^ string_of_sexpr e
   | SCall(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
   | SNoexpr -> ""
