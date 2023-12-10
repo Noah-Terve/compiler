@@ -89,7 +89,6 @@ let check (units : program) =
   let find_struc_from_typ = function
   (* fix this later TODO *)
       Struct(s) -> (s, find_struc s)
-    | Templated(s) -> (s, find_struc s)
     | _ -> raise (Failure ("Should not be in here"))
   in
   let add_struc (sd: sstruct_decl)= 
@@ -338,7 +337,7 @@ let check (units : program) =
     and err = "expected Boolean expression in " ^ string_of_expr e
     in if t' != Bool then raise (Failure err) else (t', e')
   in
-
+  (* let check_struct_explicit = *)
   (* let rec check_stmt_expr: This should allow bindings. It matches against bindings, and semantically checks those.
     Everything else uses regular check_expr. Then, bindings in check_expr should raise an error 
     A for loop needs to use check_stmt_expr
@@ -352,7 +351,8 @@ let check (units : program) =
                   Struct(s) ->) *)
         (* difference is the binds *)
         (* let _ = in_assign := true in *)
-        
+        let _ = Printf.fprintf stderr "hey" in
+        let _ = print_endline "hey" in
         let envs' = 
           if is_toplevel then
             let _ = bind_global id typ in envs
@@ -360,7 +360,7 @@ let check (units : program) =
             bind id typ envs
         in
         (match typ with
-          Struct(s) | Templated(s) -> 
+          Struct(s) -> 
             let struc_body = find_struc s in
             let struc_formals = struc_body.ssformals in
             let formals_length = List.length struc_formals in
@@ -495,13 +495,23 @@ in
       }
     in let _ = add_func sfd in sfd
   in
-
+  (* TODO: Make sure there are no duplicate templated structs *)
+  let check_struct (struc : struct_decl) = 
+    let sformals' = check_binds "sformal" struc.sformals in
+    (* let _ = Printf.fprintf stderr "Adding struct %s\n" struc.name in *)
+    let ssd = 
+      {
+        sname = struc.name;
+        ssformals = sformals';
+      }
+    in let _ = add_struc ssd in ssd
+  in
   let check_program_unit (envs, sunits) prog_unit =
     match prog_unit with
         (* TODO: Make sure envs is updated after every check *)
         Stmt(s) -> let (envs, sstmt) = check_stmt envs s toplevel not_inloop in (envs, SStmt(sstmt) :: sunits)
       | Fdecl(f) -> let sf = check_function f in (envs, SFdecl(sf) :: sunits)
-      | _ -> raise (Failure "Unimplemented units")
+      | Sdecl(s) -> let ss = check_struct s in (envs, SSdecl(ss) :: sunits)
 
     (* | Fdecl(f) -> raise (Failure "Unimplemented functions")
     | Sdecl(st) -> raise (Failure "Unimplemented structs") *)
