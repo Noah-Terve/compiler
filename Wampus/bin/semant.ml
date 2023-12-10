@@ -135,6 +135,18 @@ let check (units : program) =
       with Not_found -> raise (Failure ("undeclared identifier " ^ s))
     in *)
 
+  let rec find_nested_structs ids sdecl = match ids with
+      [] -> raise (Failure "Attempted to find an id that doesn't exist")
+    | name :: rest ->
+        let (t, _) = find_struct_id sdecl name in match t with
+             Struct (sname) -> let new_sdecl = find_struc sname in
+                            let (names, ty) = find_nested_structs rest new_sdecl in
+                            (name :: names, ty)
+          | _ -> match rest with
+             [] -> (ids, t)
+            | _ -> raise (Failure "Attempted to access a member of something that is not a struct")
+
+  in
 
     (* Return a semantically-checked expression, i.e., with a type *)
   let rec check_expr e envs is_toplevel = match e with
@@ -247,7 +259,7 @@ let check (units : program) =
         let (t, _) = List.hd sexprs in
         let _ = List.map (fun (ty, _) -> check_assign t ty ("Types of elements in list do not match: " ^ string_of_typ t ^ " != " ^ string_of_typ ty)) sexprs in
         (List(t), SListExplicit sexprs)
-    (* | StructAssign (sname, sid, e) ->
+    | StructAssign (sname, sid, e) ->
       (* Check that the struct name is in the env *)
         let ltyp = type_of_identifier sname envs in
         let (name, struc) = find_struc_from_typ ltyp in
@@ -258,14 +270,25 @@ let check (units : program) =
           string_of_typ rt ^ " in " ^ string_of_expr e in
         let _ = check_assign lt rt err in
         (lt, SStructAssign(name, sname, sid, (rt, e')))
-    | StructAccess (sname, sid) ->
+    | StructAccess (names) -> match names with
+        [] -> raise (Failure "This isn't possible")
+      | first :: rest ->
+
+
+      (* given a list of names, 
+         find the first name in the scope and keep its associated info
+         then for every following name, look for it in the most recently found
+          struct, if its a struct, recurse, if not, we are at the end (enforce that)
+      *)
+
       (* Check that the struct name is in the env *)
-      let ltyp = type_of_identifier sname envs in
-      let (name, struc) = find_struc_from_typ ltyp in
+      let ltyp = type_of_identifier first envs in
+      let (first_name, struc) = find_struc_from_typ ltyp in
+      let (rest_names, lt) = find_nested_structs rest struc in
+
       (* Check that the struct id is in the struct *)
-      let (lt, _) = find_struct_id struc sid in
-      (lt, SStructAccess(name, sname, sid))
- *)
+      (lt, SStructAccess(first_name :: rest_names, names))
+
 
         
     | TemplatedCall _ -> raise (Failure "there should be no templated calls at semant")
