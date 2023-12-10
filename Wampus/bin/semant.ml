@@ -337,7 +337,23 @@ let check (units : program) =
     and err = "expected Boolean expression in " ^ string_of_expr e
     in if t' != Bool then raise (Failure err) else (t', e')
   in
-  (* let check_struct_explicit = *)
+  (* let rec check_struct_explicit bind e envs not_toplevel = match e with
+    StructExplicit(l) -> 
+      (* TODO: Check t is a struct *)
+      let (t, _) = bind in (match t with 
+        Struct(s) -> 
+          let struc_body = find_struc s in
+          let struc_formals = struc_body.ssformals in
+          if List.length l != (List.length struc_formals) then
+            raise (Failure ("expecting " ^ string_of_int formals_length ^ 
+                            " arguments in struct" ^ struc_body.sname))
+          else
+            check_struct_explicits l struc_formals envs not_toplevel in
+      | _ -> raise (Failure "Should be a struct"))
+    _ -> check_expr e envs not_toplevel
+  and check_struct_explicits bind_list expr_list envs not_toplevel = 
+    List.map2 (fun b e -> check_struct_explicit b e envs not_toplevel) bind_list expr_list
+  in *)
   (* let rec check_stmt_expr: This should allow bindings. It matches against bindings, and semantically checks those.
     Everything else uses regular check_expr. Then, bindings in check_expr should raise an error 
     A for loop needs to use check_stmt_expr
@@ -373,6 +389,8 @@ let check (units : program) =
                               " arguments in struct" ^ struc_body.sname))
             else 
             (* build sexpr list *)
+            (* check through struct explicit lists
+               if there is another struct explicit -> iterate through and check that the results of that equal its formals *)
             let sstruct_explicit = List.map (fun e -> let (e2) = check_expr e envs not_toplevel in e2) struct_explicit in
             (* check for equal types *)
             let _ = List.map2 (fun (lt, _) (rt, _) -> 
