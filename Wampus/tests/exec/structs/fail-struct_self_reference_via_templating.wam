@@ -1,0 +1,6 @@
+template @l T @r
+struct box {
+    T item;
+};
+
+box @l box @l int @r @r b;

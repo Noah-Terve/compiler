@@ -94,20 +94,21 @@ typ:
   | group_typ { $1            }
 
 group_typ:
-      SET  LAT ID RAT         { Set  (Templated($3)) }
-    | SET  LAT INT RAT        { Set  (Int)           }
-    | SET  LAT BOOL RAT       { Set  (Bool)          }
-    | SET  LAT CHAR RAT       { Set  (Char)          }
-    | SET  LAT FLOAT RAT      { Set  (Float)         }
-    | SET  LAT STRING RAT     { Set  (String)        }
-    | SET  LAT group_typ RAT  { Set  ($3)            }
-    | LIST LAT ID RAT         { List (Templated($3)) }
-    | LIST LAT INT RAT        { List (Int)           }
-    | LIST LAT BOOL RAT       { List (Bool)          }
-    | LIST LAT CHAR RAT       { List (Char)          }
-    | LIST LAT FLOAT RAT      { List (Float)         }    
-    | LIST LAT STRING RAT     { List (String)        }
-    | LIST LAT group_typ RAT  { List ($3)            }
+      ID   LAT typ_list RAT   { TStruct ($1, List.rev $3) }
+    | SET  LAT ID RAT         { Set  (Templated($3))      }
+    | SET  LAT INT RAT        { Set  (Int)                }
+    | SET  LAT BOOL RAT       { Set  (Bool)               }
+    | SET  LAT CHAR RAT       { Set  (Char)               }
+    | SET  LAT FLOAT RAT      { Set  (Float)              }
+    | SET  LAT STRING RAT     { Set  (String)             }
+    | SET  LAT group_typ RAT  { Set  ($3)                 }
+    | LIST LAT ID RAT         { List (Templated($3))      }
+    | LIST LAT INT RAT        { List (Int)                }
+    | LIST LAT BOOL RAT       { List (Bool)               }
+    | LIST LAT CHAR RAT       { List (Char)               }
+    | LIST LAT FLOAT RAT      { List (Float)              }    
+    | LIST LAT STRING RAT     { List (String)             }
+    | LIST LAT group_typ RAT  { List ($3)                 }
 
 stmt_list:
     stmt           { [$1]     }
@@ -189,14 +190,14 @@ expr:
   // Function call
   | ID LPAREN args_opt RPAREN { Call($1, $3)}
 
-  // templated expressions and structs
+  // templated expressions and templated function calls
   | struct_expr    { $1 }
-  | templated_expr { $1 }
-
-templated_expr:
-    ID LAT typ_list RAT ID                     { BindTemplatedDec    ($1, List.rev $3, $5)     }
-  | ID LAT typ_list RAT ID ASSIGN expr         { BindTemplatedAssign ($1, List.rev $3, $5, $7) }
   | ID LAT typ_list RAT LPAREN args_opt RPAREN { TemplatedCall       ($1, List.rev $3, $6)     } 
+
+// templated_expr:
+    // ID LAT typ_list RAT ID                       { BindTemplatedDec    ($1, List.rev $3, $5)     }
+    // | ID LAT typ_list RAT ID ASSIGN expr         { BindTemplatedAssign ($1, List.rev $3, $5, $7) }
+    // | ID LAT typ_list RAT LPAREN args_opt RPAREN { TemplatedCall       ($1, List.rev $3, $6)     }
 
 struct_expr:
     // for structs you must have at least one level of access and then 

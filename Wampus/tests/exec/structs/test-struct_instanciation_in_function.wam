@@ -1,0 +1,15 @@
+template @l T @r
+struct box {
+    T item;
+};
+
+box @l int @r make_new_box (box @l int @r b) {
+    box @l int @r b0 = b;
+    b0.item = 4;
+    return b0;
+}
+
+box @l int @r b;
+b.item = 3;
+
+make_new_box(b);

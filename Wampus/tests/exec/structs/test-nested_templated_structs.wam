@@ -1,0 +1,14 @@
+template @l T @r
+struct box {
+    T item;
+};
+
+template @l T0, T1, T2, T3 @r
+struct room {
+    box @l T0 @r box1;
+    box @l T1 @r box2;
+    box @l T2 @r box3;
+    box @l T3 @r box4;
+};
+
+room @l int, string, char, bool @r living_room;

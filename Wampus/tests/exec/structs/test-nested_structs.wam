@@ -1,0 +1,23 @@
+struct Dog {
+    int age;
+    string name;
+    string owner;
+    string breed;
+};
+
+struct Cat {
+    int age;
+    int lives;
+    string name;
+    string owner;
+};
+
+struct MyAnimals {
+    Dog d;
+    Cat c;
+};
+
+MyAnimals a = #l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r #r;
+print @l int @r (a.d.age);
+
+a.c.age = a.d.age;

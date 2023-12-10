@@ -1,0 +1,5 @@
+struct box {
+    box item;
+};
+
+box b;

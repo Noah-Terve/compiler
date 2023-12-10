@@ -10,8 +10,9 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq |
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Float | String | Char
-         | List of typ | Set of typ | Templated of string | Struct of string
+type typ = Int | Bool | Float | String | Char |
+           List of typ | Set of typ | Templated of string | Struct of string |
+           TStruct of string * typ list (* this is resolving a templated struct as a type *)
 
 type expr =
     Literal of int
@@ -58,6 +59,7 @@ type func_decl = {
     body : stmt list;
     fun_t_list : string list;
   }
+
 type struct_decl = {
   name : string;
   sformals : bind list;
@@ -113,6 +115,7 @@ let string_of_uop = function
 | Set(t) -> "set @l " ^ string_of_typ t ^ " @r"
 | Templated(t) -> "tmpl -> " ^ t 
 | Struct(t) -> "stru -> " ^ t
+| TStruct(s, ts) -> s ^ " @l " ^ String.concat ", "(List.map string_of_typ ts) ^ " @r"
 
 let rec string_of_expr = function
   Literal(l) -> string_of_int l
@@ -218,10 +221,11 @@ let rec info_of_typ = function
   | Set(t) -> "Set(" ^ info_of_typ t ^ ")"
   | Templated(t) -> "Templated(\"" ^ t ^ "\")" 
   | Struct(t) -> "Struct(\"" ^ t ^ "\")"
+  | TStruct(s, ts) -> "TStruct(\"" ^ s ^ "\", [" ^ String.concat "; "(List.map info_of_typ ts) ^ "])"
 
 let info_of_typs = function
     [] -> "[]"
-  | typs -> "[\"" ^ String.concat "; " (List.map info_of_typ typs) ^ "\"]"
+  | typs -> "[" ^ String.concat "; " (List.map info_of_typ typs) ^ "]"
 
 let rec info_of_expr = function
     Literal(l) -> string_of_int l

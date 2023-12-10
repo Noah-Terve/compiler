@@ -1,0 +1,9 @@
+template @l T @r
+struct animal {
+    T info;
+    int age;
+    string owner;
+};
+
+animal @l int @r mine = #l 4, 10, "terve" #r;
+animal @l string @r yours = #l "this is an animal", 7, "neil" #r;
