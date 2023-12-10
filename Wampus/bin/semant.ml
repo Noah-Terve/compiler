@@ -35,11 +35,22 @@ let check (units : program) =
 
   (* Collect function declarations for built-in functions: no bodies *)
   let built_in_decls = 
+    let add_general_bind map (name, ty, formals) = StringMap.add name {
+      styp = ty; sfname = name; sformals = formals;
+      sbody = []; slocals = []; } map
+    in let temp_binds = 
+      List.fold_left add_general_bind StringMap.empty [
+        ("list_at",     Int, [(List (Int), "head"); (Int, "idx")]);
+        ("list_insert", Int, [(List (Int), "head"); (Int, "idx"); (Int, "data")]); (* TODO: Use polymorphic types here for third arg*)
+        ("list_remove", Int, [(List (Int), "head"); (Int, "idx")]);
+        ("list_len",    Int, [(List (Int), "head")])
+      ]
+    in 
     let add_bind map (name, ty) = StringMap.add name {
       styp = Int; sfname = name; 
       sformals = [(ty, "x")];
       sbody = []; slocals = []; } map
-    in List.fold_left add_bind StringMap.empty [ ("printi", Int);
+    in List.fold_left add_bind temp_binds [ ("printi", Int);
                                                  ("printb", Bool);
                                                  ("printf", Float);
                                                  ("prints", String);

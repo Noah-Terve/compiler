@@ -343,6 +343,10 @@ let translate program =
                 A.List(_) -> L.build_bitcast value (L.pointer_type (L.pointer_type (ltype_of_typ t1))) "cast" builder
               | _         -> L.build_bitcast value (L.pointer_type                 (ltype_of_typ t1))  "cast" builder ) in
           (L.build_load cast "list_at" builder, envs)
+
+      (* | SCall ("List_insert", [e1; e2; e3])   -> L.build_call list_insert_func [| (expr builder e1); (expr builder e2); (L.build_bitcast (build_malloc builder (expr builder e3)) voidptr_t "voidptr" builder) |] "" builder
+      | SCall ("List_remove", [e1; e2])       -> L.build_call list_remove_func [| (expr builder e1); (expr builder e2) |] "" builder *)
+
       | SCall (f, args) ->
           let (fdef, fdecl) = StringMap.find f function_decls in
           let (llargs, envs) = List.fold_left (fun (llargs, envs) (t, e) -> 
