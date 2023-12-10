@@ -9,13 +9,13 @@
 //     struct node *next;
 // } node;
 
-bool _list_empty(node **head) {
+bool list_empty(node **head) {
     return head == NULL || *head == NULL;
 }
 
-void _list_insert(node **head, unsigned int idx, void *data) {
+void list_insert(node **head, unsigned int idx, void *data) {
 
-        unsigned int len = _list_len(head); 
+        unsigned int len = list_len(head); 
 
         assert((idx >= 0) && (idx <= len));
         
@@ -43,8 +43,8 @@ void _list_insert(node **head, unsigned int idx, void *data) {
         }
 }
 
-void _list_remove(node **head, unsigned int idx) {
-    if (_list_empty(head)) {
+void list_remove(node **head, unsigned int idx) {
+    if (list_empty(head)) {
         return;
     }
 
@@ -69,8 +69,8 @@ void _list_remove(node **head, unsigned int idx) {
     free(curr);
 }
 
-void *_list_at(node **head, unsigned int idx) {
-    if (_list_empty(head)) {
+void *list_at(node **head, unsigned int idx) {
+    if (list_empty(head)) {
         return NULL;
     }
 
@@ -87,8 +87,8 @@ void *_list_at(node **head, unsigned int idx) {
     return curr -> data;
 }
 
-unsigned int _list_len(node **head) {
-    if (_list_empty(head)) {
+unsigned int list_len(node **head) {
+    if (list_empty(head)) {
         return 0;
     }
 
@@ -104,7 +104,7 @@ unsigned int _list_len(node **head) {
     return len;
 }
 
-void _list_int_print(node **l)
+void list_int_print(node **l)
 {
     if (!l || !*l) {
         printf("[]\n");
@@ -113,10 +113,10 @@ void _list_int_print(node **l)
     
     node *t = *l;
     int i = 0;
-    int len = _list_len(l);
+    int len = list_len(l);
     printf("[ ");
     while (i < len) {
-        int *data = (int *)_list_at(l, i); 
+        int *data = (int *)list_at(l, i); 
         printf("%d ", *data);
         t = t->next;
         i = i + 1;

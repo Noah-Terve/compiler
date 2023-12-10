@@ -156,22 +156,22 @@ let translate program =
   let printf_func : L.llvalue =  L.declare_function "printf" printf_t the_module in
 
   let list_insert_t        = L.function_type void_t [| (L.pointer_type list_t); i32_t; voidptr_t |] in
-  let list_insert_func     = L.declare_function "_list_insert" list_insert_t the_module in
+  let list_insert_func     = L.declare_function "list_insert" list_insert_t the_module in
 
   let list_len_t           = L.function_type i32_t [| (L.pointer_type list_t) |] in
-  let list_len_func        = L.declare_function "_list_len" list_len_t the_module in
+  let list_len_func        = L.declare_function "list_len" list_len_t the_module in
 
   let list_remove_t       = L.function_type void_t [| (L.pointer_type list_t); i32_t |] in
-  let list_remove_func    = L.declare_function "_list_remove" list_remove_t the_module in
+  let list_remove_func    = L.declare_function "list_remove" list_remove_t the_module in
 
   let list_replace_t     = L.function_type void_t [| (L.pointer_type list_t); i32_t; voidptr_t |] in
-  let list_replace_func  = L.declare_function "_list_replace" list_replace_t the_module in
+  let list_replace_func  = L.declare_function "list_replace" list_replace_t the_module in
 
   let list_at_t          = L.function_type voidptr_t [| (L.pointer_type list_t); i32_t |] in
-  let list_at_func       = L.declare_function "_list_at" list_at_t the_module in
+  let list_at_func       = L.declare_function "list_at" list_at_t the_module in
 
   let list_print        = L.function_type void_t [| (L.pointer_type list_t) |] in 
-  let list_print_func   = L.declare_function "_list_int_print" list_print the_module in
+  let list_print_func   = L.declare_function "list_int_print" list_print the_module in
 
   (* TODO: ADD THE SET BUILT-INS HERE *)
 
@@ -335,6 +335,14 @@ let translate program =
       | SCall ("_print.float", [e]) ->
         let (e_llvalue, envs) = expr builder e envs in
         (L.build_call printf_func [| float_format_str ; e_llvalue |] "printf" builder, envs)
+      | SCall ("list_at", [(A.List (t1), _) as e1; e2]) ->
+          let (e1_llvalue, _) = expr builder e1 envs in
+          let (e2_llvalue, _) = expr builder e2 envs in
+          let value = L.build_call list_at_func [| e1_llvalue; e2_llvalue |] "list_at" builder in
+          let cast = (match t1 with
+                A.List(_) -> L.build_bitcast value (L.pointer_type (L.pointer_type (ltype_of_typ t1))) "cast" builder
+              | _         -> L.build_bitcast value (L.pointer_type                 (ltype_of_typ t1))  "cast" builder ) in
+          (L.build_load cast "list_at" builder, envs)
       | SCall (f, args) ->
           let (fdef, fdecl) = StringMap.find f function_decls in
           let (llargs, envs) = List.fold_left (fun (llargs, envs) (t, e) -> 
@@ -344,7 +352,13 @@ let translate program =
 
           (* (L.build_call fdef (Array.of_list llargs) result builder, envs) *)
           (L.build_call fdef (Array.of_list (List.rev llargs)) result builder, envs)
+          
       (* | SBindDec (t, n) -> (L.const_int (ltype_of_typ t) 0, bind n (L.const_int (ltype_of_typ t) 0) envs) *)
+
+
+      
+
+
       | SBindDec (t, n) -> (match t with 
             A.Struct(name) | A.Templated (name) -> 
               (* let _ = Printf.fprintf stderr "inhere" in *)

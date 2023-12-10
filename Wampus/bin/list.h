@@ -9,16 +9,16 @@ typedef struct node {
     struct node *next;
 } node;
 
-bool _list_empty(node **head);
+bool list_empty(node **head);
 
-void _list_insert(node **head, unsigned int idx, void *data);
+void list_insert(node **head, unsigned int idx, void *data);
 
-void _list_remove(node **head, unsigned int idx);
+void list_remove(node **head, unsigned int idx);
 
-void *_list_at(node **head, unsigned int idx);
+void *list_at(node **head, unsigned int idx);
 
-void _list_int_print(node **l);
+void list_int_print(node **l);
 
-unsigned int _list_len(node **head);
+unsigned int list_len(node **head);
 
 #endif // LIST_H
