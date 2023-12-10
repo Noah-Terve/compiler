@@ -29,7 +29,7 @@ type expr =
   | BindAssign of typ * string * expr
   | BindDec of typ * string
   | StructAccess of string list
-  | StructAssign of string list * expr
+  | StructAssign of string list * pr
   | BindTemplatedDec of string * typ list * string
   | BindTemplatedAssign of string * typ list * string * expr
   | ListExplicit of expr list
