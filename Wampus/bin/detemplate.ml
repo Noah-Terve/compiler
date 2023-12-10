@@ -159,29 +159,6 @@ let detemplate units =
                            (BindDec(ty, name), p0)
     | StructAssign (names, e) -> let (exp1, p0) = resolve_expr e prog names_to_types in
                                        (StructAssign(names, exp1), p0)
-    (* | BindTemplatedDec (s_id, ts, name) ->
-      (let new_ts = List.map (fun typ -> potentially_templated_to_typ typ names_to_types) ts in
-       let new_sname = get_new_name s_id new_ts in
-                  (* case where the struct has already been resolved to this set of types *)
-      try let _ = StringMap.find new_sname !resolved_structs in
-          (BindDec(Struct(new_sname), name), prog)
-
-                  (* cause where the struct hasn't been resolved yet *)
-      with Not_found -> let p0 = resolve_templated_struct s_id new_ts prog in
-                        (BindDec(Struct(new_sname), name), p0))       *)
-    (* | BindTemplatedAssign (s_id, ts, name, e) ->
-
-      (let new_ts = List.map (fun typ -> potentially_templated_to_typ typ names_to_types) ts in
-       let new_sname = get_new_name s_id new_ts in
-                  (* case where the struct has already been resolved to this set of types *)
-      try let _ = StringMap.find new_sname !resolved_structs in
-          let (exp1, p0) = resolve_expr e prog names_to_types in
-          (BindAssign(Struct(new_sname), name, exp1), p0)
-
-                  (* cause where the struct hasn't been resolved yet *)
-      with Not_found -> let p0 = resolve_templated_struct s_id new_ts prog in
-                        let (exp1, p1) = resolve_expr e p0 names_to_types in
-                        (BindAssign(Struct(new_sname), name, exp1), p1)) *)
 
     | ListExplicit (es) -> let (exps, p0) = resolve_exprs es prog names_to_types in
                            (ListExplicit(exps), p0)

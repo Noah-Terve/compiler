@@ -30,8 +30,6 @@ type expr =
   | BindDec of typ * string
   | StructAccess of string list
   | StructAssign of string list * expr
-  | BindTemplatedDec of string * typ list * string
-  | BindTemplatedAssign of string * typ list * string * expr
   | ListExplicit of expr list
   | SetExplicit of expr list
   | StructExplicit of expr list
@@ -136,8 +134,6 @@ let rec string_of_expr = function
 | BindDec (t, id) -> string_of_typ t ^ " " ^ id
 | StructAssign (ids, e) -> String.concat "." ids ^ " = " ^ string_of_expr e
 | StructAccess (ids) -> String.concat "." ids
-| BindTemplatedDec (struct_id, t_list, id) ->  struct_id ^ " @l " ^ String.concat ", " (List.map string_of_typ t_list) ^ " @r " ^ id
-| BindTemplatedAssign (struct_id, t_list, id, e) -> struct_id ^ " @l " ^ String.concat ", " (List.map string_of_typ t_list) ^ " @r " ^ id ^ " = " ^ string_of_expr e
 | ListExplicit(el) -> "[" ^ String.concat ", " (List.map string_of_expr el) ^ "]"
 | SetExplicit (el) -> "{" ^ String.concat ", " (List.map string_of_expr el) ^ "}"
 | StructExplicit (el) -> "#l " ^ String.concat ", " (List.map string_of_expr el) ^ " #r"
@@ -244,8 +240,6 @@ let rec info_of_expr = function
   | BindDec (t, id) -> "BindDec(" ^ info_of_typ t ^ ", \"" ^ id ^ "\")"
   | StructAssign (ids, e) -> "StructAccess(" ^ info_of_strings ids ^ ", " ^ info_of_expr e ^ ")"
   | StructAccess (ids) -> "StructAccess(" ^info_of_strings ids ^ ")"
-  | BindTemplatedDec (struct_id, t_list, id) -> "BindTemplatedDec(\"" ^ struct_id ^ "\", " ^ info_of_typs t_list ^ ", \"" ^ id ^ "\")"
-  | BindTemplatedAssign (struct_id, t_list, id, e) -> "BindTemplatedAssign(\"" ^ struct_id ^ "\", " ^ info_of_typs t_list ^ ", \"" ^ id ^ "\"" ^ info_of_expr e ^ ")"
   | ListExplicit(el) -> "ListExplicit(" ^ info_of_exprs el ^ ")"
   | SetExplicit (el) -> "SetExplicit(" ^ info_of_exprs el ^ ")"
   | StructExplicit (el) -> "StructExplicit(" ^ info_of_exprs el ^ ")"
