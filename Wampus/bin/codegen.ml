@@ -253,8 +253,17 @@ let translate program =
     let bind n v (envs: L.llvalue StringMap.t list) = 
       match envs with
         [] -> raise (Failure ("Internal error: no environment to bind variable in"))
-      | env :: rest -> (StringMap.add n v env) :: rest
-    in
+      | env :: rest -> (StringMap.add n v env) :: rest in
+
+    (* let bind_list_vars n v (envs: L.llvalue StringMap.t list) = 
+        match envs with
+          [] -> raise (Failure ("Internal error: no environment to bind variable in"))
+        | env :: rest -> 
+            let local = L.build_alloca (L.pointer_type (ltype_of_typ t)) n builder in
+            let _     = L.build_store v local builder in
+            let new_env = (StringMap.add n local env) :: rest
+            in envs := new_env
+    in *)
 
     (* Construct code for an expression; return its value *)
     let rec getLit = function
@@ -371,13 +380,18 @@ let translate program =
               let arr_type = Array.of_list(List.map init types) in
               let str_ptr = instantitate_struct t n arr_type builder in
               (str_ptr, bind n str_ptr envs)
+          | A.List(t1) ->
+              let list_ptr = L.build_alloca (L.pointer_type (ltype_of_typ t)) n builder in
+              let _        = L.build_store (L.const_null (L.pointer_type (ltype_of_typ t))) list_ptr builder in
+              (list_ptr, bind n list_ptr envs)
+              
           | _ -> 
-            (* let _ = print_endline (A.string_of_typ t) in *)
+            (* let _ = L.build_call "_print.string" (A.string_of_typ t) in *)
           (* let _ = Printf.fprintf stderr "generating code for binding %s\n" n in *)
           let local_var = L.build_alloca (ltype_of_typ t) n builder in
           (L.const_int (ltype_of_typ t) 0, bind n local_var envs))
       | SAssign (var_name, e) ->
-          let (value_to_assign, envs) = expr builder e envs in
+          let (value_to_assign, envs) = expr builder e envs in    
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in
           (value_to_assign, envs)
       (* | SStructAssign (name, sname, sid, e) ->
