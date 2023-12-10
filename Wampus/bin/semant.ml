@@ -259,35 +259,35 @@ let check (units : program) =
         let (t, _) = List.hd sexprs in
         let _ = List.map (fun (ty, _) -> check_assign t ty ("Types of elements in list do not match: " ^ string_of_typ t ^ " != " ^ string_of_typ ty)) sexprs in
         (List(t), SListExplicit sexprs)
-    | StructAssign (sname, sid, e) ->
-      (* Check that the struct name is in the env *)
-        let ltyp = type_of_identifier sname envs in
-        let (name, struc) = find_struc_from_typ ltyp in
-      (* Check that the struct id is in the struct *)
-        let (lt, _) = find_struct_id struc sid in
+    | StructAssign (names, e) -> (match names with
+        [] -> raise (Failure "This isn't possible")
+      | first :: rest -> 
+        (* Check that the struct name is in the env *)
+        let ltyp = type_of_identifier first envs in
+        let (first_name, struc) = find_struc_from_typ ltyp in
+      
+        (* get the names of the rest of the structs, and the type that
+           eventually is returned *)
+        let (rest_names, lt) = find_nested_structs rest struc in
+
         let (rt, e') = check_expr e envs not_toplevel in
         let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
           string_of_typ rt ^ " in " ^ string_of_expr e in
         let _ = check_assign lt rt err in
-        (lt, SStructAssign(name, sname, sid, (rt, e')))
-    | StructAccess (names) -> match names with
+        (lt, SStructAssign(first_name :: rest_names, names, (rt, e'))))
+
+    | StructAccess (names) -> (match names with
         [] -> raise (Failure "This isn't possible")
       | first :: rest ->
+        (* Check that the struct name is in the env *)
+        let ltyp = type_of_identifier first envs in
+        let (first_name, struc) = find_struc_from_typ ltyp in
+        (* get the names of the rest of the structs, and the type that
+           eventually is returned *)
+        let (rest_names, lt) = find_nested_structs rest struc in
 
-
-      (* given a list of names, 
-         find the first name in the scope and keep its associated info
-         then for every following name, look for it in the most recently found
-          struct, if its a struct, recurse, if not, we are at the end (enforce that)
-      *)
-
-      (* Check that the struct name is in the env *)
-      let ltyp = type_of_identifier first envs in
-      let (first_name, struc) = find_struc_from_typ ltyp in
-      let (rest_names, lt) = find_nested_structs rest struc in
-
-      (* Check that the struct id is in the struct *)
-      (lt, SStructAccess(first_name :: rest_names, names))
+        (* Check that the struct id is in the struct *)
+        (lt, SStructAccess(first_name :: rest_names, names)))
 
 
         

@@ -362,7 +362,7 @@ let translate program =
           let (value_to_assign, envs) = expr builder e envs in
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in
           (value_to_assign, envs)
-      | SStructAssign (name, sname, sid, e) ->
+      (* | SStructAssign (name, sname, sid, e) ->
         (* let _ = print_endline "Assigning a struct value" in *)
         let llstruct = lookup sname envs in
         (* environments could be an issue here *)
@@ -380,7 +380,7 @@ let translate program =
         let sformals = StringMap.find name struct_decls in
         let index = find_index sformals sid 0 in
         let elm_ptr = L.build_struct_gep llstruct index sid builder in 
-        (L.build_load elm_ptr sid builder, envs)
+        (L.build_load elm_ptr sid builder, envs) *)
       | SBindAssign (t, var_name, e) ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
           expr builder (t, SAssign (var_name, e)) envs
