@@ -1,6 +1,26 @@
 open Ast
 module StringMap = Map.Make(String)
 
+let rec typ_to_new_name = function
+    Int -> "int"
+  | Bool -> "bool"
+  | Float -> "float"
+  | String -> "string"
+  | Char -> "char"
+  | List(t) -> "list_" ^ typ_to_new_name t
+  | Set(t) -> "set_" ^ typ_to_new_name t
+  | Templated(t) -> t
+  | Struct(t) -> t
+  | TStruct(s, ts) -> get_new_name s ts
+and
+  
+get_new_name name t_list = 
+  "_" ^ name ^ "." ^ (String.concat "." (List.map typ_to_new_name t_list))
+
+
+let new_function_name_for_overloading name t_list =
+  name ^ "," ^ (String.concat "." (List.map typ_to_new_name t_list))
+
 let detemplate units = 
   (* functions and structs that are instatiated *)
   let resolved_functions = ref StringMap.empty in
@@ -8,23 +28,6 @@ let detemplate units =
   (* functions and structs that are templated *)
   let known_templated_funcs = ref StringMap.empty in
   let known_templated_structs = ref StringMap.empty in
-
-  let rec typ_to_new_name = function
-      Int -> "int"
-    | Bool -> "bool"
-    | Float -> "float"
-    | String -> "string"
-    | Char -> "char"
-    | List(t) -> "list_" ^ typ_to_new_name t
-    | Set(t) -> "set_" ^ typ_to_new_name t
-    | Templated(t) -> t
-    | Struct(t) -> t
-    | TStruct(s, ts) -> get_new_name s ts
-  and 
-    
-  get_new_name name t_list = 
-    "_" ^ name ^ "." ^ (String.concat "." (List.map typ_to_new_name t_list))
-  in 
 
   (* given a name, a list of types, and the program, 
      create a new version of the function with all statements having new types
@@ -207,13 +210,16 @@ let detemplate units =
   let resolveTemplates prog prog_unit = match prog_unit with 
       Fdecl (func) -> (match func.fun_t_list with
                  (* if the function exists already that is against our rules *)
-            [] -> ( try let _ = StringMap.find func.fname !resolved_functions in raise (Failure "You can't overload functions")
-                    with Not_found ->
-                      let (new_body, p0) = resolve_stmts func.body prog StringMap.empty in
-                      let (new_formals, p1) = potentially_templated_binds_to_binds func.formals StringMap.empty p0 in
-                      let new_func = {typ = func.typ; fname = func.fname; formals = new_formals; body = new_body; fun_t_list = func.fun_t_list} in
-                      let _ = resolved_functions := (StringMap.add func.fname new_func !resolved_functions) in Fdecl(new_func) :: p1)
-          | _ -> let _ = known_templated_funcs := (StringMap.add func.fname func !known_templated_funcs) in prog)
+           [] -> (let new_name = new_function_name_for_overloading func.fname (List.map (fun (t, _) -> t) func.formals) in 
+                  try let _ = StringMap.find new_name !resolved_functions in raise (Failure "Functions can't have the same name and the same input types in the same order")
+                      with Not_found ->
+                        let (new_body, p0) = resolve_stmts func.body prog StringMap.empty in
+                        let (new_formals, p1) = potentially_templated_binds_to_binds func.formals StringMap.empty p0 in
+                        let new_func = {typ = func.typ; fname = new_name; formals = new_formals; body = new_body; fun_t_list = func.fun_t_list} in
+                        let _ = resolved_functions := (StringMap.add new_name new_func !resolved_functions) in Fdecl(new_func) :: p1)
+          | _ ->  try let _ = StringMap.find func.fname !known_templated_funcs in raise (Failure "Templated functions can't be overloaded")
+                      with Not_found -> 
+                        let _ = known_templated_funcs := (StringMap.add func.fname func !known_templated_funcs) in prog)
         
     | Sdecl (struc) -> (match struc.t_list with
             [] -> ( try let _ = StringMap.find struc.name !resolved_structs in raise (Failure "You can't overload structs")

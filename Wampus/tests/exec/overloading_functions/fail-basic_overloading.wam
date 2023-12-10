@@ -1,0 +1,7 @@
+int testing (int x) {
+    return x;
+}
+
+string testing (int s) {
+    return "hello";
+}

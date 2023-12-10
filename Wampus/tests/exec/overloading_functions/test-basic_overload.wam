@@ -1,0 +1,15 @@
+int testing (int x) {
+    return x;
+}
+
+string testing (string s) {
+    return s;
+}
+
+int testing (bool b) {
+    return 2;
+}
+
+print @l int @r (testing(3));
+print @l string @r (testing("hello"));
+print @l int @r (testing(false));

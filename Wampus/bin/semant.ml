@@ -2,7 +2,7 @@
 
 open Ast
 open Sast
-
+module D = Detemplate
 module StringMap = Map.Make(String)
 
 (* Semantic checking of the AST. Returns an SAST if successful,
@@ -232,24 +232,50 @@ let check (units : program) =
                       string_of_typ t2 ^ " in " ^ string_of_expr e))
         in (ty, SBinop((t1, e1'), op, (t2, e2')))
     | Call (fname, args) as call ->
-        let sfd = find_func fname in
-        let param_length = List.length sfd.sformals in
-        if List.length args != param_length then
-          raise (Failure ("expecting " ^ string_of_int param_length ^ 
-                          " arguments in " ^ string_of_expr call))
-        (* Compare types of arguments to expected types of functions *)
-        else let check_call (args: sexpr list) (formal_t, _) e = 
-          (* Ensure that templated calls work here *)
-          let ((et, sx) as se) = check_expr e envs not_toplevel in
-          (* Correct empty list types if necessary *)
-          let et = (match sx with (SListExplicit []) -> List (formal_t) | _ -> et) in
-          let err = "illegal argument found " ^ string_of_typ et ^
-            " expected " ^ string_of_typ formal_t ^ " in " ^ string_of_expr e in
-          let _ = check_assign formal_t et err
-          in (se::args)
-        in
-      let args' = List.fold_left2 check_call [] sfd.sformals args
-      in (sfd.styp, SCall(fname, List.rev args'))
+      (* case where the function name exists (this mainly happens
+         when a function was templated and was resolved) *)
+       (try let sfd = find_func fname in
+            let param_length = List.length sfd.sformals in
+            if List.length args != param_length then
+              raise (Failure ("expecting " ^ string_of_int param_length ^ 
+                              " arguments in " ^ string_of_expr call))
+            (* Compare types of arguments to expected types of functions *)
+            else let check_call (args: sexpr list) (formal_t, _) e = 
+              (* Ensure that templated calls work here *)
+              let ((et, sx) as se) = check_expr e envs not_toplevel in
+              (* Correct empty list types if necessary *)
+              let et = (match sx with (SListExplicit []) -> List (formal_t) | _ -> et) in
+              let err = "illegal argument found " ^ string_of_typ et ^
+                " expected " ^ string_of_typ formal_t ^ " in " ^ string_of_expr e in
+              let _ = check_assign formal_t et err
+              in (se::args)
+            in
+          let args' = List.fold_left2 check_call [] sfd.sformals args
+          in (sfd.styp, SCall(fname, List.rev args'))
+       (* case where the function doesn't exist, this means the function must have
+          been renamed to allow overloading, so we have to go find the new name *)
+        with 
+          Failure(_) -> let ts = List.map (fun (t, _) -> t) (List.map (fun ex -> check_expr ex envs not_toplevel) args) in
+          let new_name = D.new_function_name_for_overloading fname ts in
+          let sfd = find_func new_name in
+            let param_length = List.length sfd.sformals in
+            if List.length args != param_length then
+              raise (Failure ("expecting " ^ string_of_int param_length ^ 
+                              " arguments in " ^ string_of_expr call))
+            (* Compare types of arguments to expected types of functions *)
+            else let check_call (args: sexpr list) (formal_t, _) e = 
+              (* Ensure that templated calls work here *)
+              let ((et, sx) as se) = check_expr e envs not_toplevel in
+              (* Correct empty list types if necessary *)
+              let et = (match sx with (SListExplicit []) -> List (formal_t) | _ -> et) in
+              let err = "illegal argument found " ^ string_of_typ et ^
+                " expected " ^ string_of_typ formal_t ^ " in " ^ string_of_expr e in
+              let _ = check_assign formal_t et err
+              in (se::args)
+            in
+          let args' = List.fold_left2 check_call [] sfd.sformals args
+          in (sfd.styp, SCall(new_name, List.rev args'))
+        )
 
       (* TODO: For now, we assume any list is not empty.
          Empty lists will require some sort of type inference *)
