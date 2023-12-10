@@ -57,6 +57,8 @@ echo "Building compiler:"
 make -C "$HOME_DIR"
 echo ""
 
+make -C "$HOME_DIR" list.o
+
 # Compile the wampus file to llvm
 echo "Compiling to llvm:"
 echo "$WAMPUS $wam_file > $TARGET_DIR/$name.ll"
