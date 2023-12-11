@@ -35,7 +35,7 @@ test: all testall.sh
 .PHONY: clean
 clean:
 	dune clean
-	rm testall.log *.diff toplevel.opam *.s *.ll *.out toplevel test.log
+	rm testall.log *.diff toplevel.opam *.s *.out toplevel test.log
 
 # Generate a .out file from a .wam file
 %.out: %.wam toplevel

@@ -8,5 +8,5 @@ test.log
 out/
 language_report/
 toplevel
-
+*.json
 list.o
