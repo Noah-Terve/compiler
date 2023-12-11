@@ -441,8 +441,8 @@ let check (units : program) =
             bind id typ envs
         in *)
         let (_, e1') = check_expr (Assign(id, e1)) envs' not_toplevel in 
-        (* This match prevents multiple assigns in codegen *)
         (match e1' with
+            (* This match prevents multiple assigns in codegen *)
             SAssign (_, expr) -> (envs', (typ, SBindAssign(typ, id, expr)))
           | SStructExplicit(lt, var, sstruct_explicit) -> (envs', (typ,  SStructExplicit(lt, var, sstruct_explicit)))
           | _ -> raise(Failure "Should only return an assign"))
