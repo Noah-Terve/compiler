@@ -1,0 +1,99 @@
+/* Implementation of a singly directed graph in Wampus, and a BFS and DFS on it */
+
+/* the thing that our nodes of the graph hold is polymorphic! 
+ * nodes don't know what they are connected to, the outer graph does that*/
+template @l T @r
+struct node {
+    string name; /* so we can tell nodes apart easily */
+    T data;
+};
+
+/* a struct which tells us what nodes are connected to which other nodes */
+struct connection {
+    string this;
+    /* a set because a node can't exist more than once in the graph*/
+    set @l string @r connections; 
+};
+
+template @l T @r 
+struct Graph {
+    set @l node @l T @r @r nodes; /* saying we have a set of nodes which are of type T */
+    /* store a set of connections, where each connection denotes a node's connections */
+    list @l connection @r connections; 
+    int num_nodes;
+};
+
+/* make a new graph which stores things of type T */
+template @l T @r 
+Graph @l T @r new_graph() {
+    /* being pedantic about making sure initialize all variables */
+    Graph @l T @r g;
+    g.nodes = {}; /* empty set */
+    g.connections = []; /* empty list */
+    g.num_nodes = 0;
+    return g;
+}
+
+
+/* because we can't modify variables the functions for adding and removing
+ * nodes from graphs will return new graphs */
+
+/* add a node: takes in a node to add, and a list of the nodes it wants to be
+ * connected to */
+
+template @l T @r
+Graph @l T @r add_node(Graph @l T @r g, node @l T @r n, set @l string @r connections) {
+    if (contains(g.nodes, n)) return g; /* if the node is already in the graph dont do anything */
+    
+    /* note the struct literal here */
+    connection temp = #l n.name, connections #r; 
+    /* add the connetions to the list of connections */
+    g.connections = g.connections + connection;
+    g.nodes = g.nodes + n; /* add n into the set of nodes */
+    g.num_nodes += 1;
+    return g;
+}
+
+
+/* remove a node, identified by name, make sure to also go through and remove
+ * other node's connections to it. */
+template @l T @r
+Graph @l T @r remove_node(Graph @l T @r g, string name) {
+    /* go through the connections and remove the one corresponding to this
+     * node, and make sure no other nodes think this node is still in the graph */
+    connection con;
+    for (c in g.connections) {
+        if (c.this == name) {
+            con = c; /* note which connection we will need to remove */
+        } else {
+            if (contains(c.connections, name)) {
+                c.connections -= name;
+            }
+        }
+    }
+    g.connections -= con;
+
+    /* find the node we want to remove */
+    for (n in g.nodes) {
+        if (n.name == name) {
+            g.nodes -= n;
+            break;
+        }
+    }
+
+    g.num_nodes -= 1;
+    return g;
+}
+
+/* add a connection from the node named n1 to the node named n2 */
+template @l T @r
+Graph @l T @r add_connection(Graph @l T @r g, string n1, string n2) {
+    /* easy beause of sets, just find which connection we need to add the n2 to*/
+    for (c in g.connections) {
+        if (c.this == n1) {
+            c.connections += n2;
+            break;
+        }
+    }
+    return g;
+}

@@ -144,9 +144,9 @@ let rec string_of_stmt = function
       "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
   | Expr(expr) -> string_of_expr expr ^ ";\n";
   | Return(expr) -> "return " ^ string_of_expr expr ^ ";\n";
-  | If(e, s, Block([])) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s
+  | If(e, s, Block([])) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s ^ "\n"
   | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
-      string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
+      string_of_stmt s1 ^ " else\n" ^ string_of_stmt s2 ^ "\n"
   | For(e1, e2, e3, s) ->
       "for (" ^ string_of_expr e1  ^ " ; " ^ string_of_expr e2 ^ " ; " ^
       string_of_expr e3  ^ ") " ^ string_of_stmt s
@@ -224,8 +224,8 @@ let info_of_typs = function
   | typs -> "[" ^ String.concat "; " (List.map info_of_typ typs) ^ "]"
 
 let rec info_of_expr = function
-    Literal(l) -> string_of_int l
-  | Fliteral(l) -> l
+    Literal(l) -> "Literal(" ^ string_of_int l ^ ")"
+  | Fliteral(l) -> "Fliteral(" ^ l ^ ")"
   | BoolLit(true) -> "BoolLit(true)"
   | BoolLit(false) -> "BoolLit(false)"
   | StringLit(s) -> "StringLit(\"" ^ String.escaped s ^ "\")"
@@ -247,7 +247,7 @@ let rec info_of_expr = function
 
 and info_of_exprs = function 
     [] -> "[]"
-  | exprs -> "[\"" ^ String.concat "; " (List.map info_of_expr exprs) ^ "\"]"
+  | exprs -> "[" ^ String.concat "; " (List.map info_of_expr exprs) ^ "]"
 
 let rec info_of_stmt = function
     Block(stmts) ->
@@ -277,7 +277,7 @@ let info_of_binds = function
   | types -> "[(" ^ String.concat "); (" (List.map (fun (t, s) -> info_of_typ t ^ ", \"" ^ s ^ "\"") types) ^ ")]"
 
 let info_of_fdecl fdecl =
-  "{name = \"" ^ fdecl.fname ^ "\"; typ = " ^ info_of_typ fdecl.typ ^ "; formals = " ^ info_of_binds fdecl.formals ^ "; fun_t_list = " ^ info_of_strings fdecl.fun_t_list ^ "; body = " ^ info_of_stmts fdecl.body ^ "}\n"
+  "{fname = \"" ^ fdecl.fname ^ "\"; typ = " ^ info_of_typ fdecl.typ ^ "; formals = " ^ info_of_binds fdecl.formals ^ "; fun_t_list = " ^ info_of_strings fdecl.fun_t_list ^ "; body = " ^ info_of_stmts fdecl.body ^ "}\n"
 
 let info_of_sdecl sdecl = 
   "{name = \"" ^ sdecl.name ^ "\"; t_list = " ^ info_of_strings sdecl.t_list ^ "; sformals = " ^ info_of_binds sdecl.sformals ^ "}\n"

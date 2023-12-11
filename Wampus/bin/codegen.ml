@@ -212,6 +212,12 @@ let translate program =
     and string_format_str = L.build_global_stringptr "%s" "fmt" builder 
     and char_format_str = L.build_global_stringptr "%c" "fmt" builder in
 
+    let int_format_str_with_nl = L.build_global_stringptr "%d\n" "fmt" builder
+    and float_format_str_with_nl = L.build_global_stringptr "%g\n" "fmt" builder 
+    and string_format_str_with_nl = L.build_global_stringptr "%s\n" "fmt" builder 
+    and char_format_str_with_nl = L.build_global_stringptr "%c\n" "fmt" builder in
+
+
     (* Construct the function's "locals": formal arguments and locally
        declared variables.  Allocate each on the stack, initialize their
        value, if appropriate, and remember their values in the "locals" map *)
@@ -332,9 +338,7 @@ let translate program =
       | SCall ("_print.int", [e]) | SCall ("_print.bool", [e]) ->
         let (e_llvalue, envs) = expr builder e envs in
         (L.build_call printf_func [| int_format_str ; e_llvalue |] "printf" builder, envs)
-        
-    (* | SCall ("printbig", [e]) ->
-      L.build_call printbig_func [| (expr builder e) |] "printbig" builder *)
+
       | SCall ("_print.string", [e]) ->
         let (e_llvalue, envs) = expr builder e envs in
         (L.build_call printf_func [| string_format_str ; e_llvalue |] "printf" builder, envs)
@@ -344,6 +348,21 @@ let translate program =
       | SCall ("_print.float", [e]) ->
         let (e_llvalue, envs) = expr builder e envs in
         (L.build_call printf_func [| float_format_str ; e_llvalue |] "printf" builder, envs)
+      
+        | SCall ("_println.int", [e]) | SCall ("_println.bool", [e]) ->
+        let (e_llvalue, envs) = expr builder e envs in
+        (L.build_call printf_func [| int_format_str_with_nl ; e_llvalue |] "printf" builder, envs)
+        
+      | SCall ("_println.string", [e]) ->
+        let (e_llvalue, envs) = expr builder e envs in
+        (L.build_call printf_func [| string_format_str_with_nl ; e_llvalue |] "printf" builder, envs)
+      | SCall ("_println.char", [e]) -> 
+        let (e_llvalue, envs) = expr builder e envs in
+        (L.build_call printf_func [| char_format_str_with_nl ; e_llvalue |] "printf" builder, envs)
+      | SCall ("_println.float", [e]) ->
+        let (e_llvalue, envs) = expr builder e envs in
+        (L.build_call printf_func [| float_format_str_with_nl ; e_llvalue |] "printf" builder, envs)
+
       | SCall ("list_at", [(A.List (t1), _) as e1; e2]) ->
           let (e1_llvalue, _) = expr builder e1 envs in
           let (e2_llvalue, _) = expr builder e2 envs in

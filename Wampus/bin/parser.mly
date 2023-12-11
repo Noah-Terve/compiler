@@ -202,8 +202,15 @@ expr:
 struct_expr:
     // for structs you must have at least one level of access and then 
     // you can continue going to deeper levels after that
-    ID struct_opts             { StructAccess ($1 :: List.rev $2)     }
-  | ID struct_opts ASSIGN expr { StructAssign ($1 :: List.rev $2, $4) }
+    ID struct_opts                  { StructAccess ($1 :: List.rev $2)     }
+  | ID struct_opts ASSIGN expr      { StructAssign ($1 :: List.rev $2, $4) }
+  | ID struct_opts MODEQ expr       { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Mod,       $4))}
+  | ID struct_opts PLUSEQ expr      { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Add,       $4))}
+  | ID struct_opts UNIONEQ expr     { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Union,     $4))}
+  | ID struct_opts MINUSEQ expr     { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Sub,       $4))}
+  | ID struct_opts TIMESEQ expr     { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Mult,      $4))}
+  | ID struct_opts DIVIDEEQ expr    { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Div,       $4))}
+  | ID struct_opts INTERSECTEQ expr { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Intersect, $4))}
 
 struct_opts:
     DOT ID             { [$2]     }
