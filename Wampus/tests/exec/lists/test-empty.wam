@@ -1,0 +1,9 @@
+list @l int @r a;
+[1, 2, 3, 4];
+list @l int @r b = [];
+list @l string @r c = [];
+list @l list @l list @l int @r @r @r e = [[], [], []];
+
+list @l list @l list @l int @r @r @r d = [[[], [4]], [[2], []], [[]]];
+list @l list @l list @l string @r @r @r c = [[[], ["hello"]], [["sadage"], []], [[]]];
+

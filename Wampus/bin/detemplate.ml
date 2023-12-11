@@ -12,6 +12,7 @@ let rec typ_to_new_name = function
   | Templated(t) -> t
   | Struct(t) -> t
   | TStruct(s, ts) -> get_new_name s ts
+  | Unknown_contents -> "Empty"
 and
   
 get_new_name name t_list = 

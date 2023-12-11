@@ -1,0 +1,9 @@
+set @l int @r a;
+{1, 2, 3, 4};
+set @l int @r b = {};
+set @l string @r c = {};
+set @l set @l set @l int @r @r @r e = {{}, {}, {}};
+
+set @l set @l set @l int @r @r @r d = {{{}, {4}}, {{2}, {}}, {{}}};
+set @l set @l set @l string @r @r @r c = {{{}, {"hello"}}, {{"sadage"}, {}}, {{}}};
+

@@ -60,9 +60,9 @@ type sprogram = sunit_program list
 let rec string_of_sexpr (t, e) =
   "(" ^ string_of_typ t ^ " : " ^ (match e with
     SLiteral(l) -> string_of_int l
+  | SFliteral(l) -> l
   | SBoolLit(true) -> "true"
   | SBoolLit(false) -> "false"
-  | SFliteral(l) -> l
   | SCharlit (c) -> string_of_int (int_of_char c)
   | SStringlit (s) -> s
   | SId(s) -> s
@@ -70,17 +70,17 @@ let rec string_of_sexpr (t, e) =
       string_of_sexpr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_sexpr e2
   | SUnop(o, e) -> string_of_uop o ^ string_of_sexpr e
   | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
-  | SBindDec (_, id) -> id
-  | SBindAssign (_, id, e) -> id ^ " = " ^ string_of_sexpr e
-  | SStructAssign (_, ids, e) -> String.concat "." ids ^ " = " ^ string_of_sexpr e
   | SCall(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
-  | SNoexpr -> ""
-  | SStructExplicit (_, n, el)-> n ^ "#l" ^ String.concat ", " (List.map string_of_sexpr el) ^ "#r"
-  | SListExplicit el -> "[" ^ String.concat ", " (List.map string_of_sexpr el) ^ "]"
+  | SBindAssign (_, id, e) -> id ^ " = " ^ string_of_sexpr e
+  | SBindDec (_, id) -> id
+  | SStructAssign (_, ids, e) -> String.concat "." ids ^ " = " ^ string_of_sexpr e
   | SStructAccess (_, sids) -> String.concat "." sids
-  | _ -> "Sast expr printing Not implemented"         
-                  ) ^ ")"
+  | SListExplicit el -> "[" ^ String.concat ", " (List.map string_of_sexpr el) ^ "]"
+  | SSetExplicit el -> "{" ^ String.concat ", " (List.map string_of_sexpr el) ^ "}"
+  | SStructExplicit (_, n, el)-> n ^ "#l" ^ String.concat ", " (List.map string_of_sexpr el) ^ "#r"
+  | SNoexpr -> ""
+    ) ^ ")"
 
 let rec string_of_sstmt = function
     SBlock(stmts) ->
@@ -94,8 +94,12 @@ let rec string_of_sstmt = function
   | SFor(e1, e2, e3, s) ->
       "for (" ^ string_of_sexpr e1  ^ " ; " ^ string_of_sexpr e2 ^ " ; " ^
       string_of_sexpr e3  ^ ") " ^ string_of_sstmt s
+  | SForEnhanced (e1, e2, s) -> "for (" ^ string_of_sexpr e1  ^ " in " ^ string_of_sexpr e2 ^
+      ") " ^ string_of_sstmt s
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
-  | _ -> "Not implemented"    
+  | SContinue -> "continue"
+  | SBreak -> "break"
+  | SNullStatement -> ""
 
 let string_of_sfdecl fdecl =
   string_of_typ fdecl.styp ^ " " ^
@@ -109,8 +113,6 @@ let string_of_sunit = function
    SStmt(stmt) -> string_of_sstmt stmt
   | SFdecl(fdecl) -> string_of_sfdecl fdecl
   | SSdecl (sdecl) -> string_of_ssdecl sdecl
-  (* 
-  | SSdecl(sdecl) -> "Not implemented" *)
 
 let rec string_of_sprogram = function 
   [] -> ""

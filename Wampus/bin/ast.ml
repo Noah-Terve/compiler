@@ -12,7 +12,8 @@ type uop = Neg | Not
 
 type typ = Int | Bool | Float | String | Char |
            List of typ | Set of typ | Templated of string | Struct of string |
-           TStruct of string * typ list (* this is resolving a templated struct as a type *)
+           TStruct of string * typ list | (* this is resolving a templated struct as a type *)
+           Unknown_contents (* this is the type we will associate the empty list with temporarily in semantic checking *)
 
 type expr =
     Literal of int
@@ -114,6 +115,7 @@ let string_of_uop = function
 | Templated(t) -> "tmpl -> " ^ t 
 | Struct(t) -> "stru -> " ^ t
 | TStruct(s, ts) -> s ^ " @l " ^ String.concat ", "(List.map string_of_typ ts) ^ " @r"
+| Unknown_contents -> "'a"
 
 let rec string_of_expr = function
   Literal(l) -> string_of_int l
@@ -218,6 +220,7 @@ let rec info_of_typ = function
   | Templated(t) -> "Templated(\"" ^ t ^ "\")" 
   | Struct(t) -> "Struct(\"" ^ t ^ "\")"
   | TStruct(s, ts) -> "TStruct(\"" ^ s ^ "\", [" ^ String.concat "; "(List.map info_of_typ ts) ^ "])"
+  | Unknown_contents -> "Unknown_contents"
 
 let info_of_typs = function
     [] -> "[]"
@@ -269,7 +272,7 @@ let rec info_of_stmt = function
 
 and info_of_stmts = function
     [] -> "[]"
-  | stmts -> "[\"" ^ String.concat "; " (List.map info_of_stmt stmts) ^ "\"]"
+  | stmts -> "[" ^ String.concat "; " (List.map info_of_stmt stmts) ^ "]"
 
 
 let info_of_binds = function
