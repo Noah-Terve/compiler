@@ -160,13 +160,16 @@ let check (units : program) =
             | _ -> raise (Failure "Attempted to access a member of something that is not a struct")
 
   in
-  let rec check_struct_explicit bind expr envs is_toplevel = 
+  let rec check_struct_explicit bind expr  envs is_toplevel = 
     let (lt, _) = bind in
     let (t, e) = (match expr with
     StructExplicit(struc_exprs) -> 
       (* TODO: Check t is a struct *)
       (match lt with 
       Struct(s) -> 
+        (* let prev_struct_body = find_struc prev_struct in
+        let prev_struct_binds = prev_struct_body.ssformals in  *)
+        (* let (_, prev_struct_id) = List.find (fun id -> ) prev_struct_binds *)
         let struc_body = find_struc s in
         let struc_binds = struc_body.ssformals in
         let binds_length = List.length struc_binds in 

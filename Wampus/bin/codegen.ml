@@ -108,6 +108,30 @@ let translate program =
       let _ = L.build_store lstruct str_ptr builder in
       str_ptr
   in
+  (* name : struct declaration *)
+    (* sname : the struct *)
+    (* sid: member of struct *)
+  let cdr = function
+      [] -> []
+    | _ :: tail -> tail
+  in
+  let rec find_nested_struct sids sdecls llstruct builder = match sids with
+      [] -> raise (Failure "In struct access Not possible")
+    | name :: [] -> 
+      (* TODO: which sdecls should be a list of size 1*)
+      let sformals = StringMap.find (List.hd sdecls) struct_decls in
+      let index = find_index sformals name 0 in 
+      let elm_ptr = L.build_struct_gep llstruct index name builder in
+      (elm_ptr)
+    | sid :: sids -> 
+      let next_sdecls = (cdr sdecls) in
+      (* environments could be an issue here *)
+      let sformals = StringMap.find (List.hd sdecls) struct_decls in
+      let index = find_index sformals sid 0 in
+      let elm_ptr = L.build_struct_gep llstruct index sid builder in 
+      let next_llstruct = (L.build_load elm_ptr sid builder) in 
+      (find_nested_struct sids next_sdecls next_llstruct builder)
+    in
   (******  Function to extract global variables  *****)
   (* Extract global variables from main, declaring them, in essense. This means
       that all variables declared in main will be global variables. Since they
@@ -419,7 +443,7 @@ let translate program =
           let (value_to_assign, envs) = expr builder e envs in    
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in
           (value_to_assign, envs)
-      (* | SStructAssign (name, sname, sid, e) ->
+      (* | SStructAssign (sdnames, sids, e) ->
         (* let _ = print_endline "Assigning a struct value" in *)
         let llstruct = lookup sname envs in
         (* environments could be an issue here *)
@@ -431,27 +455,28 @@ let translate program =
         let elm_ptr = L.build_struct_gep llstruct index sid builder in 
         (L.build_store llvalue elm_ptr builder, envs)
         (* let index = List.find_index  *) *)
-      | SStructAccess (sdnames, sids) -> (match sids with
-        name :: sid :: [] -> 
-        (* name : struct declaration *)
-        (* sname : the struct *)
-        (* sid: member of struct *)
-        let llstruct = lookup name envs in
-        (* environments could be an issue here *)
-        let sformals = StringMap.find (List.hd sdnames) struct_decls in
-        let index = find_index sformals sid 0 in
-        let elm_ptr = L.build_struct_gep llstruct index sid builder in 
-        (L.build_load elm_ptr sid builder, envs)
-       | _ -> raise (Failure "Not handled"))
+      | SStructAccess (sdnames, sids) -> 
+        let llstruct = lookup (List.hd sids) envs in 
+        let elm_ptr = find_nested_struct (cdr sids) sdnames llstruct builder in
+        (L.build_load elm_ptr (List.hd (List.rev sids)) builder, envs)
       | SBindAssign (t, var_name, e) ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
           expr builder (t, SAssign (var_name, e)) envs
-      | SStructExplicit(t, n, el) ->
+      | SStructExplicit(t, n, el) ->( match t with 
+        A.Struct(name) -> 
         (* Build the array of values for struct *)
-        let array = Array.of_list (List.map (fun e -> let (e1, _) = expr builder e envs in e1) el) in
+        let (_, names) = List.split (StringMap.find name struct_decls) in
+        let _ = print_endline n in
+        (* function that takes in the two lists -> if expr is another struct literal, pass in an additional variable prev_name *)
+        let array = Array.of_list (List.map2 (fun e n -> 
+            let (e1, _) = (match e with 
+              (lt, SStructExplicit (t, _, el)) -> expr builder (lt, SStructExplicit (t, n, el)) envs
+              | _ -> expr builder e envs)
+            in e1) el names) in
         (* Build the struct *)
         let str_ptr = instantitate_struct t n array builder in
         (str_ptr, bind n str_ptr envs)
+        | _ -> raise (Failure "Should only be a struct"))
 
         (* let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with *)
       | SListExplicit l -> 
