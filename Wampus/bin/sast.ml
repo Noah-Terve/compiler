@@ -57,7 +57,6 @@ type sunit_program =
 type sprogram = sunit_program list
 
 (* Pretty-printing functions *)
-
 let rec string_of_sexpr (t, e) =
   "(" ^ string_of_typ t ^ " : " ^ (match e with
     SLiteral(l) -> string_of_int l
@@ -79,6 +78,7 @@ let rec string_of_sexpr (t, e) =
   | SNoexpr -> ""
   | SStructExplicit (_, n, el)-> n ^ "#l" ^ String.concat ", " (List.map string_of_sexpr el) ^ "#r"
   | SListExplicit el -> "[" ^ String.concat ", " (List.map string_of_sexpr el) ^ "]"
+  | SStructAccess (_, sids) -> String.concat "." sids
   | _ -> "Sast expr printing Not implemented"         
                   ) ^ ")"
 

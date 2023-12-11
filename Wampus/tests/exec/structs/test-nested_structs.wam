@@ -16,8 +16,14 @@ struct MyAnimals {
     Dog d;
     Cat c;
 };
+struct MyResponsibilities {
+    MyAnimals a;
+};
 
 MyAnimals a = #l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r #r;
 print @l int @r (a.d.age);
+MyResponsibilities me;
+me.a = #l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r #r;
+me.a = a;
 
 a.c.age = a.d.age;
