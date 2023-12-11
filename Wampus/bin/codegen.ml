@@ -105,9 +105,9 @@ let translate program =
       let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
       let lty = L.element_type pty in (* getting the type of the struct *)
       let lstruct = L.const_named_struct lty values in
-      let str_ptr = L.build_alloca lty n builder in
-      let _ = L.build_store lstruct str_ptr builder in
-      str_ptr
+      (* let str_ptr = L.build_alloca lty n builder in
+      let _ = L.build_store lstruct str_ptr builder in *)
+      lstruct
   in
   (* name : struct declaration *)
     (* sname : the struct *)
@@ -429,13 +429,12 @@ let translate program =
               let str_ptr = instantitate_struct t n arr_type builder in
               (str_ptr, bind n str_ptr envs)
           | A.List(t1) ->
-              let _ = prerr_endline "heyy1" in
               let list_ptr = L.build_alloca (L.pointer_type (ltype_of_typ t)) n builder in
               let _        = L.build_store (L.const_null (L.pointer_type (ltype_of_typ t))) list_ptr builder in
               (list_ptr, bind n list_ptr envs)
               
           | _ -> 
-            let _ = prerr_endline "heyy" in
+            let _ = print_endline "heyy" in
             (* let _ = L.build_call "_print.string" (A.string_of_typ t) in *)
           (* let _ = Printf.fprintf stderr "generating code for binding %s\n" n in *)
           let local_var = L.build_alloca (ltype_of_typ t) n builder in
@@ -463,19 +462,30 @@ let translate program =
       | SBindAssign (t, var_name, e) ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
           expr builder (t, SAssign (var_name, e)) envs
-      | SStructExplicit(t, n, el) ->( match t with 
+      | SStructExplicit(t, n, el) ->
+        let (init_struct, envs') = expr builder (t, SBindDec(t, n)) envs in
+        ( match t with 
         A.Struct(name) -> 
+        
         (* Build the array of values for struct *)
         let (_, names) = List.split (StringMap.find name struct_decls) in
-        let _ = print_endline n in
+        (* let _ = print_endline n in *)
         (* function that takes in the two lists -> if expr is another struct literal, pass in an additional variable prev_name *)
-        let array = Array.of_list (List.map2 (fun e n -> 
+        (* let array = Array.of_list  *)
+        let llvaluelist = (List.map2 (fun e n -> 
             let (e1, _) = (match e with 
               (lt, SStructExplicit (t, _, el)) -> expr builder (lt, SStructExplicit (t, n, el)) envs
               | _ -> expr builder e envs)
             in e1) el names) in
+        let add_elem acc (value, index) = L.build_insertvalue acc value index "building_struct" builder in
+        let ord_val_pairs = (List.combine llvaluelist (List.init (List.length llvaluelist) (fun i -> i))) in
+        let lstruct = List.fold_left add_elem init_struct ord_val_pairs in
         (* Build the struct *)
-        let str_ptr = instantitate_struct t n array builder in
+        let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
+        let lty = L.element_type pty in (* getting the type of the struct *)
+        let str_ptr = L.build_alloca lty n builder in
+        let _ = L.build_store lstruct str_ptr builder in
+        (* let str_ptr = instantitate_struct t n array builder in *)
         (str_ptr, bind n str_ptr envs)
         | _ -> raise (Failure "Should only be a struct"))
 
