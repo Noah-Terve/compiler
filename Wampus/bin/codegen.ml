@@ -19,6 +19,11 @@ open Sast
 
 module StringMap = Map.Make(String)
 
+(* Builds a malloc instruction for a given llvalue *)
+let build_malloc builder llvalue = 
+  let heap = L.build_malloc (L.type_of llvalue) "heap" builder in
+  let _    = L.build_store llvalue heap builder in heap
+
 (* Code Generation from the SAST. Returns an LLVM module if successful,
    throws an exception if something is wrong. *)
 let translate program =
@@ -411,8 +416,26 @@ let translate program =
           let (e_llvalue, _) = expr builder e envs in
           (L.build_call list_len_func [| e_llvalue |] "list_len" builder, envs)
 
-      (* | SCall ("List_insert", [e1; e2; e3])   -> L.build_call list_insert_func [| (expr builder e1); (expr builder e2); (L.build_bitcast (build_malloc builder (expr builder e3)) voidptr_t "voidptr" builder) |] "" builder *)
-      (* | SCall ("List_remove", [e1; e2])       -> L.build_call list_remove_func [| (expr builder e1); (expr builder e2) |] "" builder *)
+      | SCall ("list_insert", [e1; e2; e3]) ->
+          let (e1_llvalue, _) = expr builder e1 envs in
+          let (e2_llvalue, _) = expr builder e2 envs in
+          let (e3_llvalue, _) = expr builder e3 envs in
+          let mallocd = L.build_bitcast (build_malloc builder e3_llvalue) voidptr_t "voidptr" builder in
+          let _ = L.build_call list_insert_func [| e1_llvalue; e1_llvalue; mallocd |] "" builder in
+          (e1_llvalue, envs)
+
+      | SCall ("list_remove", [e1; e2]) ->
+          let (e1_llvalue, _) = expr builder e1 envs in
+          let (e2_llvalue, _) = expr builder e2 envs in
+          let _ = L.build_call list_remove_func [| e1_llvalue; e2_llvalue |] "" builder in
+          (e1_llvalue, envs)
+
+      | SCall ("list_replace", [e1; e2; e3]) ->
+          let (e1_llvalue, _) = expr builder e1 envs in
+          let (e2_llvalue, _) = expr builder e2 envs in
+          let (e3_llvalue, _) = expr builder e3 envs in
+          let _ = L.build_call list_replace_func [| e1_llvalue; e2_llvalue; e3_llvalue |] "" builder in
+          (e1_llvalue, envs)
 
       | SCall (f, args) ->
           let (fdef, fdecl) = StringMap.find f function_decls in
@@ -524,10 +547,6 @@ let translate program =
                             llval :: list_accum
                         ) [] l
           in
-          (* Builds a malloc instruction for a given llvalue *)
-          let build_malloc builder llvalue = 
-            let heap = L.build_malloc (L.type_of llvalue) "heap" builder in
-            let _    = L.build_store llvalue heap builder in heap in
 
           (* Map through the llvals, create malloc instruction for that llval, then store
              the pointer to that memory in the list for later reference *)
