@@ -1,2 +1,5 @@
 print @l string @r("hello" + "hello");
 print @l string @r('c' + 'c');
+string s = "hello";
+string a = "hello";
+print @l string @r (s + a);
