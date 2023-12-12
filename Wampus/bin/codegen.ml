@@ -392,6 +392,8 @@ let translate program =
         let (e_llvalue, envs) = expr builder e envs in
         (L.build_call printf_func [| float_format_str_with_nl ; e_llvalue |] "printf" builder, envs)
 
+      (* | SCall ("_println.list", [e]) ->  *)
+
       | SCall ("list_at", [(A.List (t1), _) as e1; e2]) ->
           let (e1_llvalue, _) = expr builder e1 envs in
           let (e2_llvalue, _) = expr builder e2 envs in
@@ -401,8 +403,12 @@ let translate program =
               | _         -> L.build_bitcast value (L.pointer_type                 (ltype_of_typ t1))  "cast" builder ) in
           (L.build_load cast "list_at" builder, envs)
 
-      (* | SCall ("List_insert", [e1; e2; e3])   -> L.build_call list_insert_func [| (expr builder e1); (expr builder e2); (L.build_bitcast (build_malloc builder (expr builder e3)) voidptr_t "voidptr" builder) |] "" builder
-      | SCall ("List_remove", [e1; e2])       -> L.build_call list_remove_func [| (expr builder e1); (expr builder e2) |] "" builder *)
+      | SCall ("list_len", [e])        -> 
+          let (e_llvalue, _) = expr builder e envs in
+          (L.build_call list_len_func [| e_llvalue |] "list_len" builder, envs)
+
+      (* | SCall ("List_insert", [e1; e2; e3])   -> L.build_call list_insert_func [| (expr builder e1); (expr builder e2); (L.build_bitcast (build_malloc builder (expr builder e3)) voidptr_t "voidptr" builder) |] "" builder *)
+      (* | SCall ("List_remove", [e1; e2])       -> L.build_call list_remove_func [| (expr builder e1); (expr builder e2) |] "" builder *)
 
       | SCall (f, args) ->
           let (fdef, fdecl) = StringMap.find f function_decls in
