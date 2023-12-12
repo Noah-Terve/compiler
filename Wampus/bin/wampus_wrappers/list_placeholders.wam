@@ -1,0 +1,25 @@
+template < T >
+list < T > list_insert (list < T > l, int pos, T data) {
+    return l;
+}
+
+template < T >
+list < T > list_remove (list < T > l, int pos) {
+    return l;
+}
+
+template < T >
+T list_at (list < T > l, int pos) {
+    T x;
+    return x;
+}
+
+template < T >
+int list_length (list < T > l) {
+    return 0;
+}
+
+template < T >
+list < T > list_replace (list < T > l, int pos, T data) {
+    return l;
+}

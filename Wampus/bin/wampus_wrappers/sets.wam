@@ -12,6 +12,17 @@ set functions:
     size
 */
 
+template < T >
+bool list_contains (list < T > l, T elem) {
+    for (int i = 0; i < list_length @l T @r (l); i += 1) {
+        if (list_at @l T @r (l, i) == elem) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 template @l T @r
 list @l T @r list_copy (list @l T @r l) {
     list @l T @r new_list;
@@ -110,4 +121,14 @@ bool set_superset (set @l T @r s1, set @l T @r s2) {
 template @l T @r
 bool set_subset (set @l T @r s1, set @l T @r s2) {
     return set_superset @l T @r (s2, s1);
+}
+
+template @l T @r
+bool set_equals (set @l T @r s1, set @l T @r s2) {
+    if (set_superset @l T @r (s1, s2)) {
+        if (set_size @l T @r (s1) == set_size @l T @r (s2)) {
+            return true;
+        }
+    }
+    return false;
 }
