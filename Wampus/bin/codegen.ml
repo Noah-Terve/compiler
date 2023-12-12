@@ -221,25 +221,27 @@ let translate program =
   (* Define each function (arguments and return type) so we can 
    * define it's body and call it later *)
 
+  let list_head_t = L.pointer_type list_t in
+
   let printf_t : L.lltype =  L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
   let printf_func : L.llvalue =  L.declare_function "printf" printf_t the_module in
 
-  let list_insert_t        = L.function_type void_t [| (L.pointer_type list_t); i32_t; voidptr_t |] in
+  let list_insert_t        = L.function_type list_head_t [| list_head_t; i32_t; voidptr_t |] in
   let list_insert_func     = L.declare_function "list_insert" list_insert_t the_module in
 
-  let list_len_t           = L.function_type i32_t [| (L.pointer_type list_t) |] in
-  let list_len_func        = L.declare_function "list_len" list_len_t the_module in
+  let list_len_t           = L.function_type i32_t [| list_head_t |] in
+  let list_len_func        = L.declare_function "list_length" list_len_t the_module in
 
-  let list_remove_t       = L.function_type (ltype_of_typ A.Bool) [| (L.pointer_type list_t); i32_t |] in
+  let list_remove_t       = L.function_type (L.pointer_type list_t) [| list_head_t; i32_t |] in
   let list_remove_func    = L.declare_function "list_remove" list_remove_t the_module in
 
-  let list_replace_t     = L.function_type void_t [| (L.pointer_type list_t); i32_t; voidptr_t |] in
+  let list_replace_t     = L.function_type list_head_t [| list_head_t; i32_t; voidptr_t |] in
   let list_replace_func  = L.declare_function "list_replace" list_replace_t the_module in
 
-  let list_at_t          = L.function_type voidptr_t [| (L.pointer_type list_t); i32_t |] in
+  let list_at_t          = L.function_type voidptr_t [| list_head_t; i32_t |] in
   let list_at_func       = L.declare_function "list_at" list_at_t the_module in
 
-  let list_print        = L.function_type void_t [| (L.pointer_type list_t) |] in 
+  let list_print        = L.function_type void_t [| list_head_t |] in 
   let list_print_func   = L.declare_function "list_int_print" list_print the_module in
 
   (* TODO: Remove me! *)
@@ -374,17 +376,9 @@ let translate program =
               let s2 = getLit (t2, expr2) in
               let s = s1 ^ s2 in
               (L.build_global_stringptr s "string" builder, envs)
+          (* Integer-like cases *)
           | (_, _, _) -> (get_int_lbinop op) e1' e2' "tmp" builder, envs)
-          
-        
-        
-        (* if (t1 = A.Float || t2 = A.Float) then ((get_float_lbinop op) (L.build_sitofp e1' float_t "ItoF" builder) (L.build_sitofp e2' float_t "ItoF" builder) "tmp" builder, envs)
-        else if (op = A.Add && (t1 = A.String || t1 = A.Char)) then 
-          let s1 = getLit (t1, expr1) in
-          let s2 = getLit (t1, expr2) in
-          let s = s1 ^ s2 in
-          (L.build_global_stringptr s "string" builder, envs)
-        else (get_int_lbinop op) e1' e2' "tmp" builder, envs *)
+      
       | SUnop(op, e) ->
           let (t, _) = e in
           let (e', envs) = expr builder e envs in
@@ -432,9 +426,9 @@ let translate program =
               | _         -> L.build_bitcast value (L.pointer_type                 (ltype_of_typ t1))  "cast" builder ) in
           (L.build_load cast "list_at" builder, envs)
 
-      | SCall ("len", [e])        -> 
+      | SCall ("list_length", [e])        -> 
           let (e_llvalue, _) = expr builder e envs in
-          (L.build_call list_len_func [| e_llvalue |] "len" builder, envs)
+          (L.build_call list_len_func [| e_llvalue |] "list_length" builder, envs)
 
       | SCall ("list_insert", [e1; e2; e3]) ->
           let (list_head, _) = expr builder e1 envs in
@@ -444,25 +438,24 @@ let translate program =
           let _ = L.build_call list_insert_func [| list_head; idx; mallocd_value |] "" builder in
           let _ = build_debug_print_list list_head builder in
           let _ = L.build_call list_print_func [| list_head |] "" builder in
-
           (list_head, envs)
 
       | SCall ("list_remove", [e1; e2]) ->
           let (list_head, _) = expr builder e1 envs in
           let (idx, _) = expr builder e2 envs in
-          let removed_value = L.build_call list_remove_func [| list_head; idx |] "" builder in
+          let _ = L.build_call list_remove_func [| list_head; idx |] "" builder in
           (* let _ = L.build_call list_remove_func [| list_head; idx |] "" builder in *)
           let _ = build_debug_print_list list_head builder in
-          (removed_value, envs)
+          (list_head, envs)
 
       | SCall ("list_replace", [e1; e2; e3]) ->
           let (list_head, _) = expr builder e1 envs in
           let (idx, _) = expr builder e2 envs in
           let (value, _) = expr builder e3 envs in
           let mallocd_value = L.build_bitcast (build_malloc builder value) voidptr_t "voidptr" builder in
-          let ret_ = L.build_call list_replace_func [| list_head; idx; mallocd_value |] "" builder in
+          let _ = L.build_call list_replace_func [| list_head; idx; mallocd_value |] "" builder in
           let _ = build_debug_print_list list_head builder in
-          (ret_, envs)
+          (list_head, envs)
 
       | SCall (f, args) ->
           let (fdef, fdecl) = StringMap.find f function_decls in

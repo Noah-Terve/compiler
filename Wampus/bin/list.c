@@ -13,39 +13,40 @@ bool list_empty(node **head) {
     return head == NULL || *head == NULL;
 }
 
-void list_insert(node **head, unsigned int idx, void *data) {
+node **list_insert(node **head, unsigned int idx, void *data) {
+    unsigned int len = list_length(head); 
 
-        unsigned int len = list_len(head); 
+    assert((idx >= 0) && (idx <= len));
+    
+    node *curr = *head; 
+    
+    node *prev = NULL;
+    
+    // Finding insertion index
+    for (unsigned int i = 0; i < idx; i++) {
+        prev = curr;
+        curr = curr->next;
+    }
 
-        assert((idx >= 0) && (idx <= len));
-        
-        node *curr = *head; 
-        
-        node *prev = NULL;
-        
-        // Finding insertion index
-        for (unsigned int i = 0; i < idx; i++) {
-            prev = curr;
-            curr = curr->next;
-        }
+    // printf("Size of struct being allocated: %d \n", sizeof(*new_node));
+    node *new_node = malloc(sizeof(*new_node)); 
+    assert(new_node); 
+    new_node->data = data; 
+    new_node->next = curr;
 
-        // printf("Size of struct being allocated: %d \n", sizeof(*new_node));
-        node *new_node = malloc(sizeof(*new_node)); 
-        assert(new_node); 
-        new_node->data = data; 
-        new_node->next = curr;
+    // If list is empty add to front, otherwise add to current location
+    if (prev == NULL) { 
+        *head = new_node;
+    } else { 
+        prev->next = new_node;
+    }
 
-        // If list is empty add to front, otherwise add to current location
-        if (prev == NULL) { 
-            *head = new_node;
-        } else { 
-            prev->next = new_node;
-        }
+    return head;
 }
 
-bool list_remove(node **head, unsigned int idx) {
+node **list_remove(node **head, unsigned int idx) {
     if (list_empty(head)) {
-        return false;
+        return head;
     }
 
     node *curr = *head;
@@ -67,13 +68,11 @@ bool list_remove(node **head, unsigned int idx) {
     }
     free(curr);
 
-    return true;
+    return head;
 }
 
 void *list_at(node **head, unsigned int idx) {
-    if (list_empty(head)) {
-        return NULL;
-    }
+    assert(head && *head);
 
     node * curr = *head;
 
@@ -88,7 +87,7 @@ void *list_at(node **head, unsigned int idx) {
     return curr -> data;
 }
 
-unsigned int list_len(node **head) {
+unsigned int list_length(node **head) {
     if (list_empty(head)) {
         return 0;
     }
@@ -114,7 +113,7 @@ void list_int_print(node **l)
     
     node *t = *l;
     int i = 0;
-    int len = list_len(l);
+    int len = list_length(l);
     printf("[ ");
     while (i < len) {
         int *data = (int *)list_at(l, i); 
@@ -125,10 +124,10 @@ void list_int_print(node **l)
     printf("]\n");
 }
 
-void list_replace(node **head, unsigned int index, void *v)
+node **list_replace(node **head, unsigned int index, void *v)
 {
     assert(head && *head);
-    unsigned int len = list_len(head); assert((index >= 0) && (index < len));
+    unsigned int len = list_length(head); assert((index >= 0) && (index < len));
 
     node *curr = *head; void *old = NULL;
     for (unsigned int i = 0; i < index; i++) {
@@ -138,4 +137,6 @@ void list_replace(node **head, unsigned int index, void *v)
     curr->data = v;
 
     if (old) free(old);
+
+    return head;
 }
