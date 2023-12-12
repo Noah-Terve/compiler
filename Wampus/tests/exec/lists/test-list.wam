@@ -1,9 +1,6 @@
-list @l int @r a;
-[1, 2, 3, 4];
+list @l int @r a = [1, 2, 3, 4];
 
-
-
- int foo() {
+int foo() {
     int b = 0;
     list @l int @r c;
     c = [1, 2, 3, 4];

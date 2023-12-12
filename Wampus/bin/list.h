@@ -13,6 +13,8 @@ bool list_empty(node **head);
 
 void list_insert(node **head, unsigned int idx, void *data);
 
+void list_replace(node **head, unsigned int index, void *v);
+
 void list_remove(node **head, unsigned int idx);
 
 void *list_at(node **head, unsigned int idx);

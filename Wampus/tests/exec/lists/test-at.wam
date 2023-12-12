@@ -2,3 +2,8 @@ list @l int @r a = [1, 2, 3, 4];
 /* print @l list @l int @r @r (a); */
 /* [1, 2, 3, 4]; */
 print @l int @r (list_at(a, 0));
+
+print @l string @r ("abc"); 
+
+list @l string @r b = ["1", "2", "3", "4"];
+/* print @l string @r (list_at(a, 0)); */

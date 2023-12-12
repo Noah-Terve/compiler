@@ -123,3 +123,18 @@ void list_int_print(node **l)
     }
     printf("]\n");
 }
+
+void list_replace(node **head, unsigned int index, void *v)
+{
+    assert(head && *head);
+    unsigned int len = list_len(head); assert((index >= 0) && (index < len));
+
+    node *curr = *head; void *old = NULL;
+    for (unsigned int i = 0; i < index; i++) {
+        curr = curr->next;
+    }
+    old = curr->data;
+    curr->data = v;
+
+    if (old) free(old);
+}
