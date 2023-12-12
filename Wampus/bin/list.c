@@ -43,9 +43,9 @@ void list_insert(node **head, unsigned int idx, void *data) {
         }
 }
 
-void list_remove(node **head, unsigned int idx) {
+bool list_remove(node **head, unsigned int idx) {
     if (list_empty(head)) {
-        return;
+        return false;
     }
 
     node *curr = *head;
@@ -57,7 +57,7 @@ void list_remove(node **head, unsigned int idx) {
     }
 
     if (curr == NULL) {
-        return;
+        return false;
     }
 
     if (prev == NULL) {
@@ -65,8 +65,9 @@ void list_remove(node **head, unsigned int idx) {
     } else {
         prev->next = curr->next;
     }
-
     free(curr);
+
+    return true;
 }
 
 void *list_at(node **head, unsigned int idx) {

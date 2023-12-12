@@ -1,0 +1,10 @@
+list @l int @r a = [1, 2, 3];
+
+
+int list_replace(int a, int b, int c){
+    a;
+} 
+
+list_replace(a, 0, 2);
+
+

@@ -42,8 +42,10 @@ let check (units : program) =
       List.fold_left add_general_bind StringMap.empty [
         ("list_at",     Int, [(List (Int), "head"); (Int, "idx")]);
         ("list_insert", Int, [(List (Int), "head"); (Int, "idx"); (Int, "data")]); (* TODO: Use polymorphic types here for third arg*)
-        ("list_remove", Int, [(List (Int), "head"); (Int, "idx")]);
-        ("list_len",    Int, [(List (Int), "head")])
+        ("list_remove", Bool, [(List (Int), "head"); (Int, "idx")]);
+        ("len",    Int, [(List (Int), "head")]);
+        ("list_replace", Int, [(List (Int), "head"); (Int, "idx"); (Int, "data")]);
+        ("list_empty", Bool, [(List (Int), "head)")])
       ]
     in 
     let add_bind map (name, ty) = StringMap.add name {

@@ -1,0 +1,3 @@
+int a = 3;
+
+list_insert(a, 0, 3);

@@ -199,7 +199,7 @@ let translate program =
   let list_len_t           = L.function_type i32_t [| (L.pointer_type list_t) |] in
   let list_len_func        = L.declare_function "list_len" list_len_t the_module in
 
-  let list_remove_t       = L.function_type void_t [| (L.pointer_type list_t); i32_t |] in
+  let list_remove_t       = L.function_type (ltype_of_typ A.Bool) [| (L.pointer_type list_t); i32_t |] in
   let list_remove_func    = L.declare_function "list_remove" list_remove_t the_module in
 
   let list_replace_t     = L.function_type void_t [| (L.pointer_type list_t); i32_t; voidptr_t |] in
@@ -211,7 +211,13 @@ let translate program =
   let list_print        = L.function_type void_t [| (L.pointer_type list_t) |] in 
   let list_print_func   = L.declare_function "list_int_print" list_print the_module in
 
+  (* TODO: Remove me! *)
+  let build_debug_print_list list_head builder = 
+    let _ = L.build_call list_print_func [| list_head |] "" builder in
+    list_head in
   (* TODO: ADD THE SET BUILT-INS HERE *)
+
+
 
 
 
@@ -412,30 +418,37 @@ let translate program =
               | _         -> L.build_bitcast value (L.pointer_type                 (ltype_of_typ t1))  "cast" builder ) in
           (L.build_load cast "list_at" builder, envs)
 
-      | SCall ("list_len", [e])        -> 
+      | SCall ("len", [e])        -> 
           let (e_llvalue, _) = expr builder e envs in
-          (L.build_call list_len_func [| e_llvalue |] "list_len" builder, envs)
+          (L.build_call list_len_func [| e_llvalue |] "len" builder, envs)
 
       | SCall ("list_insert", [e1; e2; e3]) ->
-          let (e1_llvalue, _) = expr builder e1 envs in
-          let (e2_llvalue, _) = expr builder e2 envs in
-          let (e3_llvalue, _) = expr builder e3 envs in
-          let mallocd = L.build_bitcast (build_malloc builder e3_llvalue) voidptr_t "voidptr" builder in
-          let _ = L.build_call list_insert_func [| e1_llvalue; e1_llvalue; mallocd |] "" builder in
-          (e1_llvalue, envs)
+          let (list_head, _) = expr builder e1 envs in
+          let (idx, _) = expr builder e2 envs in
+          let (value, _) = expr builder e3 envs in
+          let mallocd_value = L.build_bitcast (build_malloc builder value) voidptr_t "voidptr" builder in
+          let _ = L.build_call list_insert_func [| list_head; idx; mallocd_value |] "" builder in
+          let _ = build_debug_print_list list_head builder in
+          let _ = L.build_call list_print_func [| list_head |] "" builder in
+
+          (list_head, envs)
 
       | SCall ("list_remove", [e1; e2]) ->
-          let (e1_llvalue, _) = expr builder e1 envs in
-          let (e2_llvalue, _) = expr builder e2 envs in
-          let _ = L.build_call list_remove_func [| e1_llvalue; e2_llvalue |] "" builder in
-          (e1_llvalue, envs)
+          let (list_head, _) = expr builder e1 envs in
+          let (idx, _) = expr builder e2 envs in
+          let removed_value = L.build_call list_remove_func [| list_head; idx |] "" builder in
+          (* let _ = L.build_call list_remove_func [| list_head; idx |] "" builder in *)
+          let _ = build_debug_print_list list_head builder in
+          (removed_value, envs)
 
       | SCall ("list_replace", [e1; e2; e3]) ->
-          let (e1_llvalue, _) = expr builder e1 envs in
-          let (e2_llvalue, _) = expr builder e2 envs in
-          let (e3_llvalue, _) = expr builder e3 envs in
-          let _ = L.build_call list_replace_func [| e1_llvalue; e2_llvalue; e3_llvalue |] "" builder in
-          (e1_llvalue, envs)
+          let (list_head, _) = expr builder e1 envs in
+          let (idx, _) = expr builder e2 envs in
+          let (value, _) = expr builder e3 envs in
+          let mallocd_value = L.build_bitcast (build_malloc builder value) voidptr_t "voidptr" builder in
+          let ret_ = L.build_call list_replace_func [| list_head; idx; mallocd_value |] "" builder in
+          let _ = build_debug_print_list list_head builder in
+          (ret_, envs)
 
       | SCall (f, args) ->
           let (fdef, fdecl) = StringMap.find f function_decls in

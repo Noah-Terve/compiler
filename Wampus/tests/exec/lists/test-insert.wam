@@ -1,2 +1,6 @@
 list @l int @r a = [];
 
+list_insert(a, 0, 1);
+list_insert(a, 0, 2);
+print @l bool @r (list_remove(a, 3));
+
