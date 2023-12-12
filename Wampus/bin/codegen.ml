@@ -92,7 +92,8 @@ let translate program =
       A.Float -> L.const_float (ltype_of_typ t) 0.0
     | A.Struct(name) -> L.const_pointer_null (ltype_of_typ (A.Struct name))
     | A.String -> L.const_pointer_null (ltype_of_typ t)
-    | A.List (_) -> L.const_pointer_null (ltype_of_typ t)
+    (* | A.List (_) -> L.const_pointer_null (ltype_of_typ t) *)
+    | A.List (_) -> L.const_null (L.pointer_type (ltype_of_typ t))
     | _ -> L.const_int (ltype_of_typ t) 0
   in
   (* Index finder *)
@@ -432,7 +433,6 @@ let translate program =
               let list_ptr = L.build_alloca (L.pointer_type (ltype_of_typ t)) n builder in
               let _        = L.build_store (init t) list_ptr builder in
               (list_ptr, bind n list_ptr envs)
-              
           | _ -> 
               (* let _ = L.build_call "_print.string" (A.string_of_typ t) in *)
               (* let _ = Printf.fprintf stderr "generating code for binding %s\n" n in *)
