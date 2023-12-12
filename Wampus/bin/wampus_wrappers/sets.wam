@@ -1,0 +1,113 @@
+/*
+set functions:
+    insert
+    remove
+    isin (no at function)
+    set of list -- deep copy
+    list of set -- deep copy
+    union
+    intersection
+    superset
+    subset
+    size
+*/
+
+template @l T @r
+list @l T @r list_copy (list @l T @r l) {
+    list @l T @r new_list;
+    for (int i = list_length @l T @r (l); i >= 0; i -= 1) {
+        list_insert @l T @r (new_list, 0, list_at @l T @r (l, i));
+    }
+    return new_list;
+}
+
+template @l T @r
+bool isin (set @l T @r s, T elem) {
+    return list_contains @l T @r (s, elem);
+}
+
+template @l T @r
+set @l T @r set_of_list (list @l T @r l) {
+    set @l T @r s;
+
+    for (int i = 0; i < list_length @l T @r (l); i += 1) {
+        T elem = list_at @l T @r (l, i);
+        if (!isin @l T @r (s, elem)) {
+            list_insert @l T @r (s, 0, elem);
+        }
+    }
+
+    return s;
+}
+
+template @l T @r
+list @l T @r list_of_set (set @l T @r s) {
+    return set_of_list @l T @r (s);
+}
+
+template @l T @r
+set @l T @r set_add (set @l T @r s, T elem) {
+    return list_insert @l T @r (s, 0, elem);
+}
+
+template @l T @r
+set @l T @r set_remove (set @l T @r s, T elem) {
+    
+    for (int i = list_length @l T @r (s); i >= 0; i -= 1) {
+        if (list_at @l T @r (s, i) == elem) {
+            list_remove @l T @r (s, i);
+        }
+    }
+    return s;
+}
+
+
+template @l T @r
+set @l T @r union (set @l T @r s1, set @l T @r s2) {
+    set @l T @r new_set;
+
+    for (int i = 0; i < list_length @l T @r (s1); i += 1) {
+        list_insert @l T @r (new_set, 0, list_at @l T @r (s1, i));
+    }
+
+    for (int i = 0; i < list_length @l T @r (s2); i += 1) {
+        list_insert @l T @r (new_set, 0, list_at @l T @r (s2, i));
+    }
+
+    return new_set;
+}
+
+template @l T @r
+set @l T @r set_intersection (set @l T @r s1, set @l T @r s2) {
+    set @l T @r new_set;
+
+    for (int i = 0; i < list_length @l T @r (s1); i += 1) {
+        if (list_contains @l T @r (s2, list_at @l T @r (s1, i))) {
+            list_insert @l T @r (new_set, 0, list_at @l T @r (s1, i));
+        }
+    }
+
+    return new_set;
+}
+
+template @l T @r
+int set_size (set @l T @r s) {
+    return list_length @l T @r (set_of_list @l T @r (s));
+}
+
+template @l T @r
+bool set_superset (set @l T @r s1, set @l T @r s2) {
+
+    for (int i = 0; i < list_length @l T @r (s2); i += 1) {
+        if (!list_contains @l T @r (s1, list_at @l T @r (s2, i))) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+template @l T @r
+bool set_subset (set @l T @r s1, set @l T @r s2) {
+    return set_superset @l T @r (s2, s1);
+}

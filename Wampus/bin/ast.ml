@@ -36,7 +36,6 @@ type expr =
   | StructExplicit of expr list
   | Noexpr
 
-
 type bind = typ * string
 
 type stmt =

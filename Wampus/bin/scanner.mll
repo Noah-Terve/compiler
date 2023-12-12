@@ -44,7 +44,6 @@ rule token = parse
 | "struct" { STRUCT }
 | "&"  { INTERSECT}
 | "|"  { UNION }
-| "isin" { ISIN }
 | '('      { LPAREN }
 | ')'      { RPAREN }
 | '{'      { LBRACE }
