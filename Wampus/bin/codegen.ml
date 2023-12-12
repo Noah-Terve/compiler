@@ -24,6 +24,37 @@ let build_malloc builder llvalue =
   let heap = L.build_malloc (L.type_of llvalue) "heap" builder in
   let _    = L.build_store llvalue heap builder in heap
 
+let get_float_lbinop op = match op with
+    A.Add     -> L.build_fadd
+  | A.Sub     -> L.build_fsub
+  | A.Mult    -> L.build_fmul
+  | A.Div     -> L.build_fdiv 
+  | A.Equal   -> L.build_fcmp L.Fcmp.Oeq
+  | A.Neq     -> L.build_fcmp L.Fcmp.One
+  | A.Less    -> L.build_fcmp L.Fcmp.Olt
+  | A.Leq     -> L.build_fcmp L.Fcmp.Ole
+  | A.Greater -> L.build_fcmp L.Fcmp.Ogt
+  | A.Geq     -> L.build_fcmp L.Fcmp.Oge
+  | A.And | A.Or ->
+      raise (Failure "Internal error: semant should have rejected and/or on float")
+  | _ -> raise (Failure ("unimplemented float binop: " ^ (A.string_of_op op)))
+
+let get_int_lbinop op = match op with
+  A.Add     -> L.build_add
+  | A.Sub     -> L.build_sub
+  | A.Mult    -> L.build_mul
+  | A.Div     -> L.build_sdiv
+  | A.Mod     -> L.build_srem
+  | A.And     -> L.build_and
+  | A.Or      -> L.build_or
+  | A.Equal   -> L.build_icmp L.Icmp.Eq
+  | A.Neq     -> L.build_icmp L.Icmp.Ne
+  | A.Less    -> L.build_icmp L.Icmp.Slt
+  | A.Leq     -> L.build_icmp L.Icmp.Sle
+  | A.Greater -> L.build_icmp L.Icmp.Sgt
+  | A.Geq     -> L.build_icmp L.Icmp.Sge
+  | _ -> raise (Failure ("unimplemented binop: " ^ (A.string_of_op op)))
+
 (* Code Generation from the SAST. Returns an LLVM module if successful,
    throws an exception if something is wrong. *)
 let translate program =
@@ -334,43 +365,26 @@ let translate program =
         let (t2, expr2) = e2 in
         let (e1', envs) = expr builder e1 envs in
         let (e2', envs) = expr builder e2 envs in
+        (match (t1, op, t2) with
+
+          (* A.List(t) -> *)
+            (A.Float, _, _) | (_, _, A.Float) -> ((get_float_lbinop op) (L.build_sitofp e1' float_t "ItoF" builder) (L.build_sitofp e2' float_t "ItoF" builder) "tmp" builder, envs)
+          | (A.String, A.Add, _) | (_, A.Add, A.String) -> 
+              let s1 = getLit (t1, expr1) in
+              let s2 = getLit (t2, expr2) in
+              let s = s1 ^ s2 in
+              (L.build_global_stringptr s "string" builder, envs)
+          | (_, _, _) -> (get_int_lbinop op) e1' e2' "tmp" builder, envs)
+          
         
-        if (t1 = A.Float || t2 = A.Float) then ((match op with 
-            A.Add     -> L.build_fadd
-          | A.Sub     -> L.build_fsub
-          | A.Mult    -> L.build_fmul
-          | A.Div     -> L.build_fdiv 
-          | A.Equal   -> L.build_fcmp L.Fcmp.Oeq
-          | A.Neq     -> L.build_fcmp L.Fcmp.One
-          | A.Less    -> L.build_fcmp L.Fcmp.Olt
-          | A.Leq     -> L.build_fcmp L.Fcmp.Ole
-          | A.Greater -> L.build_fcmp L.Fcmp.Ogt
-          | A.Geq     -> L.build_fcmp L.Fcmp.Oge
-          | A.And | A.Or ->
-              raise (Failure "Internal error: semant should have rejected and/or on float")
-          | _ -> raise (Failure ("unimplemented float binop: " ^ (A.string_of_op op)))
-          ) (L.build_sitofp e1' float_t "ItoF" builder) (L.build_sitofp e2' float_t "ItoF" builder) "tmp" builder, envs)
+        
+        (* if (t1 = A.Float || t2 = A.Float) then ((get_float_lbinop op) (L.build_sitofp e1' float_t "ItoF" builder) (L.build_sitofp e2' float_t "ItoF" builder) "tmp" builder, envs)
         else if (op = A.Add && (t1 = A.String || t1 = A.Char)) then 
           let s1 = getLit (t1, expr1) in
           let s2 = getLit (t1, expr2) in
           let s = s1 ^ s2 in
           (L.build_global_stringptr s "string" builder, envs)
-        else (match op with
-            A.Add     -> L.build_add
-          | A.Sub     -> L.build_sub
-          | A.Mult    -> L.build_mul
-          | A.Div     -> L.build_sdiv
-          | A.Mod     -> L.build_srem
-          | A.And     -> L.build_and
-          | A.Or      -> L.build_or
-          | A.Equal   -> L.build_icmp L.Icmp.Eq
-          | A.Neq     -> L.build_icmp L.Icmp.Ne
-          | A.Less    -> L.build_icmp L.Icmp.Slt
-          | A.Leq     -> L.build_icmp L.Icmp.Sle
-          | A.Greater -> L.build_icmp L.Icmp.Sgt
-          | A.Geq     -> L.build_icmp L.Icmp.Sge
-          | _ -> raise (Failure ("unimplemented binop: " ^ (A.string_of_op op)))
-        ) e1' e2' "tmp" builder, envs
+        else (get_int_lbinop op) e1' e2' "tmp" builder, envs *)
       | SUnop(op, e) ->
           let (t, _) = e in
           let (e', envs) = expr builder e envs in
