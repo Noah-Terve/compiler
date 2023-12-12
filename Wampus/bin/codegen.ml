@@ -92,7 +92,8 @@ let translate program =
       A.Float -> L.const_float (ltype_of_typ t) 0.0
     | A.Struct(name) -> L.const_pointer_null (ltype_of_typ (A.Struct name))
     | A.String -> L.const_pointer_null (ltype_of_typ t)
-    (* | A.List(list_t) -> L. *)
+    (* | A.List (_) -> L.const_pointer_null (ltype_of_typ t) *)
+    | A.List (_) -> L.const_null (L.pointer_type (ltype_of_typ t))
     | _ -> L.const_int (ltype_of_typ t) 0
   in
   (* Index finder *)
@@ -395,6 +396,8 @@ let translate program =
         let (e_llvalue, envs) = expr builder e envs in
         (L.build_call printf_func [| float_format_str_with_nl ; e_llvalue |] "printf" builder, envs)
 
+      (* | SCall ("_println.list", [e]) ->  *)
+
       | SCall ("list_at", [(A.List (t1), _) as e1; e2]) ->
           let (e1_llvalue, _) = expr builder e1 envs in
           let (e2_llvalue, _) = expr builder e2 envs in
@@ -404,8 +407,12 @@ let translate program =
               | _         -> L.build_bitcast value (L.pointer_type                 (ltype_of_typ t1))  "cast" builder ) in
           (L.build_load cast "list_at" builder, envs)
 
-      (* | SCall ("List_insert", [e1; e2; e3])   -> L.build_call list_insert_func [| (expr builder e1); (expr builder e2); (L.build_bitcast (build_malloc builder (expr builder e3)) voidptr_t "voidptr" builder) |] "" builder
-      | SCall ("List_remove", [e1; e2])       -> L.build_call list_remove_func [| (expr builder e1); (expr builder e2) |] "" builder *)
+      | SCall ("list_len", [e])        -> 
+          let (e_llvalue, _) = expr builder e envs in
+          (L.build_call list_len_func [| e_llvalue |] "list_len" builder, envs)
+
+      (* | SCall ("List_insert", [e1; e2; e3])   -> L.build_call list_insert_func [| (expr builder e1); (expr builder e2); (L.build_bitcast (build_malloc builder (expr builder e3)) voidptr_t "voidptr" builder) |] "" builder *)
+      (* | SCall ("List_remove", [e1; e2])       -> L.build_call list_remove_func [| (expr builder e1); (expr builder e2) |] "" builder *)
 
       | SCall (f, args) ->
           let (fdef, fdecl) = StringMap.find f function_decls in
@@ -439,16 +446,15 @@ let translate program =
               let arr_type = Array.of_list (List.map init types) in
               let str_ptr = instantitate_struct t n arr_type builder in
               (str_ptr, bind n str_ptr envs) *)
-          | A.List(t1) ->
+          | A.List (_) ->
               let list_ptr = L.build_alloca (L.pointer_type (ltype_of_typ t)) n builder in
-              let _        = L.build_store (L.const_null (L.pointer_type (ltype_of_typ t))) list_ptr builder in
+              let _        = L.build_store (init t) list_ptr builder in
               (list_ptr, bind n list_ptr envs)
-              
           | _ -> 
-            (* let _ = L.build_call "_print.string" (A.string_of_typ t) in *)
-          (* let _ = Printf.fprintf stderr "generating code for binding %s\n" n in *)
-          let local_var = L.build_alloca (ltype_of_typ t) n builder in
-          (init t, bind n local_var envs))
+              (* let _ = L.build_call "_print.string" (A.string_of_typ t) in *)
+              (* let _ = Printf.fprintf stderr "generating code for binding %s\n" n in *)
+              let local_var = L.build_alloca (ltype_of_typ t) n builder in
+              (init t, bind n local_var envs))
       | SAssign (var_name, e) ->
           let (value_to_assign, envs) = expr builder e envs in    
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in
@@ -504,57 +510,11 @@ let translate program =
         | _ -> raise (Failure "Should only be a struct"))
 
         (* let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with *)
-      (* | SListExplicit l ->
-          let llvalues = List.fold_left 
-                        (fun list_accum sex ->   
-                            let (llval, _) = expr builder sex envs in
-                            (* Return updated list and updated envs *)
-                            llval :: list_accum
-                        ) [] l
-                        in
-          let size = L.const_int i32_t ((List.length l) + 1) in
-          (* list_ty is the type of elements inside of the list *)
-          let list_ty = match t with
-              A.List typ -> ltype_of_typ typ
-            | _ -> raise(Failure("Internal Error: Invalid list type"))
-          let typ = L.pointer_type
-
-          in raise (Failure "Not implemented yet") *)
-          (* (* Create array to hold the set's elements *)
-              let element_ltype = match t with
-                  A.Set typ -> ltype_of_typ typ
-                  | _ -> raise(Failure("Invalid set typ"))
-              in
-                  let size = L.const_int i32_t ((List.length el) + 1) in
-                  let typ = L.pointer_type element_ltype in
-                  let arr = L.build_array_malloc typ size "set" builder in
-                  let arr = L.build_pointercast arr typ "set" builder in
-              (* Populate array with the set's elements *)
-              let (builder, cur_vars, values) = expr_list el [] builder cur_vars
-                in
-              let values = List.rev values in
-              let buildf i v = (
-              let arr_ptr = L.build_gep arr [| (L.const_int i32_t (i + 1)) |] "set" builder in
-              ignore(L.build_store v arr_ptr builder);
-              ) in List.iteri buildf values;
-              
-              (* Create struct with the following form to represent the set:
-              [<pointer to array holding set's elements>; <size of set>] *)
-
-
-              let set_struct = (L.struct_type context (Array.of_list([
-              L.pointer_type element_ltype;
-              i32_t
-              ]))) in
-              let set_struct_ptr = L.build_malloc set_struct "set" builder in
-              (* Populate struct *)
-              ignore(L.build_store arr (L.build_struct_gep
-              set_struct_ptr 0 "set" builder) builder);
-              ignore(L.build_store (L.const_int i32_t (List.length el))
-              (L.build_struct_gep set_struct_ptr 1 "set" builder) builder);
-              (builder, cur_vars, set_struct_ptr) *)
-          
+      
+      
       | SListExplicit l -> 
+          (* TODO: Remove the List.rev and fold_right when inserting instead *)
+          let l = List.rev (l) in
           (* Fold through the list 'l' and recursively runs expr builder -> 
              returns tuple of list of llvals and environment *)
           let llvals = List.fold_left 
@@ -598,6 +558,7 @@ let translate program =
              3) Loads the value of list_ptr into listval variable
              4) Calls list_insert_func with (head, index of insertion, node to insert)
              *)
+          (* TODO: This is extremely ugly *)
           let _ = List.fold_left 
             (fun _ (i, llval) -> 
               (* Cast each llval to a void * before inserting it into the list *)

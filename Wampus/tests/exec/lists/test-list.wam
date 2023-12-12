@@ -1,15 +1,9 @@
-/*list @l int @r a;
-[1, 2, 3, 4]; */
-
-
-int a = 1;
+list @l int @r a = [1, 2, 3, 4];
 
 int foo() {
-    list @l int @r a;
-    a = [1, 2, 3, 4];
     int b = 0;
+    list @l int @r c;
+    c = [1, 2, 3, 4];
 }
 
-foo();
-
-
+foo(); 
