@@ -492,6 +492,8 @@ let translate program =
       
       
       | SListExplicit l -> 
+          (* TODO: Remove the List.rev and fold_right when inserting instead *)
+          let l = List.rev (l) in
           (* Fold through the list 'l' and recursively runs expr builder -> 
              returns tuple of list of llvals and environment *)
           let llvals = List.fold_left 
@@ -535,6 +537,7 @@ let translate program =
              3) Loads the value of list_ptr into listval variable
              4) Calls list_insert_func with (head, index of insertion, node to insert)
              *)
+          (* TODO: This is extremely ugly *)
           let _ = List.fold_left 
             (fun _ (i, llval) -> 
               (* Cast each llval to a void * before inserting it into the list *)

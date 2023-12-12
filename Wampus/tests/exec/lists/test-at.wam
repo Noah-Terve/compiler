@@ -1,4 +1,4 @@
-list @l int @r a;
-/* a = [1, 2, 3, 4]; */
-[1, 2, 3, 4];
-/* print @l int @r (list_at(a, 0)); */
+list @l int @r a = [1, 2, 3, 4];
+/* print @l list @l int @r @r (a); */
+/* [1, 2, 3, 4]; */
+print @l int @r (list_at(a, 0));
