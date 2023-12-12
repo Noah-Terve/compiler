@@ -414,9 +414,9 @@ let check (units : program) =
         let ((rt, _) as sx) = (match e with 
           StructExplicit(struc_exprs) -> 
             let last_struc_name = List.nth (List.rev rest_names) 0 in
-            let _ = print_endline last_struc_name in
+            (* let _ = print_endline last_struc_name in *)
             let struc_body = find_struc last_struc_name in
-            let _ = print_endline "past here" in
+            (* let _ = print_endline "past here" in *)
             let struc_binds = struc_body.ssformals in
             let binds_length = List.length struc_binds in 
             if List.length struc_exprs != binds_length then
