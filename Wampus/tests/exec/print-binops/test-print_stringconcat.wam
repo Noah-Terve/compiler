@@ -1,7 +1,9 @@
 /* print @l string @r("hello" + "hello");
 print @l string @r('c' + 'c'); */
 string s = "hello";
-string a = "hey";
+string a = "heyyo";
 /* TODO: FIX BINDASSIGN FOR STRINGS */
 /* TODO: FIX Variable string concatenation */
+print @l bool @r (s == a);
+print @l bool @r (s != a);
 print @l string @r (a + s);

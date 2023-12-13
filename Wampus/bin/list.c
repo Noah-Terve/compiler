@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <assert.h>
 #include "list.h"
+#include <string.h>
 
 // typedef struct node {
 //     void* data;
@@ -139,4 +140,11 @@ node **list_replace(node **head, unsigned int index, void *v)
     if (old) free(old);
 
     return head;
+}
+
+char *string_concat(char *s1, char *s2) {
+    char *new = (char *) malloc(strlen(s1) + strlen(s2) + 1);
+    strcpy(new, s1);
+    strcat(new, s2);
+    return new;
 }

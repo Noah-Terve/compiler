@@ -314,7 +314,12 @@ let check (units : program) =
             Char -> true
           |  Int -> true
           | _ -> false
-        in
+      in
+        (* let resultString = function
+          String -> true
+          | Char -> true
+          | _ -> false
+        in *)
         let ty = match op with
           Add when same && (t1 = Char || t1 = String) -> String
         | Add | Sub | Mult | Div when same && (t1 = Int || t1 = Float || t1 = Char)   -> t1
@@ -323,7 +328,7 @@ let check (units : program) =
         (* Potential route *)
         (* | expr Assign(e1, SBinop((t1, e1'), op, (t2, e2'))) *)
         | Mod when same && (t1 = Int || t1 = Char) -> t1
-        | Equal | Neq            when same               -> Bool
+        | Equal | Neq when same -> Bool
         | Less | Leq | Greater | Geq
                     when same && (t1 = Int || t1 = Float) -> Bool
         | And | Or when same && t1 = Bool -> Bool

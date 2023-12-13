@@ -55,6 +55,11 @@ let get_int_lbinop op = match op with
   | A.Geq     -> L.build_icmp L.Icmp.Sge
   | _ -> raise (Failure ("unimplemented binop: " ^ (A.string_of_op op)))
 
+let get_string_binop op = match op with 
+    A.Equal -> L.build_icmp L.Icmp.Eq
+  | A.Neq -> L.build_icmp L.Icmp.Ne
+  | _ -> raise (Failure ("unimplemented binop: " ^ (A.string_of_op op)))
+
 (* Code Generation from the SAST. Returns an LLVM module if successful,
    throws an exception if something is wrong. *)
 let translate program =
@@ -246,6 +251,9 @@ let translate program =
 
   let list_print        = L.function_type void_t [| list_head_t |] in 
   let list_print_func   = L.declare_function "list_int_print" list_print the_module in
+  (* String function *)
+  let string_concat_t = L.function_type str_t [| str_t; str_t |] in
+  let string_concat_f = L.declare_function "string_concat" string_concat_t the_module in
 
   (* TODO: Remove me! *)
   let build_debug_print_list list_head builder = 
@@ -274,7 +282,6 @@ let translate program =
 
         (* Returns the function type in lltype *)
         let ftype = L.function_type (ltype_of_typ fdecl.styp) formal_types in
-
         (* Adds the function definition into the StringMap  *)
         StringMap.add name (L.define_function name ftype the_module, fdecl) m in
 
@@ -283,6 +290,7 @@ let translate program =
 
   (****  Fill/build the body of the given function ****)
   let build_function_body fdecl =
+    (* let _ = print_endline fdecl.sfname in *)
     (* let _ = Printf.fprintf stderr "generating code for function body\n" in *)
     let (the_function, _) = StringMap.find fdecl.sfname function_decls in
     let builder = L.builder_at_end context (L.entry_block the_function) in
@@ -352,13 +360,12 @@ let translate program =
     in *)
 
     (* Construct code for an expression; return its value *)
-    let rec getLit e envs builder = match e with
+    (* let rec getLit e envs builder = match e with
           (_, SCharlit l) -> (String.make 1 l)
         | (_, SStringlit s) -> s
         | (_, SId s) -> L.string_of_llvalue (L.build_load (lookup s envs) s builder)
         | _ -> raise (Failure "Should not be in here")
-        (* not breaking it down *)
-  in
+  in *)
 
     let rec expr builder ((t, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with
         SLiteral i -> (L.const_int i32_t i, envs)
@@ -378,10 +385,9 @@ let translate program =
           (* A.List(t) -> *)
             (A.Float, _, _) | (_, _, A.Float) -> ((get_float_lbinop op) (L.build_sitofp e1' float_t "ItoF" builder) (L.build_sitofp e2' float_t "ItoF" builder) "tmp" builder, envs)
           | (A.String, A.Add, _) | (_, A.Add, A.String) -> 
-              let s1 = getLit (t1, expr1) in
-              let s2 = getLit (t2, expr2) in
-              let s = s1 ^ s2 in
-              (L.build_global_stringptr s "string" builder, envs)
+            (L.build_call string_concat_f [| e1'; e2' |] "string_concat" builder, envs)
+          | (A.String, _, _) | (_, _, A.String) -> ((get_string_binop op) e1' e2' "temp" builder, envs)
+          (* | (A.List(t1), A.Equal, A.List(t2)) -> iterate through both lists e1' and e2' and call expr builder with a new op on each individual value*)
           (* Integer-like cases *)
           | (_, _, _) -> (get_int_lbinop op) e1' e2' "tmp" builder, envs)
       
@@ -464,6 +470,7 @@ let translate program =
           (list_head, envs)
 
       | SCall (f, args) ->
+        (* let _ = print_endline "hey" in *)
           let (fdef, fdecl) = StringMap.find f function_decls in
           let (llargs, envs) = List.fold_left (fun (llargs, envs) (t, e) -> 
             let (e', envs) = expr builder (t, e) envs in
