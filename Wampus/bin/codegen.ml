@@ -257,6 +257,7 @@ let translate program =
 
   let list_print        = L.function_type void_t [| list_head_t |] in 
   let list_print_func   = L.declare_function "list_int_print" list_print the_module in
+
   (* String function *)
   let string_concat_t = L.function_type str_t [| str_t; str_t |] in
   let string_concat_f = L.declare_function "string_concat" string_concat_t the_module in
@@ -382,8 +383,8 @@ let translate program =
       | SNoexpr -> (L.const_int i32_t 0, envs)
       | SId s -> (L.build_load (lookup s envs) s builder, envs)
       | SBinop (e1, op, e2) ->
-        let (t1, expr1) = e1 in
-        let (t2, expr2) = e2 in
+        let (t1, _) = e1 in
+        let (t2, _) = e2 in
         let (e1', envs) = expr builder e1 envs in
         let (e2', envs) = expr builder e2 envs in
         (match (t1, op, t2) with
