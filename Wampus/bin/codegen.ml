@@ -268,6 +268,90 @@ let translate program =
     list_head in
   (* TODO: ADD THE SET BUILT-INS HERE *)
 
+  (* ; Function Attrs: noinline nounwind optnone ssp uwtable
+define i32 @list_length(ptr noundef %0) #0 {
+  %2 = alloca ptr, align 8
+  %3 = alloca i32, align 4
+  %4 = alloca ptr, align 8
+  store ptr %0, ptr %2, align 8
+  store i32 0, ptr %3, align 4
+  %5 = load ptr, ptr %2, align 8
+  %6 = load ptr, ptr %5, align 8
+  store ptr %6, ptr %4, align 8
+  br label %7
+
+7:                                                ; preds = %13, %1
+  %8 = load ptr, ptr %4, align 8
+  %9 = icmp ne ptr %8, null
+  br i1 %9, label %10, label %17
+
+10:                                               ; preds = %7
+  %11 = load i32, ptr %3, align 4
+  %12 = add i32 %11, 1
+  store i32 %12, ptr %3, align 4
+  br label %13
+
+13:                                               ; preds = %10
+  %14 = load ptr, ptr %4, align 8
+  %15 = getelementptr inbounds %struct.node, ptr %14, i32 0, i32 1
+  %16 = load ptr, ptr %15, align 8
+  store ptr %16, ptr %4, align 8
+  br label %7, !llvm.loop !8
+
+17:                                               ; preds = %7
+  %18 = load i32, ptr %3, align 4
+  ret i32 %18
+} *)
+
+(* unsigned int list_length(node **head) {
+  unsigned int len = 0;
+  
+  for (node *curr = *head; curr != NULL; curr = curr->next) {
+    len++;
+  }
+
+  return len;
+} *)
+
+  (* list_len implementation: *)
+  (* let list_len_func_new =
+    let list_len_func = L.define_function "list_length" list_len_t the_module in
+    let builder = L.builder_at_end context (L.entry_block list_len_func) in
+    (* formal: node **head *)
+    let list_head = L.param list_len_func 0 in
+
+    (* make basic blocks *)
+    let loop_cond_bb = L.append_block context "loop_cond" list_len_func in
+    let loop_bb = L.append_block context "loop" list_len_func in
+    let exit_loop_bb = L.append_block context "exit_loop" list_len_func in
+
+    (* len = 0; node *curr = *head; node *next; *)
+    let len = L.build_alloca i32_t "len" builder in
+    let curr = L.build_alloca (L.pointer_type list_t) "curr" builder in
+    let next = L.build_alloca (L.pointer_type list_t) "next" builder in
+    let _ = L.build_store (L.const_int i32_t 0) len builder in
+    let _ = L.build_store (L.build_load list_head "head" builder) curr builder in
+    let _ = L.build_br loop_cond_bb builder in
+
+    (* if (curr == NULL) { goto exit_loop } else { goto loop } *)
+    let _ = L.position_at_end loop_cond_bb builder in
+    let is_null = L.build_is_null (L.build_load curr "curr" builder) "is_null" builder in
+    let _ = L.build_cond_br is_null exit_loop_bb loop_bb builder in
+
+    let _ = L.position_at_end loop_bb builder in
+    let curr_elem = L.build_load curr "curr" builder in
+    let next_elem = L.build_struct_gep curr_elem 1 "next" builder in
+    let _ = L.build_store (L.build_load next_elem "next" builder) curr builder in
+    let _ = L.build_store (L.build_add (L.build_load len "len" builder) (L.const_int i32_t 1) "len" builder) len builder in
+    let _ = L.build_br loop_cond_bb builder in
+
+    (* return len *)
+    let _ = L.position_at_end exit_loop_bb builder in
+    let _ = L.build_ret (L.build_load len "len" builder) builder in
+    
+    list_len_func
+  in *)
+
 
 
 
