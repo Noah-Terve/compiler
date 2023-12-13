@@ -68,11 +68,13 @@ let translate program =
       sbody = List.rev (List.fold_left (fun acc units -> match units with 
                                 SStmt struc -> struc :: acc 
                                 | _ -> acc) [] program);} in
-    let struct_decls =
-      List.fold_left (fun acc units -> match units with 
-                                    SSdecl struc -> StringMap.add struc.sname struc.ssformals acc
-                                  | _ -> acc)
-                  StringMap.empty program in
+  let struct_decls =
+    List.fold_left (fun acc units -> 
+                      match units with 
+                      SSdecl struc -> StringMap.add struc.sname struc.ssformals acc
+                      | _ -> acc) 
+                        StringMap.empty program in
+
           
 
   (*  Creates the one context that will be used throughout the translation function *)
@@ -184,6 +186,7 @@ let translate program =
             SExpr (_t, s) -> (match s with
                 SBindDec (t, n) -> (sstmts, StringMap.add n (L.define_global n (init t) the_module) global_vars)
               | SBindAssign (t, n, e) ->
+                (* let _ = print_endline "hello" in *)
                   let global_vars = StringMap.add n (L.define_global n (init t) the_module) global_vars in
                   let e = (t, SAssign (n, e)) in
                   ((SExpr e) :: sstmts, global_vars)
@@ -349,10 +352,13 @@ let translate program =
     in *)
 
     (* Construct code for an expression; return its value *)
-    let rec getLit = function
+    let rec getLit e envs builder = match e with
           (_, SCharlit l) -> (String.make 1 l)
         | (_, SStringlit s) -> s
-        | (t, sx) -> getLit (t, sx) in
+        | (_, SId s) -> L.string_of_llvalue (L.build_load (lookup s envs) s builder)
+        | _ -> raise (Failure "Should not be in here")
+        (* not breaking it down *)
+  in
 
     let rec expr builder ((t, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with
         SLiteral i -> (L.const_int i32_t i, envs)

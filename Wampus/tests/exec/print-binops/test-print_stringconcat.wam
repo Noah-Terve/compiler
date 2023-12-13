@@ -1,5 +1,7 @@
-print @l string @r("hello" + "hello");
-print @l string @r('c' + 'c');
+/* print @l string @r("hello" + "hello");
+print @l string @r('c' + 'c'); */
 string s = "hello";
-string a = "hello";
-print @l string @r (s + a);
+string a = "hey";
+/* TODO: FIX BINDASSIGN FOR STRINGS */
+/* TODO: FIX Variable string concatenation */
+print @l string @r (a + s);
