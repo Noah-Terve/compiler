@@ -471,7 +471,9 @@ define i32 @list_length(ptr noundef %0) #0 {
       | SCharlit c  -> (L.const_int i8_t (int_of_char c), envs)
       | SStringlit s -> (L.build_global_stringptr s "string" builder, envs)
       | SNoexpr -> (L.const_int i32_t 0, envs)
-      | SId s -> (L.build_load (lookup s envs) s builder, envs)
+      | SId s -> (match t with 
+        A.Struct(_) -> (L.build_load (lookup s envs) s builder, envs)
+        | _ ->  (L.build_load (lookup s envs) s builder, envs))
       | SBinop (e1, op, e2) ->
         let (t1, _) = e1 in
         let (t2, _) = e2 in
@@ -578,6 +580,7 @@ define i32 @list_length(ptr noundef %0) #0 {
             *)
             (e' :: llargs, envs)) ([], envs) args in
           let result = (A.string_of_typ fdecl.styp) ^ "result" in
+          (* let _ = print_endline result in *)
 
           (* (L.build_call fdef (Array.of_list llargs) result builder, envs) *)
           (L.build_call fdef (Array.of_list (List.rev llargs)) result builder, envs)
@@ -598,7 +601,9 @@ define i32 @list_length(ptr noundef %0) #0 {
               let lty = L.element_type pty in (* getting the type of the struct *)
               let str_ptr = (L.build_alloca lty n builder) in
               let _ = L.build_store lstruct str_ptr builder in
-              (str_ptr, bind n str_ptr envs)
+              let str_ptr_ptr = L.build_alloca pty n builder in
+              let _ = L.build_store str_ptr str_ptr_ptr builder in
+              (str_ptr_ptr, bind n str_ptr envs)
               (* let (types, _) = try List.split (StringMap.find name struct_decls)
                 with Not_found -> raise(Failure("Struct name is not a valid struct")) in
               let arr_type = Array.of_list (List.map init types) in
@@ -614,7 +619,8 @@ define i32 @list_length(ptr noundef %0) #0 {
               let local_var = L.build_alloca (ltype_of_typ t) n builder in
               (init t, bind n local_var envs))
       | SAssign (var_name, e) ->
-          let (value_to_assign, envs) = expr builder e envs in    
+          let (value_to_assign, envs) = expr builder e envs in 
+          (* let _ = print_endline var_name in    *)
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in
           (value_to_assign, envs)
       | SStructAssign (sdnames, sids, e) ->
@@ -645,7 +651,6 @@ define i32 @list_length(ptr noundef %0) #0 {
           let init_struct = instantitate_struct t name in
         (* Build the array of values for struct *)
         let (_, names) = List.split (StringMap.find name struct_decls) in
-        (* let _ = print_endline n in *)
         (* function that takes in the two lists -> if expr is another struct literal, pass in an additional variable prev_name *)
         (* let array = Array.of_list  *)
         let llvaluelist = (List.map2 (fun e n -> 
@@ -661,10 +666,13 @@ define i32 @list_length(ptr noundef %0) #0 {
         let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
         let lty = L.element_type pty in (* getting the type of the struct *)
         let str_ptr = L.build_alloca lty n builder in
+        
         let _ = L.build_store lstruct str_ptr builder in
+        let str_ptr_ptr = L.build_alloca pty n builder in
+        let _ = L.build_store str_ptr str_ptr_ptr builder in
 
         (* let str_ptr = instantitate_struct t n array builder in *)
-        (str_ptr, bind n str_ptr envs)
+        (str_ptr_ptr, bind n str_ptr envs)
         | _ -> raise (Failure "Should only be a struct"))
 
         (* let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with *)
