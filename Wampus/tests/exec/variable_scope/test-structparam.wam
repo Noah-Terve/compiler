@@ -4,8 +4,10 @@ struct dog {
 
 int test (dog s) {
     dog d;
-    d.legs = 4;
-    return d.legs;
+    s.legs;
+    s.legs = 4;
+    return s.legs;
+    /* return s.legs; */
 }
 
 int test2 (int a) {

@@ -624,8 +624,8 @@ define i32 @list_length(ptr noundef %0) #0 {
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in
           (value_to_assign, envs)
       | SStructAssign (sdnames, sids, e) ->
-        (* let _ = print_endline "Assigning a struct value" in *)
-        let llstruct = lookup (List.hd sids) envs in
+        let _ = Printf.fprintf stderr "Assigning a struct value" in
+        let llstruct = L.build_load (lookup (List.hd sids) envs) "temp" builder in
         (* environments could be an issue here *)
         let (llvalue, envs) = (match e with 
         (* could also do struct access here... *)
@@ -639,8 +639,9 @@ define i32 @list_length(ptr noundef %0) #0 {
         (L.build_store llvalue elm_ptr builder, envs)
         (* let index = List.find_index  *)
       | SStructAccess (sdnames, sids) -> 
-        let llstruct = lookup (List.hd sids) envs in 
-        let elm_ptr = find_nested_struct (cdr sids) sdnames llstruct builder in
+        let _ = Printf.fprintf stderr "Assigning a struct value" in
+        let llstruct = L.build_load (lookup (List.hd sids) envs ) "temp" builder in 
+        let elm_ptr = find_nested_struct (cdr sids) sdnames llstruct builder in 
         (L.build_load elm_ptr (List.hd (List.rev sids)) builder, envs)
       | SBindAssign (t, var_name, e) ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
