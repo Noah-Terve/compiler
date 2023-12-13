@@ -214,9 +214,10 @@ let detemplate units =
            [] -> (let new_name = new_function_name_for_overloading func.fname (List.map (fun (t, _) -> t) func.formals) in 
                   try let _ = StringMap.find new_name !resolved_functions in raise (Failure "Functions can't have the same name and the same input types in the same order")
                       with Not_found ->
-                        let (new_body, p0) = resolve_stmts func.body prog StringMap.empty in
+                        let (new_typ, p') = potentially_templated_to_typ func.typ StringMap.empty prog in
+                        let (new_body, p0) = resolve_stmts func.body p' StringMap.empty in
                         let (new_formals, p1) = potentially_templated_binds_to_binds func.formals StringMap.empty p0 in
-                        let new_func = {typ = func.typ; fname = new_name; formals = new_formals; body = new_body; fun_t_list = func.fun_t_list} in
+                        let new_func = {typ = new_typ; fname = new_name; formals = new_formals; body = new_body; fun_t_list = []} in
                         let _ = resolved_functions := (StringMap.add new_name new_func !resolved_functions) in Fdecl(new_func) :: p1)
           | _ ->  try let _ = StringMap.find func.fname !known_templated_funcs in raise (Failure "Templated functions can't be overloaded")
                       with Not_found -> 

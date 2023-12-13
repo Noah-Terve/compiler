@@ -31,46 +31,26 @@ let check (units : program) =
 
     in let _ = List.fold_left check_it [] (List.sort name_compare to_check) 
        in to_check
-  in 
 
   (* Collect function declarations for built-in functions: no bodies *)
-  let built_in_decls = 
-    let add_general_bind map (name, ty, formals) = StringMap.add name {
-      styp = ty; sfname = name; sformals = formals;
-      sbody = []; slocals = []; } map
-    in let temp_binds = 
-      List.fold_left add_general_bind StringMap.empty [
-        ("list_at",     Int, [(List (Int), "head"); (Int, "idx")]);
-        ("list_insert", Int, [(List (Int), "head"); (Int, "idx"); (Int, "data")]); (* TODO: Use polymorphic types here for third arg*)
-        ("list_remove", Bool, [(List (Int), "head"); (Int, "idx")]);
-        ("len",    Int, [(List (Int), "head")]);
-        ("list_replace", Int, [(List (Int), "head"); (Int, "idx"); (Int, "data")]);
-        ("list_empty", Bool, [(List (Int), "head)")])
-      ]
-    in 
-    let add_bind map (name, ty) = StringMap.add name {
-      styp = Int; sfname = name; 
-      sformals = [(ty, "x")];
-      sbody = []; slocals = []; } map
-    in List.fold_left add_bind temp_binds [ ("printi", Int);
+  
+    (* in List.fold_left add_bind StringMap.empty [ ("printi", Int);
                                                  ("printb", Bool);
                                                  ("printf", Float);
                                                  ("prints", String);
-                                                 ("printc", Char)]
+                                                 ("printc", Char)] *)
   in
 
   (* TODO: Consider making this a non-reference; this might be poor coding practices *)
   (* Collect all other function names into one symbol table *)
-  let function_decls = ref built_in_decls in
+  let function_decls = ref StringMap.empty in
   
   let add_func (fd : sfunc_decl) =
-    let built_in_err = "function " ^ fd.sfname ^ " may not be defined" in
     let dup_err = "duplicate function " ^ fd.sfname in
     let dup_main_err = "there can be no user-defined function named 'main'" in
     let make_err er = raise (Failure er) in
     let n = fd.sfname in (* Name of the function *)
-    match fd with (* No duplicate functions or redefinitions of built-ins *)
-        _ when StringMap.mem n built_in_decls -> make_err built_in_err
+    match fd with 
       | _ when StringMap.mem n !function_decls -> make_err dup_err
       | _ when n = "main" -> make_err dup_main_err
       | _ -> function_decls := StringMap.add n fd !function_decls
