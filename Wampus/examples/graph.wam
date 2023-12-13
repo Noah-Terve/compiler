@@ -132,6 +132,7 @@ Graph @l int @r g = new_graph @l int @r();
 */
 Graph @l int @r g = #l {}, 0 #r; 
 print @l bool @r (has_node @l int @r (g, "1"));
+    
 /*
 
 */
