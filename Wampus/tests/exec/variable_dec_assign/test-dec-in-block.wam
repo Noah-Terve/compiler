@@ -1,4 +1,5 @@
 int x;
 {
-    int a;
+    int a = 5;
+    println @l int @r(a);
 }

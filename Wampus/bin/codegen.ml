@@ -120,6 +120,12 @@ let translate program =
     | A.List _ -> list_t
     | _ -> raise (Failure "types not implemented yet")
   in
+
+  let ltype_of_ptr_typ t = match t with
+      A.List _ -> L.pointer_type (ltype_of_typ t)
+    | _        -> ltype_of_typ t
+  in
+
   (* Makes the struct declaration body *)
   let make_struct_body name ssformals = 
     let (types, _) = List.split ssformals in
@@ -278,7 +284,7 @@ let translate program =
 
         (* Converts list of function's sformal params into array of sformals *)
         let formal_types = 
-            Array.of_list (List.map (fun (t, _) -> ltype_of_typ t) fdecl.sformals) in 
+            Array.of_list (List.map (fun (t, _) -> ltype_of_ptr_typ t) fdecl.sformals) in 
 
         (* Returns the function type in lltype *)
         let ftype = L.function_type (ltype_of_typ fdecl.styp) formal_types in
@@ -313,7 +319,7 @@ let translate program =
           (* let _ = Printf.fprintf stderr "Adding formals\n" in *)
           let add_formal m (t, n) p = 
             let () = L.set_value_name n p in
-              let local = L.build_alloca (ltype_of_typ t) n builder in
+              let local = L.build_alloca (ltype_of_ptr_typ t) n builder in
                 let _  = L.build_store p local builder in
                   StringMap.add n local m 
           in
@@ -321,7 +327,7 @@ let translate program =
           (* Allocate space for any locally declared variables and add the
           * resulting registers to our map *)
           let add_local m (t, n) =
-            let local_var = L.build_alloca (ltype_of_typ t) n builder
+            let local_var = L.build_alloca (ltype_of_ptr_typ t) n builder
               in StringMap.add n local_var m 
           in
           let formals = List.fold_left2 add_formal StringMap.empty fdecl.sformals (Array.to_list (L.params the_function)) in 
@@ -429,7 +435,7 @@ let translate program =
 
       (* | SCall ("_println.list", [e]) ->  *)
 
-      | SCall ("list_at", [(A.List (t1), _) as e1; e2]) ->
+      | SCall (s, [(A.List (t1), _) as e1; e2]) when (String.starts_with ~prefix:"_list_at" s) ->
           let (e1_llvalue, _) = expr builder e1 envs in
           let (e2_llvalue, _) = expr builder e2 envs in
           let value = L.build_call list_at_func [| e1_llvalue; e2_llvalue |] "list_at" builder in
@@ -438,42 +444,47 @@ let translate program =
               | _         -> L.build_bitcast value (L.pointer_type                 (ltype_of_typ t1))  "cast" builder ) in
           (L.build_load cast "list_at" builder, envs)
 
-      | SCall ("list_length", [e])        -> 
+      | SCall (s, [e]) when (String.starts_with ~prefix:"_list_length" s)-> 
           let (e_llvalue, _) = expr builder e envs in
           (L.build_call list_len_func [| e_llvalue |] "list_length" builder, envs)
 
-      | SCall ("list_insert", [e1; e2; e3]) ->
+      | SCall (s, [e1; e2; e3]) when (String.starts_with ~prefix:"_list_insert" s) ->
           let (list_head, _) = expr builder e1 envs in
           let (idx, _) = expr builder e2 envs in
           let (value, _) = expr builder e3 envs in
           let mallocd_value = L.build_bitcast (build_malloc builder value) voidptr_t "voidptr" builder in
           let _ = L.build_call list_insert_func [| list_head; idx; mallocd_value |] "" builder in
-          let _ = build_debug_print_list list_head builder in
+          (* let _ = build_debug_print_list list_head builder in *)
           let _ = L.build_call list_print_func [| list_head |] "" builder in
           (list_head, envs)
 
-      | SCall ("list_remove", [e1; e2]) ->
+      | SCall (s, [e1; e2]) when (String.starts_with ~prefix:"_list_remove" s) ->
           let (list_head, _) = expr builder e1 envs in
           let (idx, _) = expr builder e2 envs in
           let _ = L.build_call list_remove_func [| list_head; idx |] "" builder in
-          (* let _ = L.build_call list_remove_func [| list_head; idx |] "" builder in *)
-          let _ = build_debug_print_list list_head builder in
+          let _ = L.build_call list_remove_func [| list_head; idx |] "" builder in
+          (* let _ = build_debug_print_list list_head builder in *)
           (list_head, envs)
 
-      | SCall ("list_replace", [e1; e2; e3]) ->
+      | SCall (s, [e1; e2; e3]) when (String.starts_with ~prefix:"_list_replace" s) ->
           let (list_head, _) = expr builder e1 envs in
           let (idx, _) = expr builder e2 envs in
           let (value, _) = expr builder e3 envs in
           let mallocd_value = L.build_bitcast (build_malloc builder value) voidptr_t "voidptr" builder in
           let _ = L.build_call list_replace_func [| list_head; idx; mallocd_value |] "" builder in
-          let _ = build_debug_print_list list_head builder in
+          (* let _ = build_debug_print_list list_head builder in *)
           (list_head, envs)
 
       | SCall (f, args) ->
-        (* let _ = print_endline "hey" in *)
           let (fdef, fdecl) = StringMap.find f function_decls in
           let (llargs, envs) = List.fold_left (fun (llargs, envs) (t, e) -> 
             let (e', envs) = expr builder (t, e) envs in
+            (* let e'' = match e' with 
+                 nodeptr_t -> (L.pointer_type nodeptr_t)
+               | e' 
+
+              e'' :: llargs, envs)) ([], envs) args in
+            *)
             (e' :: llargs, envs)) ([], envs) args in
           let result = (A.string_of_typ fdecl.styp) ^ "result" in
 

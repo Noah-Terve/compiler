@@ -148,7 +148,7 @@ let check (units : program) =
   let bind id (ty: typ) envs = match envs with
       [] -> raise (Failure ("BUG IN COMPILER: no environments"))
     | env :: envs -> 
-      (* let _ = Printf.printf "Binding %s to %s\n" id (string_of_typ ty) in *)
+      let _ = Printf.eprintf "Binding %s to %s\n" id (string_of_typ ty) in
       StringMap.add id ty env :: envs
   in
 
