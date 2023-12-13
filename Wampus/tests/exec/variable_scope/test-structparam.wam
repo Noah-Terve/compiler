@@ -1,0 +1,17 @@
+struct dog {
+    int legs;
+};
+
+dog test (dog s) {
+    dog d;
+    d.legs = 4;
+    return d;
+}
+
+int test2 (int a) {
+    dog d;
+    dog b = test (d);
+    return b.legs;
+}
+
+/* print @l int @r (test2(5)); */
