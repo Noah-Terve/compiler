@@ -733,7 +733,6 @@ define i32 @list_length(ptr noundef %0) #0 {
               (List.mapi (fun i llval -> (i, llval)) malloced_ptrs) in 
           (* let finalList = (L.build_load list_ptr "listlit" builder, envs) in  *)
           let listval = L.build_load list_ptr "listval" builder in
-          let _ = L.build_call list_print_func [| listval |] "" builder in 
           (L.build_load list_ptr "listlit" builder, envs)
 
             
