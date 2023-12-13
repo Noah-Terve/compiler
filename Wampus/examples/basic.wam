@@ -1,38 +1,39 @@
 
 /*** Lists with strings ***/
-list l@ string @r tStops = ["North Station", "Haymarket", "Government Center"]; 
+list @l string @r tStops = ["North Station", "Haymarket", "Government Center"]; 
 
-printlist l@ string @r (tStops);
+printlist @l string @r (tStops);
 
-list l@ string @r updatedStops = list_insert l@ string @r (tStops, 0, "Lechmere"); 
-list l@ string @r updatedStops = list_insert l@ string @r (tStops, 0, "East Sommerville"); 
+list @l string @r updatedStops = list_insert @l string @r (tStops, 0, "Lechmere"); 
+list @l string @r updatedStops = list_insert @l string @r (tStops, 0, "East Sommerville"); 
 
-int list_length = list_length l@ string @r (tStops);
+int list_len = list_length @l string @r (tStops);
 
-printlist l@ string @r (updatedStops);
-printlist l@ string @r (tStops); 
+printlist @l string @r (updatedStops);
+printlist @l string @r (tStops); 
 
-for (int i = 0; i < list_length; i += 1){
-    list l@ string @r currList = list_remove l@ string @r (tStops, 0);
+for (int i = 0; i < list_len; i += 1){
+    list @l string @r currList = list_remove @l string @r (tStops, 0);
 }
 
-printlist l@ string @r (tStops);
+printlist @l string @r (tStops);
 
 /*** Nested lists ***/ 
 
-list l@ list l@ string @r @r matrix = [[1, 2, 3], [4, 5, 6], [7, 8,9]];
-int listLength = list_length l@ list l@ int @r @r (matrix);
 
-for (int i = 0; i < listLength; i += 1){
-    list l@ int @r currList = list_at l@ int @r (matrix, i);
-    for (int j = 0; j < listLength; j += 1){
-        int currVal = list_at l@ int @r (currList, j);
-        list l@ int @r updated = list_replace l@ int @r (currList, j, currVal += 1);
+list @l list @l int @r @r matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+int listLen = list_length @l list @l int @r @r (matrix);
+
+for (int i = 0; i < listLen; i += 1){
+    list @l int @r currList = list_at @l list @l int @r @r (matrix, i);
+    for (int j = 0; j < listLen; j += 1){
+        int currVal = list_at @l int @r (currList, j);
+        list @l int @r updated = list_replace @l int @r (currList, j, currVal += 1);
     }
 }
-
-printlist l@ int @r (matrix);
-
+/*
+printlist @l int @r (matrix);
+*/
 
 
 

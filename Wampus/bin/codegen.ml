@@ -378,7 +378,7 @@ define i32 @list_length(ptr noundef %0) #0 {
             Array.of_list (List.map (fun (t, _) -> ltype_of_ptr_typ t) fdecl.sformals) in 
 
         (* Returns the function type in lltype *)
-        let ftype = L.function_type (ltype_of_typ fdecl.styp) formal_types in
+        let ftype = L.function_type (ltype_of_ptr_typ fdecl.styp) formal_types in
         (* Adds the function definition into the StringMap  *)
         StringMap.add name (L.define_function name ftype the_module, fdecl) m in
 
