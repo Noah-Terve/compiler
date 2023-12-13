@@ -472,7 +472,7 @@ define i32 @list_length(ptr noundef %0) #0 {
       | SStringlit s -> (L.build_global_stringptr s "string" builder, envs)
       | SNoexpr -> (L.const_int i32_t 0, envs)
       | SId s -> (match t with 
-        A.Struct(_) -> (L.build_load (lookup s envs) s builder, envs)
+        A.Struct(_) -> (lookup s envs, envs)
         | _ ->  (L.build_load (lookup s envs) s builder, envs))
       | SBinop (e1, op, e2) ->
         let (t1, _) = e1 in

@@ -2,19 +2,16 @@ struct dog {
     int legs;
 };
 
-dog test (dog s) {
+int test (dog s) {
     dog d;
     d.legs = 4;
-    return d;
-} 
+    return d.legs;
+}
 
 int test2 (int a) {
     dog d;
-    dog b = test(d);
-    return b.legs;
+    int a = test(d);
+    return a;
 }
 
-print @l int @r (test2(5)); 
-dog g;
-test (g);
-/* print @l int @r (test2(5)); */
+print @l int @r (test2(5));
