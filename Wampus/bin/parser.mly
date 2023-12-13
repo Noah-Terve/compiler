@@ -95,13 +95,13 @@ typ:
 
 group_typ:
       ID   LAT typ_list RAT   { TStruct ($1, List.rev $3) }
-    | SET  LAT ID RAT         { Set  (Templated($3))      }
-    | SET  LAT INT RAT        { Set  (Int)                }
-    | SET  LAT BOOL RAT       { Set  (Bool)               }
-    | SET  LAT CHAR RAT       { Set  (Char)               }
-    | SET  LAT FLOAT RAT      { Set  (Float)              }
-    | SET  LAT STRING RAT     { Set  (String)             }
-    | SET  LAT group_typ RAT  { Set  ($3)                 }
+    | SET  LAT ID RAT         { List (Templated($3))      }
+    | SET  LAT INT RAT        { List (Int)                }
+    | SET  LAT BOOL RAT       { List (Bool)               }
+    | SET  LAT CHAR RAT       { List (Char)               }
+    | SET  LAT FLOAT RAT      { List (Float)              }
+    | SET  LAT STRING RAT     { List (String)             }
+    | SET  LAT group_typ RAT  { List ($3)                 }
     | LIST LAT ID RAT         { List (Templated($3))      }
     | LIST LAT INT RAT        { List (Int)                }
     | LIST LAT BOOL RAT       { List (Bool)               }
@@ -179,7 +179,7 @@ expr:
   | LPAREN expr RPAREN { $2 }
   
   // Building a list & set
-  | LBRACE set_opt RBRACE   { SetExplicit   (List.rev $2)}
+  | LBRACE set_opt RBRACE   { ListExplicit   (List.rev $2)}
   | LBRACK list_opt RBRACK  { ListExplicit  (List.rev $2)}
   | LTAGS struct_list RTAGS { StructExplicit(List.rev $2)}
 

@@ -156,8 +156,8 @@ let detemplate units =
                         let (exprs, p2) = resolve_exprs es p1 names_to_types in 
                         (Call(new_fname, exprs), p2))
 
-    | BindAssign (t, name, e) -> let (exp1, p0) = resolve_expr e prog names_to_types in
-                                 let (ty, p1) = potentially_templated_to_typ t names_to_types p0 in 
+    | BindAssign (t, name, e) -> let (ty, p0) = potentially_templated_to_typ t names_to_types prog in
+                                 let (exp1, p1) = resolve_expr e p0 names_to_types in
                                  (BindAssign(ty, name, exp1), p1)
     | BindDec (t, name) -> let (ty, p0) = potentially_templated_to_typ t names_to_types prog in
                            (BindDec(ty, name), p0)
@@ -209,7 +209,8 @@ let detemplate units =
   in
   
   let resolveTemplates prog prog_unit = match prog_unit with 
-      Fdecl (func) -> (match func.fun_t_list with
+      Fdecl (func) -> 
+        (match func.fun_t_list with
                  (* if the function exists already that is against our rules *)
            [] -> (let new_name = new_function_name_for_overloading func.fname (List.map (fun (t, _) -> t) func.formals) in 
                   try let _ = StringMap.find new_name !resolved_functions in raise (Failure "Functions can't have the same name and the same input types in the same order")
@@ -223,7 +224,8 @@ let detemplate units =
                       with Not_found -> 
                         let _ = known_templated_funcs := (StringMap.add func.fname func !known_templated_funcs) in prog)
         
-    | Sdecl (struc) -> (match struc.t_list with
+    | Sdecl (struc) -> 
+      (match struc.t_list with
             [] -> ( try let _ = StringMap.find struc.name !resolved_structs in raise (Failure "You can't overload structs")
                     with Not_found ->
                       let (new_formals, p0) = potentially_templated_binds_to_binds struc.sformals StringMap.empty prog in
@@ -231,7 +233,8 @@ let detemplate units =
                       let _ = resolved_structs := (StringMap.add struc.name new_struct !resolved_structs) in (Sdecl(new_struct)) :: p0 )
           | _ -> let _ = known_templated_structs := (StringMap.add struc.name struc !known_templated_structs) in prog)
         
-    | Stmt (stmt) -> let (st, p0) = resolve_stmt stmt prog StringMap.empty in (Stmt st) :: p0
+    | Stmt (stmt) -> 
+      let (st, p0) = resolve_stmt stmt prog StringMap.empty in (Stmt st) :: p0
   
   in
   

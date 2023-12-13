@@ -136,7 +136,7 @@ let translate program =
   let make_struct_body name ssformals = 
     let (types, _) = List.split ssformals in
     (* let _ = print_endline "Making a struct body" in *)
-    let ltypes_list = List.map ltype_of_typ types in
+    let ltypes_list = List.map ltype_of_ptr_typ types in
     (* let _ = print_endline "Finished mapping the types" in *)
     let ltypes = Array.of_list ltypes_list in
     L.struct_set_body (StringMap.find name struct_types) ltypes false

@@ -12,8 +12,8 @@ set functions:
     size
 */
 
-template < T >
-bool list_contains (list < T > l, T elem) {
+template @l T @r
+bool list_contains (list @l T @r l, T elem) {
     for (int i = 0; i < list_length @l T @r (l); i += 1) {
         if (list_at @l T @r (l, i) == elem) {
             return true;
@@ -60,6 +60,7 @@ template @l T @r
 set @l T @r set_add (set @l T @r s, T elem) {
     return list_insert @l T @r (s, 0, elem);
 }
+
 
 template @l T @r
 set @l T @r set_remove (set @l T @r s, T elem) {

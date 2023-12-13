@@ -1,0 +1,8 @@
+int test () {
+    int a;
+    int b = 4;
+    string s = "hello";
+    return 1;
+}
+
+test ();

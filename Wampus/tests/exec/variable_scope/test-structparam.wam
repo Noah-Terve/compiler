@@ -15,3 +15,6 @@ int test2 (int a) {
 }
 
 print @l int @r (test2(5)); 
+dog g;
+test (g);
+/* print @l int @r (test2(5)); */

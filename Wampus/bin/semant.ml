@@ -86,9 +86,9 @@ let check (units : program) =
   in *)
   
   (* Return a function from our symbol table *)
-  let find_func fname = 
+  let find_func fname =
     try StringMap.find fname !function_decls
-    with Not_found -> raise (Failure ("unrecognized function " ^ fname))
+    with Not_found -> raise (Invalid_argument ("unrecognized function " ^ fname))
   in
 
   let globals : typ StringMap.t ref = ref StringMap.empty in
@@ -339,7 +339,7 @@ let check (units : program) =
        (* case where the function doesn't exist, this means the function must have
           been renamed to allow overloading, so we have to go find the new name *)
         with 
-          Failure(_) -> let ts = List.map (fun (t, _) -> t) (List.map (fun ex -> check_expr ex envs not_toplevel) args) in
+        Invalid_argument (_) -> let ts = List.map (fun (t, _) -> t) (List.map (fun ex -> check_expr ex envs not_toplevel) args) in
           let new_name = D.new_function_name_for_overloading fname ts in
           let sfd = find_func new_name in
             let param_length = List.length sfd.sformals in
