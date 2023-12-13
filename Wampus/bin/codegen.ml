@@ -122,9 +122,15 @@ let translate program =
   in
 
   let ltype_of_ptr_typ t = match t with
-      A.List _ -> L.pointer_type (ltype_of_typ t)
+      A.List _ -> pointer_t (ltype_of_typ t)
     | _        -> ltype_of_typ t
   in
+
+  (* let ltype_of_ptr_typ_fun t = match t with
+      A.List _ -> pointer_t (ltype_of_typ t)
+    | A.Struct _ -> pointer_t (ltype_of_typ t)
+    | _        -> ltype_of_typ t
+  in *)
 
   (* Makes the struct declaration body *)
   let make_struct_body name ssformals = 
@@ -410,7 +416,7 @@ define i32 @list_length(ptr noundef %0) #0 {
           in
 
           (* Allocate space for any locally declared variables and add the
-          * resulting registers to our map *)
+           * resulting registers to our map *)
           let add_local m (t, n) =
             let local_var = L.build_alloca (ltype_of_ptr_typ t) n builder
               in StringMap.add n local_var m 
@@ -590,7 +596,7 @@ define i32 @list_length(ptr noundef %0) #0 {
               let lstruct = instantitate_struct t name in
               let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
               let lty = L.element_type pty in (* getting the type of the struct *)
-              let str_ptr = L.build_alloca lty n builder in
+              let str_ptr = (L.build_alloca lty n builder) in
               let _ = L.build_store lstruct str_ptr builder in
               (str_ptr, bind n str_ptr envs)
               (* let (types, _) = try List.split (StringMap.find name struct_decls)
