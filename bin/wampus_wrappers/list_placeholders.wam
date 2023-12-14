@@ -1,0 +1,30 @@
+/* Author: Noah Tervalon
+ * This file is meant only as a source for us to
+ * generate placeholders for the built in list functions.
+ * These are not the fully functional functions. */
+
+template @l T @r
+list @l T @r list_insert (list @l T @r l, int pos, T data) {
+    return l;
+}
+
+template @l T @r
+list @l T @r list_remove (list @l T @r l, int pos) {
+    return l;
+}
+
+template @l T @r
+T list_at (list @l T @r l, int pos) {
+    T x;
+    return x;
+}
+
+template @l T @r
+int list_length (list @l T @r l) {
+    return 0;
+}
+
+template @l T @r
+list @l T @r list_replace (list @l T @r l, int pos, T data) {
+    return l;
+}

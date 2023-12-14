@@ -1,0 +1,48 @@
+/* Author: Christopher Sasanuma*/
+/*** Nested lists ***/ 
+
+/*
+int print_nestedlist (list @l list @l int  @r @r aList) {
+    int listLen = 3;
+    print @l int @r (listLen);
+
+    println @l string @r ("[");
+    for (int i = 0; i < listLen; i += 1){
+        list @l int @r currList = list_at @l list @l list @l int @r @r @r (aList, i);
+        int innerListLength = list_length @l list @l int @r @r (currList);
+        print @l string @r ("[");
+
+        for (int j = 0; j < innerListLength; j += 1){
+            print @l int @r (list_at @l list @l int @r @r (currList, j));
+
+        }
+        println @l string @r ("]");
+    }
+    println @l string @r ("]");
+
+    return 0;
+
+}
+
+
+list @l list @l int @r @r matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+int listLen = list_length @l list @l int @r @r (matrix);
+
+println @l string @r ("Matrix before update"); 
+int num = print_nestedlist(matrix); 
+
+for (int i = 0; i < listLen; i += 1){
+    list @l int @r currList = list_at @l list @l int @r @r (matrix, i);
+    for (int j = 0; j < listLen; j += 1){
+        int currVal = list_at @l int @r (currList, j);
+        list @l int @r updated = list_replace @l int @r (currList, j, currVal += 1);
+    }
+}
+
+println @l string @r ("Matrix after update: ");
+
+int num = print_nestedlist(matrix); 
+
+
+
+*/

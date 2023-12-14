@@ -1,9 +1,0 @@
-template @l T @r
-int print(T x) {
-    return 0;
-}
-
-template @l T @r
-int println(T x) {
-    return 0;
-}

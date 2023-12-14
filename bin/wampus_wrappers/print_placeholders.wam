@@ -1,0 +1,14 @@
+/* Author: Noah Tervalon
+ * This file is meant only as a source for us to
+ * generate placeholders for the built in functions.
+ * These are not the fully functional functions. */
+
+template @l T @r
+int print(T x) {
+    return 0;
+}
+
+template @l T @r
+int println(T x) {
+    return 0;
+}

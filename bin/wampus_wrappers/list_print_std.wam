@@ -1,0 +1,32 @@
+/* Author: Noah Tervalon
+ * List printing Standard Library Functions for Wampus */
+
+template @l T @r
+int printlist (list @l T @r l) {
+    print @l string @r ("[");
+
+    int len = list_length @l T @r (a);
+    bool started = false;
+    for (int i = 0; i < len; i+= 1) {
+        int elem = list_at @l T @r (a, i);
+        if (!started) {
+            print @l T @r (elem);
+            started = true;
+        }
+        else {
+            print @l string @r (", ");
+            print @l T @r (elem);
+        }
+    }
+
+    println @l string @r ("]");
+
+    return 0;
+}
+
+template @l T @r
+int printlnlist (list @l T @r l) {
+    printlist @l T @r (l);
+    println @l string @r ("");
+    return 0;
+}

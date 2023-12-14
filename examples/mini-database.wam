@@ -1,0 +1,151 @@
+/* Author Christopher Sasanuma
+ * sample database */
+/*** Database ***/
+
+template @l T @r 
+struct database { 
+    list @l T @r data_list; 
+    int numElements; 
+};
+
+
+/*** Database Functions ***/
+
+
+template @l T @r 
+int insertFront(list @l T @r aList, T aElement) {
+    list @l T @r updated = list_insert @l T @r (aList, 0, aElement);
+
+    return 0;
+}
+
+
+template @l T @r 
+int insertBack(list @l T @r aList, T aElement){
+    int length = list_length @l T @r (aList);
+    list @l T @r updatedList = list_insert @l T @r (aList, length - 1, aElement);
+
+    return 0;
+}
+
+
+template @l T @r 
+int deleteFront(list @l T @r aList, T aElement){
+    list @l T @r updatedList = list_insert @l T @r(aList, 0, aElement);
+
+    return 0;
+}
+
+
+template @l T @r 
+int deleteBack(list @l T @r aList, T aElement){
+    int length = list_length @l T @r (aList);
+    list @l T @r updatedList = list_insert @l T @r(aList, length - 1, aElement);
+    return 0;
+}
+
+struct Student_data { 
+    int studentId; 
+    string firstName; 
+    string lastName; 
+};
+/**** Untemplated type specific functions ***/
+
+int sortByLastName(list@l Student_data @r aList){
+    int num_students = list_length @l Student_data @r (aList); 
+    int i = 0; 
+    int j = 0;
+    bool swapped = false;
+    for (int i = 0; i < num_students - 1; i += 1){
+        swapped = false; 
+        for (int j = 0; j < num_students - i - 1; j += 1) {
+            Student_data currStudent = list_at @l Student_data @r  (aList, j); 
+            Student_data nextStudent = list_at @l Student_data @r (aList, j + 1); 
+            if (currStudent.studentId > nextStudent.studentId){
+                list @l Student_data @r newList = list_insert @l Student_data @r (aList, j, nextStudent);
+                list @l Student_data @r newList = list_insert @l Student_data @r (newList, j + 1, currStudent);
+                swapped = true;
+            }
+            if ( ! swapped ){
+                break;
+            }
+        }
+    }
+
+    return 0;
+}
+
+int print_studentList ( list @l Student_data @r aList){
+    int numStudents = list_length @l Student_data @r (aList); 
+
+    for (int i = 0; i < numStudents; i += 1){
+        Student_data currStudent = list_at @l Student_data @r (aList, i);
+
+        print @l string @r ( "{ user id: "); 
+        print @l int @r (currStudent.studentId); 
+        println @l string @r (", "); 
+
+
+        print @l string @r ("First name: ");
+        print @l string @r (currStudent.firstName); 
+
+        print @l string @r ("Last name: ");
+        print @l string @r (currStudent.lastName);
+        println @l string @r ("}");
+    }
+}
+/*
+*/
+
+
+
+database @l Student_data @r data; 
+/** Inserting Students **/ 
+
+/* list @l Student_data @r database.data_list = []; */
+
+
+list @l Student_data @r student_list = data.data_list;
+Student_data s = #l 3, "Song", "Hyun-min" #r;
+Student_data s1 = #l 3, "Kane", "Harry" #r;
+int a = insertBack @l Student_data @r (student_list, s ); 
+int a = insertBack @l Student_data @r (student_list, s1); 
+/*
+int a = insertBack(student_list, #l 3, "Tomiyasu", "Hiro" #r ); 
+int a = insertBack(student_list, #l 3, "Alba", "Danny" #r ); 
+*/
+print_studentList(data.data_list); 
+
+
+
+/** Sort list **/ 
+/** Deleting Students **/ 
+/*
+list @l Student_data @r sortedList = sortByLastName list l@ Student_data @r (updatedList);
+
+int num_students = list_length @l Student_data @r (database.data_list);
+
+
+while ( num_students > 0 ){
+    list @l Student_data @r updatedList = deleteBack ( @l list @l Student_data @r @r);
+}
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
