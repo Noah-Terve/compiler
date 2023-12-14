@@ -2,17 +2,21 @@ struct dog {
     int legs;
 };
 
-int test (dog s) {
+struct Animal {
     dog d;
-    s.legs;
-    s.legs = 4;
-    return s.legs;
+    int animals;
+};
+
+int test (Animal s) {
+    s.d.legs = 4;
+
+    return 4;
     /* return s.legs; */
 }
 
 int test2 (int a) {
-    dog d;
-    int a = test(d);
+    Animal b;
+    a = test(b);
     return a;
 }
 

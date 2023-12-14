@@ -180,11 +180,13 @@ let translate program =
       [] -> raise (Failure "In struct access Not possible")
     | name :: [] -> 
       (* TODO: which sdecls should be a list of size 1*)
+      (* let _ = print_endline name in  *)
       let sformals = StringMap.find (List.hd sdecls) struct_decls in
       let index = find_index sformals name 0 in 
       let elm_ptr = L.build_struct_gep llstruct index name builder in
       (elm_ptr)
-    | sid :: sids -> 
+    | sid :: sids ->
+      (* let _ = print_endline sid in  *)
       let next_sdecls = (cdr sdecls) in
       (* environments could be an issue here *)
       let sformals = StringMap.find (List.hd sdecls) struct_decls in
