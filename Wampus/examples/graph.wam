@@ -121,9 +121,9 @@ Graph @l T @r add_connection(Graph @l T @r g, string n1, string n2) {
 */
 /*
 Graph @l int @r g = new_graph @l int @r();
-*/
 
-/*
+
+
 add_node @l int @r (g, n);
 
 */

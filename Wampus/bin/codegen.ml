@@ -474,7 +474,7 @@ define i32 @list_length(ptr noundef %0) #0 {
       | SStringlit s -> (L.build_global_stringptr s "string" builder, envs)
       | SNoexpr -> (L.const_int i32_t 0, envs)
       | SId s -> (match t with 
-        A.Struct(_) -> (lookup s envs, envs)
+        (* A.Struct(_) ->  (lookup s envs, envs) *)
         | _ ->  (L.build_load (lookup s envs) s builder, envs))
       | SBinop (e1, op, e2) ->
         let (t1, _) = e1 in
@@ -605,7 +605,7 @@ define i32 @list_length(ptr noundef %0) #0 {
               let _ = L.build_store lstruct str_ptr builder in
               let str_ptr_ptr = L.build_alloca pty n builder in
               let _ = L.build_store str_ptr str_ptr_ptr builder in
-              (str_ptr_ptr, bind n str_ptr envs)
+              (str_ptr_ptr, bind n str_ptr_ptr envs)
               (* let (types, _) = try List.split (StringMap.find name struct_decls)
                 with Not_found -> raise(Failure("Struct name is not a valid struct")) in
               let arr_type = Array.of_list (List.map init types) in
@@ -631,7 +631,7 @@ define i32 @list_length(ptr noundef %0) #0 {
         (* environments could be an issue here *)
         let (llvalue, envs) = (match e with 
         (* could also do struct access here... *)
-            (A.Struct(_), SId(s1)) -> (lookup s1 envs, envs)
+            (A.Struct(_), SId(s1)) -> (L.build_load (lookup s1 envs) "val_to_assign" builder, envs)
           | _ -> expr builder e envs) in
         (* get the formals of sname *)
         let elm_ptr = find_nested_struct (cdr sids) sdnames llstruct builder in
@@ -641,13 +641,41 @@ define i32 @list_length(ptr noundef %0) #0 {
         (L.build_store llvalue elm_ptr builder, envs)
         (* let index = List.find_index  *)
       | SStructAccess (sdnames, sids) -> 
-        let _ = Printf.fprintf stderr "Assigning a struct value" in
-        let llstruct = lookup (List.hd sids) envs  in 
+        let llstruct = L.build_load (lookup (List.hd sids) envs) "hey" builder in 
         let elm_ptr = find_nested_struct (cdr sids) sdnames llstruct builder in 
         (L.build_load elm_ptr (List.hd (List.rev sids)) builder, envs)
       | SBindAssign (t, var_name, e) ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
           expr builder (t, SAssign (var_name, e)) envs
+      | TempFix (t, n, el) ->
+        ( match t with 
+        A.Struct(name) -> 
+        let init_struct = instantitate_struct t name in
+        (* Build the array of values for struct *)
+        let (_, names) = List.split (StringMap.find name struct_decls) in
+        (* function that takes in the two lists -> if expr is another struct literal, pass in an additional variable prev_name *)
+        (* let array = Array.of_list  *)
+        let llvaluelist = (List.map2 (fun e n -> 
+            let (e1, _) = (match e with 
+              (lt, SStructExplicit (t, _, el)) -> expr builder (lt, TempFix (t, n, el)) envs
+              | (A.Struct(_), SId(s1)) -> (L.build_load (lookup s1 envs) "to_another_struct" builder, envs)
+              | _ -> expr builder e envs)
+            in e1) el names) in
+        let add_elem acc (value, index) = L.build_insertvalue acc value index "building_struct" builder in
+        let ord_val_pairs = (List.combine llvaluelist (List.init (List.length llvaluelist) (fun i -> i))) in
+        let lstruct = List.fold_left add_elem init_struct ord_val_pairs in
+        (* Build the struct *)
+        let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
+        let lty = L.element_type pty in (* getting the type of the struct *)
+        let str_ptr = L.build_alloca lty n builder in
+        
+        let _ = L.build_store lstruct str_ptr builder in
+
+        (* this breaks it, needs a single pointer at the beginning REWRITE *)
+
+        (* let str_ptr = instantitate_struct t n array builder in *)
+        (str_ptr, envs)
+        | _ -> raise (Failure "Should only be a struct"))
       | SStructExplicit(t, n, el) ->
         ( match t with 
         A.Struct(name) -> 
@@ -658,8 +686,8 @@ define i32 @list_length(ptr noundef %0) #0 {
         (* let array = Array.of_list  *)
         let llvaluelist = (List.map2 (fun e n -> 
             let (e1, _) = (match e with 
-              (lt, SStructExplicit (t, _, el)) -> expr builder (lt, SStructExplicit (t, n, el)) envs
-              | (A.Struct(_), SId(s1)) -> (lookup s1 envs, envs)
+              (lt, SStructExplicit (t, _, el)) -> expr builder (lt, TempFix (t, n, el)) envs
+              | (A.Struct(_), SId(s1)) -> (L.build_load (lookup s1 envs) "to_another_struct" builder, envs)
               | _ -> expr builder e envs)
             in e1) el names) in
         let add_elem acc (value, index) = L.build_insertvalue acc value index "building_struct" builder in
@@ -677,7 +705,7 @@ define i32 @list_length(ptr noundef %0) #0 {
         let _ = L.build_store str_ptr str_ptr_ptr builder in
 
         (* let str_ptr = instantitate_struct t n array builder in *)
-        (str_ptr, bind n str_ptr envs)
+        (str_ptr_ptr, bind n str_ptr_ptr envs)
         | _ -> raise (Failure "Should only be a struct"))
 
         (* let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with *)

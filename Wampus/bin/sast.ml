@@ -21,6 +21,7 @@ and sx =
   | SStructAccess of string list * string list
   | SListExplicit of sexpr list
   | SSetExplicit of sexpr list
+  | TempFix of typ * string * sexpr list
   | SStructExplicit of typ * string * sexpr list
   | SNoexpr
 
