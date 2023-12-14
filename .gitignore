@@ -10,3 +10,4 @@ language_report/
 toplevel
 *.json
 list.o
+a.out

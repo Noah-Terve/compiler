@@ -553,7 +553,6 @@ define i32 @list_length(ptr noundef %0) #0 {
           let (list_head, _) = expr builder e1 envs in
           let (idx, _) = expr builder e2 envs in
           let _ = L.build_call list_remove_func [| list_head; idx |] "" builder in
-          let _ = L.build_call list_remove_func [| list_head; idx |] "" builder in
           (* let _ = build_debug_print_list list_head builder in *)
           (list_head, envs)
 

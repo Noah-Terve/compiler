@@ -1,27 +1,41 @@
-/* Author: Christopher Sasanuma*/
+/* Author: Christopher Sasanuma */
+/* Modified by: Neil Powers */
 /*** Lists with strings ***/
 list @l string @r tStops = ["North Station", "Haymarket", "Government Center"]; 
 
 println @l string @r ("******************************");
 println @l string @r ("Initial stops: ");
 printlist @l string @r (tStops);
-println @l string @r ("");
 
 list @l string @r updatedStops = list_insert @l string @r (tStops, 0, "Lechmere"); 
 list @l string @r updatedStops = list_insert @l string @r (tStops, 0, "East Somerville"); 
 
 int list_len = list_length @l string @r (tStops);
 
-println @l string @r ("Updated stops changed in reference to original list: ");
+println @l string @r ("\n\nUpdated stops changed in reference to original list: ");
 printlist @l string @r (tStops); 
-println @l string @r ("");
 
-for (int i = 0; i < list_len; i += 2){
+println @l string @r ("\n\nRemoving last stop (Gov. Cen.) from the list: ");
+list_remove @l string @r (tStops, list_len - 1);
+printlist @l string @r (tStops);
+
+println @l string @r ("\n\nRemoving first stop (East Somerville) from the list: ");
+list_remove @l string @r (tStops, 0);
+printlist @l string @r (tStops);
+
+println @l string @r ("\n\nRemoving second stop (North Station) from the list: ");
+list_remove @l string @r (tStops, 1);
+printlist @l string @r (tStops);
+
+println @l string @r ("\n\nNew first stop is supposed to be Lechmere: ");
+print @l string @r (list_at @l string @r (tStops, 0));
+
+while (list_length @l string @r (tStops) > 0) {
     list @l string @r currList = list_remove @l string @r (tStops, 0);
 }
 
-println @l string @r ("Removed all stops from the list: ");
+println @l string @r ("\n\nRemoved all stops from the list: ");
 printlist @l string @r (tStops);
-println @l string @r ("******************************");
+println @l string @r ("\n******************************");
 
 

@@ -146,3 +146,46 @@ char *string_concat(char *s1, char *s2) {
     strcat(new, s2);
     return new;
 }
+
+// Mallocs a new node with the given data and next pointer
+#define NODE(val, next) ({ \
+    node *n = malloc(sizeof(node)); \
+    n->data = val; \
+    n->next = next; \
+    n; \
+})
+
+#define MVAL(n) ({ \
+    int *v = malloc(sizeof(int)); \
+    *v = n; \
+    v; \
+})
+
+static int main() {
+    node **head = malloc(sizeof(node *));
+    *head = NULL;
+
+    list_insert(head, 0, MVAL(1));
+    list_insert(head, 1, MVAL(2));
+
+    list_int_print(head);
+
+    list_remove(head, 0);
+
+    list_int_print(head);
+
+    list_insert(head, 0, MVAL(3));
+    list_insert(head, 0, MVAL(4));
+
+    list_int_print(head);
+
+    list_remove(head, 1);
+
+    list_int_print(head);
+
+    printf("Length: %d\n", list_length(head));
+    printf("At 0: %d\n", *(int *)list_at(head, 0));
+    printf("At 1: %d\n", *(int *)list_at(head, 1));
+
+    return 0;
+}
