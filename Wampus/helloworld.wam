@@ -1,0 +1,4 @@
+/* This is a single line comment */
+print @l string @r ("hello world!");
+
+
