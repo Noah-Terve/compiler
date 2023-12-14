@@ -17,12 +17,12 @@ and sx =
   | SCall of string * sexpr list
   | SBindAssign of typ * string * sexpr
   | SBindDec of typ * string
+  | SStructExplicit of typ * string * sexpr list
   | SStructAssign of string list * string list * sexpr
   | SStructAccess of string list * string list
   | SListExplicit of sexpr list
   | SSetExplicit of sexpr list
   | TempFix of typ * string * sexpr list
-  | SStructExplicit of typ * string * sexpr list
   | SNoexpr
 
 type sstmt =
@@ -81,6 +81,7 @@ let rec string_of_sexpr (t, e) =
   | SSetExplicit el -> "{" ^ String.concat ", " (List.map string_of_sexpr el) ^ "}"
   | SStructExplicit (_, n, el)-> n ^ "#l" ^ String.concat ", " (List.map string_of_sexpr el) ^ "#r"
   | SNoexpr -> ""
+  | _ -> ""
     ) ^ ")"
 
 let rec string_of_sstmt = function

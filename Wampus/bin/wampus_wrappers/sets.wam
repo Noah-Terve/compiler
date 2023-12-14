@@ -12,6 +12,7 @@ set functions:
     size
 */
 
+
 template @l T @r
 bool list_contains (list @l T @r l, T elem) {
     for (int i = 0; i < list_length @l T @r (l); i += 1) {
@@ -25,25 +26,22 @@ bool list_contains (list @l T @r l, T elem) {
 
 template @l T @r
 list @l T @r list_copy (list @l T @r l) {
-    list @l T @r new_list;
+    list @l T @r new_list = [];
     for (int i = list_length @l T @r (l); i >= 0; i -= 1) {
         list_insert @l T @r (new_list, 0, list_at @l T @r (l, i));
     }
     return new_list;
 }
 
-template @l T @r
-bool isin (set @l T @r s, T elem) {
-    return list_contains @l T @r (s, elem);
-}
 
 template @l T @r
 set @l T @r set_of_list (list @l T @r l) {
-    set @l T @r s;
+    set @l T @r s = {};
 
-    for (int i = 0; i < list_length @l T @r (l); i += 1) {
+    int len = list_length @l T @r (l);
+    for (int i = len - 1; i >= 0; i -= 1) {
         T elem = list_at @l T @r (l, i);
-        if (!isin @l T @r (s, elem)) {
+        if (!list_contains @l T @r (s, elem)) {
             list_insert @l T @r (s, 0, elem);
         }
     }
@@ -57,14 +55,55 @@ list @l T @r list_of_set (set @l T @r s) {
 }
 
 template @l T @r
+int set_size (set @l T @r s) {
+    return list_length @l T @r (set_of_list @l T @r (s));
+}
+
+/* prints first level sets */
+template @l T @r
+int printset (set @l T @r s) {
+    print @l string @r ("{");
+    bool started = false;
+    set @l T @r temp = set_of_list @l T @r (s);
+    int len = list_length @l T @r (temp);
+    for (int i = 0; i < len; i += 1) {
+        T elem = list_at @l T @r (temp, i);
+        if (!started) {
+            print @l T @r (elem);
+            started = true;
+        }
+        else {
+            print @l string @r (", ");
+            print @l T @r (elem);
+        }
+    }
+    print @l string @r ("}");
+    return 0;
+}
+
+template @l T @r
+int printlnset (set @l T @r s) {
+    printset @l T @r (s);
+    println @l string @r ("");
+    return 0;
+}
+
+template @l T @r
+bool isin (set @l T @r s, T elem) {
+    return list_contains @l T @r (set_of_list @l T @r (s), elem);
+}
+
+
+template @l T @r
 set @l T @r set_add (set @l T @r s, T elem) {
+    s = set_of_list @l T @r (s);
     return list_insert @l T @r (s, 0, elem);
 }
 
 
 template @l T @r
 set @l T @r set_remove (set @l T @r s, T elem) {
-    
+    s = set_of_list @l T @r (s);
     for (int i = list_length @l T @r (s); i >= 0; i -= 1) {
         if (list_at @l T @r (s, i) == elem) {
             list_remove @l T @r (s, i);
@@ -75,15 +114,19 @@ set @l T @r set_remove (set @l T @r s, T elem) {
 
 
 template @l T @r
-set @l T @r union (set @l T @r s1, set @l T @r s2) {
-    set @l T @r new_set;
+set @l T @r set_union (set @l T @r s1, set @l T @r s2) {
+    /* you can union two lists and make a set, so we won't enfore set invariant
+     * here, but by only calling set_add we enforce the invariant on the new set */
+    set @l T @r new_set = {};
 
-    for (int i = 0; i < list_length @l T @r (s1); i += 1) {
-        list_insert @l T @r (new_set, 0, list_at @l T @r (s1, i));
+    int len = list_length @l T @r (s1);
+    for (int i = 0; i < len; i += 1) {
+        new_set = set_add @l T @r (new_set, list_at @l T @r (s1, i));
     }
 
-    for (int i = 0; i < list_length @l T @r (s2); i += 1) {
-        list_insert @l T @r (new_set, 0, list_at @l T @r (s2, i));
+    len = list_length @l T @r (s2);
+    for (int i = 0; i < len; i += 1) {
+        new_set = set_add @l T @r (new_set, list_at @l T @r (s2, i));
     }
 
     return new_set;
@@ -91,27 +134,33 @@ set @l T @r union (set @l T @r s1, set @l T @r s2) {
 
 template @l T @r
 set @l T @r set_intersection (set @l T @r s1, set @l T @r s2) {
-    set @l T @r new_set;
+    /* like union you can intersection two lists and get a set, so we won't enforce
+     * the invariant here, but will by only calling set_add */
+    set @l T @r new_set = {};
 
-    for (int i = 0; i < list_length @l T @r (s1); i += 1) {
+    int len = list_length @l T @r (s1);
+    for (int i = 0; i < len; i += 1) {
         if (list_contains @l T @r (s2, list_at @l T @r (s1, i))) {
-            list_insert @l T @r (new_set, 0, list_at @l T @r (s1, i));
+            new_set = set_add @l T @r (new_set, list_at @l T @r (s1, i));
         }
     }
 
     return new_set;
 }
 
-template @l T @r
-int set_size (set @l T @r s) {
-    return list_length @l T @r (set_of_list @l T @r (s));
-}
 
 template @l T @r
 bool set_superset (set @l T @r s1, set @l T @r s2) {
+    /* unlike the other set opperations, this will enforce the invariant on inputs
+     * as they are treated like sets in the check */
 
-    for (int i = 0; i < list_length @l T @r (s2); i += 1) {
-        if (!list_contains @l T @r (s1, list_at @l T @r (s2, i))) {
+    set @l T @r temp1 = set_of_list @l T @r (s1);
+    set @l T @r temp2 = set_of_list @l T @r (s2);
+
+    /* can use list_len here because we just enforced the set invariant so they are equal */
+    int len = list_length @l T @r (temp2);
+    for (int i = 0; i < len; i += 1) {
+        if (!list_contains @l T @r (temp1, list_at @l T @r (temp2, i))) {
             return false;
         }
     }
@@ -126,8 +175,12 @@ bool set_subset (set @l T @r s1, set @l T @r s2) {
 
 template @l T @r
 bool set_equals (set @l T @r s1, set @l T @r s2) {
-    if (set_superset @l T @r (s1, s2)) {
-        if (set_size @l T @r (s1) == set_size @l T @r (s2)) {
+    /* enforce invariant on both before checking the set opperations */
+    set @l T @r temp1 = set_of_list @l T @r (s1);
+    set @l T @r temp2 = set_of_list @l T @r (s2);
+
+    if (set_superset @l T @r (temp1, temp2)) {
+        if (set_size @l T @r (temp1) == set_size @l T @r (temp2)) {
             return true;
         }
     }

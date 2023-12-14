@@ -1,4 +1,39 @@
 set @l int @r a = {1, 2, 3, 4};
+list @l int @r c = [1, 1, 1, 1, 1, 1, 1, 1, 2];
+set @l int @r b = set_of_list @l int @r (c);
 
-print @l int @r (set_size @l int @r (a));
+println @l string @r ("testing basic set printing");
 
+print @l string @r ("a: ");
+printlnset @l int @r (a);
+print @l string @r ("size: ");
+println @l int @r (set_size @l int @r (a));
+
+print @l string @r ("b: ");
+printlnset @l int @r (b);
+print @l string @r ("size: ");
+println @l int @r (set_size @l int @r (b));
+
+println @l string @r ("testing set add and remove");
+println @l string @r ("[1,2] + 3");
+set @l int @r d = set_add @l int @r (b, 3);
+printlnset @l int @r (d);
+printlnset @l int @r (b);
+
+println @l string @r ("testing set equals");
+println @l bool @r (set_equals @l int @r (a, b));
+println @l bool @r (set_equals @l int @r (a, a));
+println @l bool @r (set_equals @l int @r (b, b));
+
+println @l string @r ("testing subset and superset");
+println @l bool @r (set_subset @l int @r (a, b));
+println @l bool @r (set_subset @l int @r (b, a));
+println @l bool @r (set_superset @l int @r (a, b));
+println @l bool @r (set_superset @l int @r (b, a));
+
+println @l string @r ("testing set intersection and union");
+println @l string @r ("a U b");
+printlnset @l int @r (set_union @l int @r (a, b));
+
+println @l string @r ("a inter b");
+printlnset @l int @r (set_intersection @l int @r (a, b));

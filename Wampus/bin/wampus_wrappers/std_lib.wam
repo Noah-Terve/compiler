@@ -1,104 +1,7 @@
 /* Standard Library Functions for Wampus */
 
-/* to_str functions for lists and sets that are built of basic types */
-/*
-template @l T @r
-string set_to_str (set @l T @r s) {
-    string result = "{";
-    bool started = false;
-    for (elem in s) {
-        if (!started) {
-            result += to_str @l T @r (elem);
-            started = true;
-        }
-        else result += ", " + to_str @l T @r (elem);
-    }
-    return result + "}";
-}
-
-template @l T @r
-string list_to_str (list @l T @r s) {
-    string result = "[";
-    bool started = false;
-    for (elem in s) {
-        if (!started) {
-            result += to_str @l T @r (elem);
-            started = true;
-        }
-        else result += ", " + to_str @l T @r (elem);
-    }
-    return result + "]";
-}
-*/
-
-
-/* print and println functions for lists and sets that are built of basic types */
-/* versions using to_str are not used for now.
-template @l T @r
-int printset (set @l T @r s) {
-    print @l string @r (set_to_str @l T @r (s));
-    return 0;
-}
-
 template @l T @r
 int printlist (list @l T @r l) {
-    print @l string @r (list_to_str @l T @r (l));
-    return 0;
-}
-
-template @l T @r
-int printlnset (set @l T @r s) {
-    println @l string @r (set_to_str @l T @r (s));
-    return 0;
-}
-
-template @l T @r
-int printlnlist (list @l T @r l) {
-    println @l string @r (list_to_str @l T @r (l));
-    return 0;
-}
-*/
-
-/*
-template @l T @r
-int printset (set @l T @r s) {
-    print @l string @r ("{");
-    bool started = false;
-    for (elem in s) {
-        if (!started) {
-            print @l T @r (elem);
-            started = true;
-        }
-        else {
-            print @l string @r (", ");
-            print @l T @r (elem);
-        }
-    }
-    print @l string @r ("}");
-    return 0;
-}
-*/
-
-template @l T @r
-int printlist (list @l T @r l) {
-/*    print @l string @r ("[");
-    bool started = false;
-    T elem;
-    for (int i = 0; i < list_length @l T @r (l); i+= 1) {
-        elem = list_at @l T @r (l, i);
-        if (!started) {
-            print @l T @r (elem);
-            started = true;
-        }
-        else {
-            print @l string @r (", ");
-            print @l T @r (elem);
-        }
-    }
-    print @l string @r ("]");
-    */
-
-
     print @l string @r ("[");
 
     int len = list_length @l T @r (a);
@@ -119,16 +22,6 @@ int printlist (list @l T @r l) {
 
     return 0;
 }
-
-/*
-template @l T @r
-int printlnset (set @l T @r s) {
-    printset @l T @r (l);
-    println @l string @r ("");
-    return 0;
-}
-*/
-
 
 template @l T @r
 int printlnlist (list @l T @r l) {

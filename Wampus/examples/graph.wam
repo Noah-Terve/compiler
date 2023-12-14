@@ -50,15 +50,16 @@ int add_node(Graph @l T @r g, node @l T @r n) {
     /* go through the connections and make sure they are in the graph */
     int len = list_length @l string @r (n.connections);
     for (int i = len - 1; i >= 0; i -= 1) {
-        /* treating a set like a list */
         string name = list_at @l string @r (n.connections, i);
         if (!has_node @l T @r (g, name)) {
             list_remove @l string @r (n.connections, i);
         }
     }
+        /* treating a set like a list */
 
-    set_add @l node @l T @r @r (g.nodes, n); /* add n into the set of nodes */
-    g.num_nodes += 1;
+    g.nodes = set_add @l node @l T @r @r (g.nodes, n); /* add n into the set of nodes */
+    g.num_nodes = set_size @l node @l T @r @r(g.nodes);
+
     return 0; /* no void functions :( */
 }
 
@@ -68,7 +69,7 @@ int print_node (node @l T @r n) {
     print @l string @r ("Node: " + n.name + ", contains information: ");
     println @l T @r (n.data);
     print @l string @r ("It is connected to: ");
-    int len = list_length @l string @r (n.connections);
+    int len = set_size @l string @r (n.connections);
     for (int i = 0; i < len; i += 1) {
         print @l string @r (list_at @l string @r (n.connections, i));
     }
@@ -81,7 +82,7 @@ int print_node (node @l T @r n) {
 /* assumes graphs are first level (i.e. store only basic types) */
 template @l T @r
 int print_graph (Graph @l T @r g) {
-    print @l string @r ("Graph contians the following nodes:");
+    println @l string @r ("Graph contians the following nodes:");
     for (int i = 0; i < g.num_nodes; i += 1) {
         print_node @l T @r (list_at @l node @l T @r @r (g.nodes, i));
     }
@@ -93,14 +94,15 @@ int print_graph (Graph @l T @r g) {
 template @l T @r
 int remove_node(Graph @l T @r g, node @l T @r n) {
     int len = list_length @l node @l T @r @r (g.nodes);
+    print @l int @r (len);
     for (int i = len - 1; i >= 0; i -= 1) {
-        node @l T @r n0 = list_at @l nodes @l T @r @r (g.nodes, i);
+        node @l T @r n0 = list_at @l node @l T @r @r (g.nodes, i);
         /* make sure the node doesn't think it's connected to the node we removed */
-        set_remove @l string @r (n0.connections, n.name);
+        n0.connections = set_remove @l string @r (n0.connections, n.name);
     }
 
 
-    set_remove @l node @l T @r @r (g.nodes, n);
+    g.nodes = set_remove @l node @l T @r @r (g.nodes, n);
     g.num_nodes = set_size @l node @l T @r @r (g.nodes);
     return 0;
 }
@@ -112,7 +114,7 @@ int add_connection(Graph @l T @r g, string n1, string n2) {
     for (int i = len - 1; i >= 0; i -= 1) {
         node @l T @r n0 = list_at @l nodes @l T @r @r (g.nodes, i);
         if (n0.name == n1) {
-            set_add @l string @r (n0.connections, n2);
+            n0.connections = set_add @l string @r (n0.connections, n2);
         }
     }
 
@@ -123,22 +125,34 @@ int add_connection(Graph @l T @r g, string n1, string n2) {
 /*
 Graph @l int @r g = new_graph @l int @r();
 
-<<<<<<< HEAD
 
 
-add_node @l int @r (g, n);
-=======
->>>>>>> 3318edf (updates to graph)
 
+*/
 Graph @l int @r g = #l {}, 0 #r; 
+
+int len = list_length @l node @l int @r @r (g.nodes);
+println @l int @r (len);
+
 node @l int @r n0 = #l "first", 3, {"hello"} #r;
+n0.connections = set_add @l string @r (n0.connections,  "hello");
+
 node @l int @r n1 = #l "hello", 5, {"first"} #r;
 print_node @l int @r (n0);
 print_node @l int @r (n1);
 
+add_node @l int @r (g, n0);
+add_node @l int @r (g, n1);
 
+
+len = list_length @l node @l int @r @r (g.nodes);
+println @l int @r (len);
+
+println @l bool @r (has_node @l int @r (g, "first"));
+
+
+print_graph @l int @r (g);
 /*
-println @l string @r ("");
-println @l bool @r (has_node @l int @r (g, "1"));
-
+remove_node @l int @r (g, n0);
+print_graph @l int @r (g);
 */

@@ -16,7 +16,7 @@ println @l string @r ("Updated stops changed in reference to original list: ");
 printlist @l string @r (tStops); 
 println @l string @r ("");
 
-for (int i = 0; i < list_len; i += 1){
+for (int i = 0; i < list_len; i += 2){
     list @l string @r currList = list_remove @l string @r (tStops, 0);
 }
 
