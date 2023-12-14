@@ -187,6 +187,7 @@ let translate program =
       (* environments could be an issue here *)
       let sformals = StringMap.find (List.hd sdecls) struct_decls in
       let index = find_index sformals sid 0 in
+      let _ = Printf.fprintf stderr "got here" in 
       let elm_ptr = L.build_struct_gep llstruct index sid builder in 
       let next_llstruct = (L.build_load elm_ptr sid builder) in 
       (find_nested_struct sids next_sdecls next_llstruct builder)
@@ -621,6 +622,7 @@ define i32 @list_length(ptr noundef %0) #0 {
         let (llvalue, envs) = (match e with 
         (* could also do struct access here... *)
             (A.Struct(_), SId(s1)) -> (L.build_load (lookup s1 envs) "val_to_assign" builder, envs)
+          | (lt, SStructExplicit(t, n, el)) -> expr builder (lt, TempFix (t, n, el)) envs
           | _ -> expr builder e envs) in
         (* get the formals of sname *)
         let elm_ptr = find_nested_struct (cdr sids) sdnames llstruct builder in
