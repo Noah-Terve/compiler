@@ -89,18 +89,11 @@ void *list_at(node **head, unsigned int idx) {
 }
 
 unsigned int list_length(node **head) {
-    if (list_empty(head)) {
-        return 0;
-    }
-
     unsigned int len = 0;
-    // int* len = malloc(sizeof(int));
     
     for (node *curr = *head; curr != NULL; curr = curr->next) {
         len++;
     }
-
-    // printf("Length: %d\n", len);
 
     return len;
 }
