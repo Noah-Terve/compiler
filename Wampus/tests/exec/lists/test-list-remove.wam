@@ -1,0 +1,15 @@
+list @l int @r a = [1, 2, 3, 4, 5];
+
+printlnlist @l int @r (a);
+
+list_remove @l int @r (a, 2);
+
+printlnlist @l int @r (a);
+
+list_remove @l int @r (a, 3);
+
+printlnlist @l int @r (a);
+
+list_remove @l int @r (a, 0);
+
+printlnlist @l int @r (a);
