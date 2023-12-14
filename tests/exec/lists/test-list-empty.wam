@@ -1,1 +1,12 @@
+
+template @l T @r
+int ll (list @l T @r l) {
+    return list_length @l T @r (l);
+}
+
 [];
+list @l int @r a = [];
+list_insert @l int @r(a, 0, 1);
+printlnlist @l int @r(a);
+
+print @l int @r (ll @l int @r(a));

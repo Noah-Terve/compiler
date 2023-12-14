@@ -20,13 +20,17 @@ all: toplevel
 # lists: test-list
 # 	./test-list
 
+all: toplevel
 
 # "make toplevel" compiles the Wampus compiler
-toplevel: bin/ast.ml bin/parser.mly bin/scanner.mll bin/toplevel.ml bin/codegen.ml bin/semant.ml
+toplevel: bin/ast.ml bin/parser.mly bin/scanner.mll bin/toplevel.ml bin/codegen.ml bin/semant.ml list.o
 	dune build
 
-%.o: bin/%.c
-	$(CC) $(CFLAGS) -c -o bin/$@ $<
+list.o:
+	$(CC) $(CFLAGS) -c -o bin/list.o bin/list.c
+
+# %.o:# bin/%.c
+# 	$(CC) $(CFLAGS) -c -o bin/$@ bin/$*.c
 
 # "make test" Compiles everything and runs the regression tests
 .PHONY: test

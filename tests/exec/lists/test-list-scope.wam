@@ -1,0 +1,20 @@
+int foo(list @l int @r l) {
+    list_insert @l int @r(l, 0, 0);
+}
+
+int bar(list @l int @r l) {
+    list_remove @l int @r(l, 0);
+    list_remove @l int @r(l, 4);
+}
+
+int main() {
+    list @l int @r l = [1, 2, 3, 4, 5];
+    foo(l);
+    printlnlist @l int @r (l); /* [0, 1, 2, 3, 4, 5] */
+
+    bar(l);
+    printlnlist @l int @r (l); /* [1, 2, 3, 4] */
+    return 0;
+}
+
+main();

@@ -7,3 +7,9 @@ list @l list @l list @l int @r @r @r e = [[], [], []];
 list @l list @l list @l int @r @r @r d = [[[], [4]], [[2], []], [[]]];
 list @l list @l list @l string @r @r @r c = [[[], ["hello"]], [["sadage"], []], [[]]];
 
+list @l list @l string @r @r s = list_at @l list @l list @l string @r @r @r (c, 1);
+list @l string @r s2 = list_at @l list @l string @r @r(s, 0);
+
+printlist @l string @r (s2);
+/*
+ */
