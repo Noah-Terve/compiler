@@ -1,0 +1,19 @@
+bool main (list @l int @r l) {
+	int length = list_length @l int @r (l);
+	set @l int @r s = {};
+	for (int i = 0; i < length; i += 1) {
+		int elem = list_at @l int @r (l, i);
+		if (isin @l int @r (s, elem)) {
+			return false;
+		}
+		s = set_add @l int @r (s, elem);
+	}
+    /*
+    */
+	return true;
+}
+if (main ([1,2,3,4,5,5])) {
+    print @l string @r ("No duplicates!");
+} else {
+	print @l string @r ("Duplicates!");
+}
