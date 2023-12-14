@@ -8,9 +8,9 @@ struct Animal {
 };
 
 int test (Animal s) {
-    s.d.legs = 4;
+    dog d;
 
-    return 4;
+    return d.legs;
     /* return s.legs; */
 }
 

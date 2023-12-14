@@ -2,38 +2,60 @@
 /*** Lists with strings ***/
 list @l string @r tStops = ["North Station", "Haymarket", "Government Center"]; 
 
+println @l string @r ("******************************");
+println @l string @r ("Initial stops: ");
 printlist @l string @r (tStops);
+println @l string @r ("");
 
 list @l string @r updatedStops = list_insert @l string @r (tStops, 0, "Lechmere"); 
-list @l string @r updatedStops = list_insert @l string @r (tStops, 0, "East Sommerville"); 
+list @l string @r updatedStops = list_insert @l string @r (tStops, 0, "East Somerville"); 
 
 int list_len = list_length @l string @r (tStops);
 
-printlist @l string @r (updatedStops);
+println @l string @r ("Updated stops changed in reference to original list: ");
 printlist @l string @r (tStops); 
+println @l string @r ("");
 
 for (int i = 0; i < list_len; i += 1){
     list @l string @r currList = list_remove @l string @r (tStops, 0);
 }
 
+println @l string @r ("Removed all stops from the list: ");
 printlist @l string @r (tStops);
+println @l string @r ("******************************");
+
+
 
 /*** Nested lists ***/ 
 
-int print_nestedlist (list @l int @r aList) {
-    int listLen = list_length @l int @l (aList);
+/*
+int print_nestedlist (list @l list @l int  @r @r aList) {
+    int listLen = 3;
+    print @l int @r (listLen);
+
+    println @l string @r ("unchi");
     for (int i = 0; i < listLen; i += 1){
-        print @l int @r (list_at @l int @t (aList, i)); 
+        list @l int @r currList = list_at @l list @l list @l int @r @r @r (aList, i);
+        int innerListLength = list_length @l list @l int @r @r (currList);
+        print @l string @r ("unchi");
+
+        for (int j = 0; j < innerListLength; j += 1){
+            print @l int @r (list_at @l list @l int @r @r (currList, j));
+
+        }
+        println @l string @r ("unchi");
     }
+    println @l string @r ("unchi");
 
     return 0;
 
 }
 
+
 list @l list @l int @r @r matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
 int listLen = list_length @l list @l int @r @r (matrix);
 
-println @l string @r ("Matrix before update); 
+println @l string @r ("Matrix before update"); 
 int num = print_nestedlist(matrix); 
 
 for (int i = 0; i < listLen; i += 1){
@@ -45,8 +67,9 @@ for (int i = 0; i < listLen; i += 1){
 }
 
 println @l string @r ("Matrix after update: ");
-int num = print_nestedlist(matrix);
+
+int num = print_nestedlist(matrix); 
 
 
 
-
+*/

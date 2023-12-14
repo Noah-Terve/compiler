@@ -550,7 +550,7 @@ define i32 @list_length(ptr noundef %0) #0 {
           let mallocd_value = L.build_bitcast (build_malloc builder value) voidptr_t "voidptr" builder in
           let _ = L.build_call list_insert_func [| list_head; idx; mallocd_value |] "" builder in
           (* let _ = build_debug_print_list list_head builder in *)
-          let _ = L.build_call list_print_func [| list_head |] "" builder in
+          (* let _ = L.build_call list_print_func [| list_head |] "" builder in *)
           (list_head, envs)
 
       | SCall (s, [e1; e2]) when (String.starts_with ~prefix:"_list_remove" s) ->
@@ -642,7 +642,7 @@ define i32 @list_length(ptr noundef %0) #0 {
         (* let index = List.find_index  *)
       | SStructAccess (sdnames, sids) -> 
         let _ = Printf.fprintf stderr "Assigning a struct value" in
-        let llstruct = L.build_load (lookup (List.hd sids) envs ) "temp" builder in 
+        let llstruct = lookup (List.hd sids) envs  in 
         let elm_ptr = find_nested_struct (cdr sids) sdnames llstruct builder in 
         (L.build_load elm_ptr (List.hd (List.rev sids)) builder, envs)
       | SBindAssign (t, var_name, e) ->
@@ -651,7 +651,7 @@ define i32 @list_length(ptr noundef %0) #0 {
       | SStructExplicit(t, n, el) ->
         ( match t with 
         A.Struct(name) -> 
-          let init_struct = instantitate_struct t name in
+        let init_struct = instantitate_struct t name in
         (* Build the array of values for struct *)
         let (_, names) = List.split (StringMap.find name struct_decls) in
         (* function that takes in the two lists -> if expr is another struct literal, pass in an additional variable prev_name *)
@@ -671,11 +671,13 @@ define i32 @list_length(ptr noundef %0) #0 {
         let str_ptr = L.build_alloca lty n builder in
         
         let _ = L.build_store lstruct str_ptr builder in
+
+        (* this breaks it, needs a single pointer at the beginning REWRITE *)
         let str_ptr_ptr = L.build_alloca pty n builder in
         let _ = L.build_store str_ptr str_ptr_ptr builder in
 
         (* let str_ptr = instantitate_struct t n array builder in *)
-        (str_ptr_ptr, bind n str_ptr envs)
+        (str_ptr, bind n str_ptr envs)
         | _ -> raise (Failure "Should only be a struct"))
 
         (* let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with *)

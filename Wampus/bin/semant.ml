@@ -102,7 +102,9 @@ let check (units : program) =
         (* these two types will match if the thing on the right 
            is an actual expression with a type, the only time they won't equal eachother 
            is when the thing on the right is an unknown, which means it must be a list explicit (same for sets below) *)
-          if t1 = t2 then (lvaluet, sexp) else (match sexp with
+          if t1 = t2 then (lvaluet, sexp) else 
+            (* let _ = print_endline (string_of_sexpr (lvaluet, sexp)) in  *)
+            (match sexp with
               SListExplicit (sexps) -> let sexps' = List.map (fun sx -> check_assign t1 sx err) sexps in (lvaluet, SListExplicit(sexps'))
             | _ -> raise (Failure "Found something that was of type List(unknown), but was not a list explicit, internal error"))
       | (Set(t1), Set(t2)) -> 
