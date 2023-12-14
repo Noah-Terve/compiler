@@ -35,11 +35,9 @@ bool has_node (Graph @l T @r g, string name) {
     int len = list_length @l node @l T @r @r (g.nodes);
     for (int i = 0; i < len; i += 1) {
         node @l int @r n = list_at @l node @l T @r @r (g.nodes, i);
-    /*
         if (n.name == name) {
             return true;
         }
-    */
     }
     return false;
 }
@@ -51,7 +49,7 @@ int add_node(Graph @l T @r g, node @l T @r n) {
     
     /* go through the connections and make sure they are in the graph */
     int len = list_length @l string @r (n.connections);
-    for (int i = len - 1; i >= 0; i += 1) {
+    for (int i = len - 1; i >= 0; i -= 1) {
         /* treating a set like a list */
         string name = list_at @l string @r (n.connections, i);
         if (!has_node @l T @r (g, name)) {
@@ -65,8 +63,7 @@ int add_node(Graph @l T @r g, node @l T @r n) {
 }
 
 /* assumes first level nodes */
-/*
-tempalte @l T @r
+template @l T @r
 int print_node (node @l T @r n) {
     print @l string @r ("Node: " + n.name + ", contains information: ");
     println @l T @r (n.data);
@@ -79,11 +76,9 @@ int print_node (node @l T @r n) {
     println @l string @r ("");
     return 0;
 }
-*/
 
 
 /* assumes graphs are first level (i.e. store only basic types) */
-/*
 template @l T @r
 int print_graph (Graph @l T @r g) {
     print @l string @r ("Graph contians the following nodes:");
@@ -91,49 +86,59 @@ int print_graph (Graph @l T @r g) {
         print_node @l T @r (list_at @l node @l T @r @r (g.nodes, i));
     }
 }
-*/
-
 
 
 /* remove a node, identified by name, make sure to also go through and remove
  * other node's connections to it. */
-/*
 template @l T @r
 int remove_node(Graph @l T @r g, node @l T @r n) {
+    int len = list_length @l node @l T @r @r (g.nodes);
+    for (int i = len - 1; i >= 0; i -= 1) {
+        node @l T @r n0 = list_at @l nodes @l T @r @r (g.nodes, i);
+        /* make sure the node doesn't think it's connected to the node we removed */
+        set_remove @l string @r (n0.connections, n.name);
+    }
+
+
     set_remove @l node @l T @r @r (g.nodes, n);
     g.num_nodes = set_size @l node @l T @r @r (g.nodes);
     return 0;
 }
-*/
 
-/* add a connection from the node named n1 to the node named n2 */ /*
+/* add a connection from the node named n1 to the node named n2 */
 template @l T @r
-Graph @l T @r add_connection(Graph @l T @r g, string n1, string n2) {
-    /* easy beause of sets, just find which connection we need to add the n2 to*/ /*
-    for (c in g.connections) {
-        if (c.this == n1) {
-            c.connections += n2;
-            break;
+int add_connection(Graph @l T @r g, string n1, string n2) {
+    int len = list_length @l node @l T @r @r (g.nodes);
+    for (int i = len - 1; i >= 0; i -= 1) {
+        node @l T @r n0 = list_at @l nodes @l T @r @r (g.nodes, i);
+        if (n0.name == n1) {
+            set_add @l string @r (n0.connections, n2);
         }
     }
-    return g;
+
+    return 0;
 }
-*/
+
+
 /*
 Graph @l int @r g = new_graph @l int @r();
 
+<<<<<<< HEAD
 
 
 add_node @l int @r (g, n);
+=======
+>>>>>>> 3318edf (updates to graph)
 
-*/
-int doit () {
-    Graph @l int @r g = #l {}, 0 #r; 
-    node @l int @r n = #l "first", 3, {"hello"} #r;
-    println @l string @r ("");
-    println @l bool @r (has_node @l int @r (g, "1"));
-}
+Graph @l int @r g = #l {}, 0 #r; 
+node @l int @r n0 = #l "first", 3, {"hello"} #r;
+node @l int @r n1 = #l "hello", 5, {"first"} #r;
+print_node @l int @r (n0);
+print_node @l int @r (n1);
 
-doit();
+
 /*
+println @l string @r ("");
+println @l bool @r (has_node @l int @r (g, "1"));
+
 */
