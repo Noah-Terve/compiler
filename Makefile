@@ -4,7 +4,7 @@ MAKEFILE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 ROOT_DIR := $(abspath $(MAKEFILE_DIR))
 EXE_NAME := toplevel.exe
 WAMPUS := $(ROOT_DIR)/_build/default/bin/$(EXE_NAME)
-COMPILE_SCRIPT := $(ROOT_DIR)/bin/compile.sh
+COMPILE_SCRIPT := $(ROOT_DIR)/compile.sh
 OUTPUT_DIR := $(ROOT_DIR)/out
 
 CC = gcc

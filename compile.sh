@@ -15,12 +15,11 @@ set -euo pipefail
 #       from the path, leaving the directory. We cd into that directory and
 #       pwd to get the absolute path.
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-HOME_DIR="$(dirname "$SCRIPT_DIR")"
 
 # location of our compilers (llc, cc, and wampus).
 LLC="llc"
 CC="cc"
-WAMPUS="$HOME_DIR/_build/default/bin/toplevel.exe"
+WAMPUS="$SCRIPT_DIR/_build/default/bin/toplevel.exe"
 
 # usage function
 usage() {
@@ -56,10 +55,10 @@ TARGET_DIR="$(dirname "$exe_file")"
 
 # Make the wampus compiler
 echo "Building compiler:"
-make -C "$HOME_DIR"
+make -C "$SCRIPT_DIR"
 echo ""
 
-make -C "$HOME_DIR" list.o
+make -C "$SCRIPT_DIR" list.o
 
 # Compile the wampus file to llvm
 echo "Compiling to llvm:"
@@ -78,7 +77,7 @@ echo ""
 # Compile the assembly file to an executable
 echo "Compiling assembly into an executable:"
 echo "$CC -O2 $TARGET_DIR/$name.s list.o -o $exe_file"
-"$CC" -O2 "$TARGET_DIR/$name.s" "$SCRIPT_DIR/list.o" -o "$exe_file"
+"$CC" -O2 "$TARGET_DIR/$name.s" "$SCRIPT_DIR/bin/list.o" -o "$exe_file"
 echo ""
 echo "Run your the program with:"
 echo "./$exe_file"
