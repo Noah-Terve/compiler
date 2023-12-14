@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Author: Neil Powers
 # Minor edits for readability by: Noah Tervalon

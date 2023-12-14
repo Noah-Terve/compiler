@@ -50,5 +50,5 @@ clean:
 
 # Generate a .out file from a .wam file
 %.err: %.wam toplevel
-	$(COMPILE_SCRIPT) $< $(OUTPUT_DIR)/$(notdir $<)
-	$(OUTPUT_DIR)/$(notdir $<) > $@
+	$(COMPILE_SCRIPT) $< $(OUTPUT_DIR)/$(notdir $<) 2> $@
+	$(OUTPUT_DIR)/$(notdir $<) 2> $@

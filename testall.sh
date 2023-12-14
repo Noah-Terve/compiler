@@ -91,7 +91,7 @@ Check() {
     generatedfiles="$generatedfiles ${output_path}.ll ${output_path}.s ${output_path}.exe ${output_path}.out" &&
     Run "dune exec $WAMPUS" "$1" ">" "${output_path}.ll" &&
     Run "$LLC" "-relocation-model=pic" "${output_path}.ll" ">" "${output_path}.s" &&
-    Run "$CC" "-o" "${output_path}.exe" "${output_path}.s" &&
+    Run "$CC" "-o" "${output_path}.exe" "${output_path}.s" "bin/list.o" &&
     Run "./${output_path}.exe" > "${output_path}.out" &&
     Compare ${output_path}.out ${reffile}.out ${output_path}.diff
 

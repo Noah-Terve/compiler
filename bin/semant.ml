@@ -296,28 +296,28 @@ let check (units : program) =
             Char -> true
           |  Int -> true
           | _ -> false
-      in
+        in
         (* let resultString = function
           String -> true
           | Char -> true
           | _ -> false
         in *)
         let ty = match op with
-          Add when same && (t1 = Char || t1 = String) -> String
-        | Add | Sub | Mult | Div when same && (t1 = Int || t1 = Float || t1 = Char)   -> t1
-        | Add | Sub | Mult | Div when (resultInt t1 && resultInt t2)  -> Int
-        | Add | Sub | Mult | Div when (resultFloat t1 && resultFloat t2) -> Float
-        (* Potential route *)
-        (* | expr Assign(e1, SBinop((t1, e1'), op, (t2, e2'))) *)
-        | Mod when same && (t1 = Int || t1 = Char) -> t1
-        | Equal | Neq when same -> Bool
-        | Less | Leq | Greater | Geq
-                    when same && (t1 = Int || t1 = Float) -> Bool
-        | And | Or when same && t1 = Bool -> Bool
-        | _ -> raise (
-            Failure ("illegal binary operator " ^
-                      string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
-                      string_of_typ t2 ^ " in " ^ string_of_expr e))
+            Add when same && (t1 = Char || t1 = String) -> String
+          | Add | Sub | Mult | Div when same && (t1 = Int || t1 = Float || t1 = Char)   -> t1
+          | Add | Sub | Mult | Div when (resultInt t1 && resultInt t2)  -> Int
+          | Add | Sub | Mult | Div when (resultFloat t1 && resultFloat t2) -> Float
+          (* Potential route *)
+          (* | expr Assign(e1, SBinop((t1, e1'), op, (t2, e2'))) *)
+          | Mod when same && (t1 = Int || t1 = Char) -> t1
+          | Equal | Neq when same -> Bool
+          | Less | Leq | Greater | Geq
+                      when same && (t1 = Int || t1 = Float) -> Bool
+          | And | Or when same && t1 = Bool -> Bool
+          | _ -> raise (
+              Failure ("illegal binary operator " ^
+                        string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
+                        string_of_typ t2 ^ " in " ^ string_of_expr e))
         in (ty, SBinop((t1, e1'), op, (t2, e2')))
     | Call (fname, args) as call ->
       (* case where the function name exists (this mainly happens

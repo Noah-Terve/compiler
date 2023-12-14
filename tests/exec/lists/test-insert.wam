@@ -1,6 +1,8 @@
 list @l int @r a = [];
 
-list_insert(a, 0, 1);
-list_insert(a, 0, 2);
-print @l bool @r (list_remove(a, 3));
+list_insert @l int @r(a, 0, 1);
+list_insert @l int @r(a, 0, 2);
+list_insert @l int @r(a, 2, 3);
+list_insert @l int @r(a, 1, -1);
+printlnlist @l int @r (a);
 

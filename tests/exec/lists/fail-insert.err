@@ -1,1 +1,1 @@
-Fatal error: exception Failure("unrecognized function list_insert,int.int.int")
+Fatal error: exception Invalid_argument("unrecognized function list_insert,int.int.int")

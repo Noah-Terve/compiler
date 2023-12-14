@@ -10,4 +10,6 @@ println @l string @r ("abc");
 
 list @l string @r b = ["1", "2", "3", "4"];
 println @l string @r (list_at @l string @r (b, 0));
+println @l string @r (list_at @l string @r (b, 3));
+println @l string @r (list_at @l string @r (b, 2));
 

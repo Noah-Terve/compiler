@@ -1,0 +1,1 @@
+Fatal error: exception Failure("Functions can't have the same name and the same input types in the same order")

@@ -615,7 +615,7 @@ define i32 @list_length(ptr noundef %0) #0 {
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in
           (value_to_assign, envs)
       | SStructAssign (sdnames, sids, e) ->
-        let _ = Printf.fprintf stderr "Assigning a struct value" in
+        (* let _ = Printf.fprintf stderr "Assigning a struct value" in *)
         let llstruct = L.build_load (lookup (List.hd sids) envs) "temp" builder in
         (* environments could be an issue here *)
         let (llvalue, envs) = (match e with 

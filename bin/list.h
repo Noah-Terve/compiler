@@ -25,4 +25,6 @@ void list_int_print(node **l);
 
 unsigned int list_length(node **head);
 
+char *string_concat(char *s1, char *s2);
+
 #endif // LIST_H
