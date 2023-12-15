@@ -9,7 +9,7 @@ my_list = list_insert @l int @r (my_list, length, 5);
 /* my_list = [2, 3, 4, 5, 5] */
 my_list = list_remove @l int @r (my_list, 0);
 
-printlist @l int @r (my_list);
+printlnlist @l int @r (my_list);
 
 
 set @l int @r my_set = {};
@@ -32,7 +32,7 @@ my_set = set_intersection @l int @r (my_set2, my_set3);
 printlnset @l int @r (my_set);
 /* my_set = {5} */
 
-
+/* Structs */
 struct Dog {
 	string name;
 	int age;
@@ -47,15 +47,38 @@ struct Animals {
 	T a;
 };
 
+int updateCatAge (Cat c) {
+	c.age += 4;
+	return 0;
+}
+
+int updateDogAge (Dog d) {
+	d.age += 5;
+	return 0;
+}
 int main () {
+/* You can directly assign structs to a struct value */
     Animals @l Dog @r my_animal1 = #l #l "felix", 5 #r #r;
+/* You can assign a member variable of a struct to another struct */
     Cat c = #l "luna", 3 #r;
     Animals @l Cat @r my_animal2;
     my_animal2.a = c;
+
+
     println @l string @r (my_animal1.a.name);
     println @l string @r (my_animal2.a.name);
+	/* -> felix 
+	   -> luna
+	*/
+
+	/* Structs are passed by reference! */
+	updateDogAge(my_animal1.a);
+    updateCatAge(my_animal2.a);
+	
+	println @l int @r (my_animal1.a.age);
+	println @l int @r (my_animal2.a.age);
+	/* 10 years for felix, 7 years for luna */
+
     return 0;
 }
 main();
-/* 
-*/

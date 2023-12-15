@@ -3,4 +3,9 @@ struct box {
     T item;
 };
 
-box @l box @l int @r @r b;
+int main () {
+    box @l box @l int @r @r b;
+    print @l int @r (b.item.item);
+    return b.item.item;
+}
+main();
