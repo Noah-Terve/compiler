@@ -576,7 +576,7 @@ let check (units : program) =
                   else raise (Failure "Continue cannot be outside a loop")
     | Break -> if is_inloop = inloop then (envs, SBreak)
                 else raise (Failure "Break cannot be outside a loop")
-
+    | NullStatement -> (envs, SBlock([])) (* stupid but it reduces work in codegen *)
     | _ -> raise (Failure "Unhandled statement")
 
 in
