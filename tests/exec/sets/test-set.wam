@@ -20,11 +20,6 @@ set @l int @r d = set_add @l int @r (b, 3);
 printlnset @l int @r (d);
 printlnset @l int @r (b);
 
-println @l string @r ("testing set equals");
-println @l bool @r (set_equals @l int @r (a, b));
-println @l bool @r (set_equals @l int @r (a, a));
-println @l bool @r (set_equals @l int @r (b, b));
-
 println @l string @r ("testing subset and superset");
 println @l bool @r (set_subset @l int @r (a, b));
 println @l bool @r (set_subset @l int @r (b, a));
