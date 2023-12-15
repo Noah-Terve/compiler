@@ -182,7 +182,7 @@ let translate program =
     let add_elem acc (value, index) = L.build_insertvalue acc value index "building_empty_struct" builder in
     let ord_val_pairs = (List.combine llvaluelist (List.init (List.length llvaluelist) (fun i -> i))) in
     let lstruct = List.fold_left add_elem init_struct ord_val_pairs in
-    
+
     let str_ptr = L.build_alloca lty "empty_struct" builder in
     let _ = L.build_store lstruct str_ptr builder in
     str_ptr
@@ -651,7 +651,6 @@ define i32 @list_length(ptr noundef %0) #0 {
         let index = find_index sformals sid 0 in
         let elm_ptr = L.build_struct_gep llstruct index sid builder in  *)
         (L.build_store llvalue elm_ptr builder, envs)
-        (* let index = List.find_index  *)
       | SStructAccess (sdnames, sids) -> 
         let llstruct = L.build_load (lookup (List.hd sids) envs) (List.hd sids) builder in 
         let elm_ptr = find_nested_struct (cdr sids) sdnames llstruct builder in 

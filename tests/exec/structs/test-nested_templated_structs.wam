@@ -10,5 +10,9 @@ struct room {
     box @l T2 @r box3;
     box @l T3 @r box4;
 };
-
-room @l int, string, char, bool @r living_room;
+int main () {
+    room @l int, string, char, bool @r living_room;
+    print @l int @r (living_room.box1.item);
+    return living_room.box1.item;
+}
+main();
