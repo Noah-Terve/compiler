@@ -48,7 +48,7 @@ clean:
 	$(COMPILE_SCRIPT) $< $(OUTPUT_DIR)/$(notdir $<)
 	$(OUTPUT_DIR)/$(notdir $<) > $@
 
-# Generate a .out file from a .wam file
+# Generate a .err file from a .wam file
 %.err: %.wam toplevel
 	$(COMPILE_SCRIPT) $< $(OUTPUT_DIR)/$(notdir $<) 2> $@
 	$(OUTPUT_DIR)/$(notdir $<) 2> $@
