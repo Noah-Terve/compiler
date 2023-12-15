@@ -12,25 +12,12 @@ CFLAGS = -Wall -Wextra -O2
 
 all: toplevel
 
-# test-list: bin/list.c tests/lists/test-list.c 
-# 	$(CC) $(CFLAGS) -Ibin -o $@ $^
-
-# .PHONY:	lists
-
-# lists: test-list
-# 	./test-list
-
-all: toplevel
-
 # "make toplevel" compiles the Wampus compiler
 toplevel: bin/ast.ml bin/parser.mly bin/scanner.mll bin/toplevel.ml bin/codegen.ml bin/semant.ml list.o
 	dune build
 
 list.o:
 	$(CC) $(CFLAGS) -c -o bin/list.o bin/list.c
-
-# %.o:# bin/%.c
-# 	$(CC) $(CFLAGS) -c -o bin/$@ bin/$*.c
 
 # "make test" Compiles everything and runs the regression tests
 .PHONY: test
