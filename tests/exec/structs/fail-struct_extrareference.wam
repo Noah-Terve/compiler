@@ -1,0 +1,21 @@
+/* Structs */
+struct Dog {
+	string name;
+	int age;
+};
+
+struct Cat {
+	string name;
+	int age;
+};
+template @l T @r
+struct Animals {
+	T a;
+};
+
+int main () {
+    Animals @l Cat @r my_animal;
+    Animals @l Cat @r my_animal2;
+    my_animal.a.name = my_animal2.a.name.name;
+}
+main();

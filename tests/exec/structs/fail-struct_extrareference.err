@@ -1,0 +1,1 @@
+Fatal error: exception Failure("Attempted to access a member of something that is not a struct")
