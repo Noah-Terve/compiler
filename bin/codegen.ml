@@ -165,6 +165,21 @@ let translate program =
     let _ = L.build_store lstruct str_ptr builder in *)
     lstruct
   in
+
+  let rec instantitateall_structs t name builder =
+    let (types, _) = try List.split (StringMap.find name struct_decls)
+      with Not_found -> raise(Failure("Struct name is not a valid struct")) in
+    let arr_type = Array.of_list (List.map (fun t1 -> (match t1 with 
+    A.Struct(s) -> instantitateall_structs t1 s builder 
+    | _ -> init t1))  types) in
+    let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
+    let lty = L.element_type pty in (* getting the type of the struct *)
+    let lstruct = L.const_named_struct lty arr_type in
+    (* (str_ptr, bind n str_ptr envs) *)
+    let str_ptr = L.build_alloca lty name builder in
+    let _ = L.build_store lstruct str_ptr builder in
+    str_ptr
+  in
     (* name : struct declaration *)
     (* sname : the struct *)
     (* sid: member of struct *)
@@ -588,12 +603,14 @@ define i32 @list_length(ptr noundef %0) #0 {
             A.Struct(name) -> 
               (* let _ = Printf.fprintf stderr "inhere" in *)
               (* raise (Failure "Not implemented") *)
+              (* let str_ptr = instantitateall_structs t name builder in *)
+              let _ = Printf.fprintf stderr "sanity" in 
               let lstruct = instantitate_struct t name in
-              let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
+              let pty = ltype_of_typ t in 
               let lty = L.element_type pty in (* getting the type of the struct *)
-              let str_ptr = (L.build_alloca lty n builder) in
+              let str_ptr = (L.build_alloca lty "inbinddec" builder) in
               let _ = L.build_store lstruct str_ptr builder in
-              let str_ptr_ptr = L.build_alloca pty n builder in
+              let str_ptr_ptr = L.build_alloca pty "inbindec2" builder in
               let _ = L.build_store str_ptr str_ptr_ptr builder in
               (str_ptr_ptr, bind n str_ptr_ptr envs)
               (* let (types, _) = try List.split (StringMap.find name struct_decls)
@@ -632,7 +649,7 @@ define i32 @list_length(ptr noundef %0) #0 {
         (L.build_store llvalue elm_ptr builder, envs)
         (* let index = List.find_index  *)
       | SStructAccess (sdnames, sids) -> 
-        let llstruct = L.build_load (lookup (List.hd sids) envs) "hey" builder in 
+        let llstruct = L.build_load (lookup (List.hd sids) envs) (List.hd sids) builder in 
         let elm_ptr = find_nested_struct (cdr sids) sdnames llstruct builder in 
         (L.build_load elm_ptr (List.hd (List.rev sids)) builder, envs)
       | SBindAssign (t, var_name, e) ->
@@ -645,26 +662,22 @@ define i32 @list_length(ptr noundef %0) #0 {
         (* Build the array of values for struct *)
         let (_, names) = List.split (StringMap.find name struct_decls) in
         (* function that takes in the two lists -> if expr is another struct literal, pass in an additional variable prev_name *)
-        (* let array = Array.of_list  *)
-        let llvaluelist = (List.map2 (fun e n -> 
-            let (e1, _) = (match e with 
-              (lt, SStructExplicit (t, _, el)) -> expr builder (lt, TempFix (t, n, el)) envs
-              | (A.Struct(_), SId(s1)) -> (L.build_load (lookup s1 envs) "to_another_struct" builder, envs)
-              | _ -> expr builder e envs)
-            in e1) el names) in
-        let add_elem acc (value, index) = L.build_insertvalue acc value index "building_struct" builder in
-        let ord_val_pairs = (List.combine llvaluelist (List.init (List.length llvaluelist) (fun i -> i))) in
-        let lstruct = List.fold_left add_elem init_struct ord_val_pairs in
-        (* Build the struct *)
+          (* let array = Array.of_list  *)
         let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
         let lty = L.element_type pty in (* getting the type of the struct *)
         let str_ptr = L.build_alloca lty n builder in
+        let llvaluelist = (List.map2 (fun e n -> 
+            let (e1, _) = (match e with 
+              (lt, SStructExplicit (t, _, el)) ->  expr builder (lt, TempFix (t, n, el)) envs
+              | (A.Struct(_), SId(s1)) -> (L.build_load (lookup s1 envs) "to_another_struct_in_temp_fix" builder, envs)
+              | _ -> expr builder e envs)
+            in e1) el names) in
+        let add_elem acc (value, index) = L.build_insertvalue acc value index "building_struct_in_temp_fix" builder in
+        let ord_val_pairs = (List.combine llvaluelist (List.init (List.length llvaluelist) (fun i -> i))) in
+        let lstruct = List.fold_left add_elem init_struct ord_val_pairs in
+        (* Build the struct *)
         
         let _ = L.build_store lstruct str_ptr builder in
-
-        (* this breaks it, needs a single pointer at the beginning REWRITE *)
-
-        (* let str_ptr = instantitate_struct t n array builder in *)
         (str_ptr, envs)
         | _ -> raise (Failure "Should only be a struct"))
       | SStructExplicit(t, n, el) ->
@@ -673,6 +686,9 @@ define i32 @list_length(ptr noundef %0) #0 {
         let init_struct = instantitate_struct t name in
         (* Build the array of values for struct *)
         let (_, names) = List.split (StringMap.find name struct_decls) in
+        let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
+        let lty = L.element_type pty in (* getting the type of the struct *)
+        let str_ptr = L.build_alloca lty n builder in
         (* function that takes in the two lists -> if expr is another struct literal, pass in an additional variable prev_name *)
         (* let array = Array.of_list  *)
         let llvaluelist = (List.map2 (fun e n -> 
@@ -685,9 +701,6 @@ define i32 @list_length(ptr noundef %0) #0 {
         let ord_val_pairs = (List.combine llvaluelist (List.init (List.length llvaluelist) (fun i -> i))) in
         let lstruct = List.fold_left add_elem init_struct ord_val_pairs in
         (* Build the struct *)
-        let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
-        let lty = L.element_type pty in (* getting the type of the struct *)
-        let str_ptr = L.build_alloca lty n builder in
         
         let _ = L.build_store lstruct str_ptr builder in
 

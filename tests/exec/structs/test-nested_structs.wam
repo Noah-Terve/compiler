@@ -15,17 +15,26 @@ struct Cat {
 struct MyAnimals {
     Dog d;
     Cat c;
+    int r;
 };
 struct MyResponsibilities {
     MyAnimals a;
+    int r;
 };
-
-MyAnimals a = #l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r #r;
+Cat c = #l 2, 9, "kitty", "terve" #r;
+MyAnimals a = #l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r, 15 #r;
 print @l int @r (a.d.age);
-MyResponsibilities me;
-print @l int @r (me.a.c.age);
+MyResponsibilities me = #l#l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r, 15 #r, 20 #r;
+Dog d;
+print @l int @r (d.age);
+/* d.age = 5; */
 /*
-me.a = #l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r #r;
+MyResponsibilities me2;
+me2.a = #l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r, 15 #r; */
+print @l int @r (me.a.d.age);
+me.a = #l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r, 15 #r;
+/*
+print @l int @r (me.a.c.age);
 */
 /*
 me.a = a;
