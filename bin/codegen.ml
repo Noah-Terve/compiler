@@ -103,6 +103,7 @@ let translate program =
   (* Create an LLVM module -- this is a "container" into which we'll 
     generate actual code *)
   let the_module = L.create_module context "Wampus" in
+  let top_builder = L.builder context in
   let pointer_t = L.pointer_type in
   (* Creating a map of structs *)
   let struct_types =
@@ -170,7 +171,7 @@ let translate program =
     let (types, _) = try List.split (StringMap.find name struct_decls)
       with Not_found -> raise(Failure("Struct name is not a valid struct")) in
     let arr_type = Array.of_list (List.map (fun t1 -> (match t1 with 
-    A.Struct(s) -> instantitateall_structs t1 s builder 
+    A.Struct(s) -> let i = instantitateall_structs t1 s builder in i
     | _ -> init t1))  types) in
     let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
     let lty = L.element_type pty in (* getting the type of the struct *)
@@ -202,7 +203,7 @@ let translate program =
       (* environments could be an issue here *)
       let sformals = StringMap.find (List.hd sdecls) struct_decls in
       let index = find_index sformals sid 0 in
-      let _ = Printf.fprintf stderr "got here" in 
+      (* let _ = Printf.fprintf stderr "got here" in  *)
       let elm_ptr = L.build_struct_gep llstruct index sid builder in 
       let next_llstruct = (L.build_load elm_ptr sid builder) in 
       (find_nested_struct sids next_sdecls next_llstruct builder)
@@ -601,16 +602,13 @@ define i32 @list_length(ptr noundef %0) #0 {
       | SBindDec (t, n) -> 
           (match t with 
             A.Struct(name) -> 
-              (* let _ = Printf.fprintf stderr "inhere" in *)
-              (* raise (Failure "Not implemented") *)
-              (* let str_ptr = instantitateall_structs t name builder in *)
-              let _ = Printf.fprintf stderr "sanity" in 
-              let lstruct = instantitate_struct t name in
+              (* let lstruct = instantitate_struct t name in *)
+              let str_ptr = instantitateall_structs t name builder in
               let pty = ltype_of_typ t in 
-              let lty = L.element_type pty in (* getting the type of the struct *)
-              let str_ptr = (L.build_alloca lty "inbinddec" builder) in
-              let _ = L.build_store lstruct str_ptr builder in
-              let str_ptr_ptr = L.build_alloca pty "inbindec2" builder in
+              (* let lty = L.element_type pty in getting the type of the struct *)
+              (* let str_ptr = (L.build_alloca lty n builder) in *)
+              (* let _ = L.build_store lstruct str_ptr builder in *)
+              let str_ptr_ptr = L.build_alloca pty n builder in
               let _ = L.build_store str_ptr str_ptr_ptr builder in
               (str_ptr_ptr, bind n str_ptr_ptr envs)
               (* let (types, _) = try List.split (StringMap.find name struct_decls)
@@ -634,12 +632,12 @@ define i32 @list_length(ptr noundef %0) #0 {
           (value_to_assign, envs)
       | SStructAssign (sdnames, sids, e) ->
         (* let _ = Printf.fprintf stderr "Assigning a struct value" in *)
-        let llstruct = L.build_load (lookup (List.hd sids) envs) "temp" builder in
+        let llstruct = L.build_load (lookup (List.hd sids) envs) (List.hd sids) builder in
         (* environments could be an issue here *)
         let (llvalue, envs) = (match e with 
         (* could also do struct access here... *)
-            (A.Struct(_), SId(s1)) -> (L.build_load (lookup s1 envs) "val_to_assign" builder, envs)
-          | (lt, SStructExplicit(t, n, el)) -> expr builder (lt, TempFix (t, n, el)) envs
+            (A.Struct(_), SId(s1)) -> (L.build_load (lookup s1 envs) s1 builder, envs)
+          | (lt, SStructExplicit(t, n, el)) -> let _ = Printf.fprintf stderr "%s" n in expr builder (lt, SNestedStructExplicit (t, n, el)) envs
           | _ -> expr builder e envs) in
         (* get the formals of sname *)
         let elm_ptr = find_nested_struct (cdr sids) sdnames llstruct builder in
@@ -655,7 +653,7 @@ define i32 @list_length(ptr noundef %0) #0 {
       | SBindAssign (t, var_name, e) ->
           let (_, envs) = expr builder (t, SBindDec (t, var_name)) envs in
           expr builder (t, SAssign (var_name, e)) envs
-      | TempFix (t, n, el) ->
+      | SNestedStructExplicit (t, n, el) ->
         ( match t with 
         A.Struct(name) -> 
         let init_struct = instantitate_struct t name in
@@ -668,11 +666,11 @@ define i32 @list_length(ptr noundef %0) #0 {
         let str_ptr = L.build_alloca lty n builder in
         let llvaluelist = (List.map2 (fun e n -> 
             let (e1, _) = (match e with 
-              (lt, SStructExplicit (t, _, el)) ->  expr builder (lt, TempFix (t, n, el)) envs
-              | (A.Struct(_), SId(s1)) -> (L.build_load (lookup s1 envs) "to_another_struct_in_temp_fix" builder, envs)
+              (lt, SStructExplicit (t, _, el)) -> expr builder (lt, SNestedStructExplicit (t, n, el)) envs
+              | (A.Struct(_), SId(s1)) -> (L.build_load (lookup s1 envs) s1 builder, envs)
               | _ -> expr builder e envs)
             in e1) el names) in
-        let add_elem acc (value, index) = L.build_insertvalue acc value index "building_struct_in_temp_fix" builder in
+        let add_elem acc (value, index) = L.build_insertvalue acc value index "building_struct" builder in
         let ord_val_pairs = (List.combine llvaluelist (List.init (List.length llvaluelist) (fun i -> i))) in
         let lstruct = List.fold_left add_elem init_struct ord_val_pairs in
         (* Build the struct *)
@@ -693,8 +691,8 @@ define i32 @list_length(ptr noundef %0) #0 {
         (* let array = Array.of_list  *)
         let llvaluelist = (List.map2 (fun e n -> 
             let (e1, _) = (match e with 
-              (lt, SStructExplicit (t, _, el)) -> expr builder (lt, TempFix (t, n, el)) envs
-              | (A.Struct(_), SId(s1)) -> (L.build_load (lookup s1 envs) "to_another_struct" builder, envs)
+              (lt, SStructExplicit (t, _, el)) -> expr builder (lt, SNestedStructExplicit (t, n, el)) envs
+              | (A.Struct(_), SId(s1)) -> (L.build_load (lookup s1 envs) s1 builder, envs)
               | _ -> expr builder e envs)
             in e1) el names) in
         let add_elem acc (value, index) = L.build_insertvalue acc value index "building_struct" builder in

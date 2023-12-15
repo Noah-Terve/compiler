@@ -24,7 +24,7 @@ and sx =
   | SStructAccess of string list * string list
   | SListExplicit of sexpr list
   | SSetExplicit of sexpr list
-  | TempFix of typ * string * sexpr list
+  | SNestedStructExplicit of typ * string * sexpr list
   | SNoexpr
 
 type sstmt =
@@ -76,7 +76,7 @@ let rec string_of_sexpr (t, e) =
   | SCall(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
   | SBindAssign (_, id, e) -> id ^ " = " ^ string_of_sexpr e
-  | SBindDec (_, id) -> id
+  | SBindDec (_, id) -> "BindDec" ^ id
   | SStructAssign (_, ids, e) -> String.concat "." ids ^ " = " ^ string_of_sexpr e
   | SStructAccess (_, sids) -> String.concat "." sids
   | SListExplicit el -> "[" ^ String.concat ", " (List.map string_of_sexpr el) ^ "]"

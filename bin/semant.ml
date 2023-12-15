@@ -190,7 +190,7 @@ let check (units : program) =
                             " arguments in struct" ^ struc_body.sname))
           else
             let sexpr_list = check_struct_explicits struc_binds struc_exprs envs is_toplevel in
-            (lt, SStructExplicit(lt, s, sexpr_list))
+            (lt, SNestedStructExplicit(lt, s, sexpr_list))
         | _ -> raise (Failure "Should be a struct"))
       | _ -> check_expr expr envs is_toplevel)
     in let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ string_of_typ t
@@ -413,7 +413,7 @@ let check (units : program) =
                               " arguments in struct" ^ struc_body.sname))
             else
               let sexpr_list = check_struct_explicits struc_binds struc_exprs envs is_toplevel in
-              (lt, SStructExplicit(Struct(last_struc_name), last_struc_name, sexpr_list))
+              (lt, SNestedStructExplicit(Struct(last_struc_name), last_struc_name, sexpr_list))
         | _ -> check_expr e envs not_toplevel) in
         let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
           string_of_typ rt ^ " in " ^ string_of_expr e in

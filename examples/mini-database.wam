@@ -4,7 +4,8 @@
 
 template @l T @r 
 struct database { 
-    list @l T @r data_list; 
+    /* list @l T @r data_list; */
+    T test_student;
     int numElements; 
 };
 
@@ -23,7 +24,8 @@ int insertFront(list @l T @r aList, T aElement) {
 template @l T @r 
 int insertBack(list @l T @r aList, T aElement){
     int length = list_length @l T @r (aList);
-    list @l T @r updatedList = list_insert @l T @r (aList, length - 1, aElement);
+    print @l int @r (length);
+    /* list @l T @r updatedList = list_insert @l T @r (aList, length - 1, aElement); */
 
     return 0;
 }
@@ -97,26 +99,27 @@ int print_studentList ( list @l Student_data @r aList){
 /*
 */
 
+{
 
-
-database @l Student_data @r data; 
+database @l Student_data @r data = #l #l 3, "yo", "hey" #r, 1 #r; 
 /** Inserting Students **/ 
 
 /* list @l Student_data @r database.data_list = []; */
 
+print @l int @r (data.test_student.studentId);
 
-list @l Student_data @r student_list = data.data_list;
+/*list @l Student_data @r student_list = data.data_list;*/
 Student_data s = #l 3, "Song", "Hyun-min" #r;
 Student_data s1 = #l 3, "Kane", "Harry" #r;
-int a = insertBack @l Student_data @r (student_list, s ); 
-int a = insertBack @l Student_data @r (student_list, s1); 
 /*
+int a = insertBack @l Student_data @r (student_list, s); 
+int a = insertBack @l Student_data @r (student_list, s1); 
 int a = insertBack(student_list, #l 3, "Tomiyasu", "Hiro" #r ); 
 int a = insertBack(student_list, #l 3, "Alba", "Danny" #r ); 
+print_studentList(data.data_list);
 */
-print_studentList(data.data_list); 
 
-
+}
 
 /** Sort list **/ 
 /** Deleting Students **/ 
