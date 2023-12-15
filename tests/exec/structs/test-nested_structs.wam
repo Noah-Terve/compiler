@@ -19,12 +19,18 @@ struct MyAnimals {
 struct MyResponsibilities {
     MyAnimals a;
 };
-
+/*
+int foo (Dog d) {
+    return d.age;
+} */
+Dog d;
+d.age;
+/* foo(d); */
+/*
 MyAnimals a = #l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r #r;
 print @l int @r (a.d.age);
 MyResponsibilities me;
 print @l int @r (me.a.c.age);
-/*
 me.a = #l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r #r;
 */
 /*
