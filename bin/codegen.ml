@@ -509,6 +509,7 @@ define i32 @list_length(ptr noundef %0) #0 {
           | (A.String, _, _) | (_, _, A.String) -> ((get_string_binop op) e1' e2' "temp" builder, envs)
           (* | (A.List(t1), A.Equal, A.List(t2)) -> iterate through both lists e1' and e2' and call expr builder with a new op on each individual value*)
           (* Integer-like cases *)
+          | (A.Char, _, A.Char) -> (L.const_bitcast ((get_int_lbinop op) e1' e2' "tmp" builder) i8_t, envs)
           | (_, _, _) -> (get_int_lbinop op) e1' e2' "tmp" builder, envs)
       
       | SUnop(op, e) ->
