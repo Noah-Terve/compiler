@@ -25,7 +25,6 @@ rule token = parse
 | "template" { TEMPLATE }
 | "break"  { BREAK }
 | "continue" { CONTINUE }
-| "in"     { IN }
 | "%"      { MOD }
 | "["      { LBRACK }
 | "]"      { RBRACK }

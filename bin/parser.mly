@@ -10,7 +10,7 @@ open Ast
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN
 %token NOT EQ NEQ LEQ GEQ AND OR TIMESEQ DIVIDEEQ MODEQ MINUSEQ PLUSEQ
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT STRING CHAR
-%token LBRACK RBRACK LARROW RARROW IN MOD TEMPLATE
+%token LBRACK RBRACK LARROW RARROW MOD TEMPLATE
 %token LIST SET BREAK CONTINUE STRUCT DOT LTAGS RTAGS LAT RAT
 %token <int> LITERAL
 %token <bool> BLIT
@@ -117,7 +117,6 @@ stmt:
   | RETURN expr_opt SEMI                    { Return $2                }
   | LBRACE stmt_list RBRACE                 { Block(List.rev $2)       }
   | WHILE LPAREN expr RPAREN stmt           { While($3, $5)            }
-  | FOR LPAREN expr IN expr RPAREN stmt     { ForEnhanced ($3, $5, $7) }
   | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)           }
   | IF LPAREN expr RPAREN stmt %prec NOELSE { If($3, $5, Block([]))    }
   | FOR LPAREN expr_opt SEMI expr 
