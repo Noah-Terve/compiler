@@ -36,14 +36,10 @@ rule token = parse
 | "set"    { SET }
 | "*="     { TIMESEQ }
 | "/="     { DIVIDEEQ }
-| "&="     { INTERSECTEQ }
-| "|="     { UNIONEQ }
 | "%="     { MODEQ }
 | "-="     { MINUSEQ }
 | "+="     { PLUSEQ }
 | "struct" { STRUCT }
-| "&"  { INTERSECT}
-| "|"  { UNION }
 | '('      { LPAREN }
 | ')'      { RPAREN }
 | '{'      { LBRACE }

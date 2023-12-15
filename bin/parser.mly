@@ -8,9 +8,9 @@ open Ast
 %}
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN
-%token NOT EQ NEQ LEQ GEQ AND OR TIMESEQ DIVIDEEQ INTERSECTEQ UNIONEQ MODEQ MINUSEQ PLUSEQ
+%token NOT EQ NEQ LEQ GEQ AND OR TIMESEQ DIVIDEEQ MODEQ MINUSEQ PLUSEQ
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT STRING CHAR
-%token LBRACK RBRACK LARROW RARROW IN MOD TEMPLATE UNION INTERSECT ISIN
+%token LBRACK RBRACK LARROW RARROW IN MOD TEMPLATE
 %token LIST SET BREAK CONTINUE STRUCT DOT LTAGS RTAGS LAT RAT
 %token <int> LITERAL
 %token <bool> BLIT
@@ -25,17 +25,12 @@ open Ast
 %nonassoc NOELSE
 %nonassoc ELSE
 %right ASSIGN 
-%right UNIONEQ 
-%right INTERSECTEQ
 %right PLUSEQ MINUSEQ 
 %right TIMESEQ DIVIDEEQ MODEQ
 %left OR 
 %left AND 
 %left EQ NEQ
 %left LARROW RARROW LEQ GEQ
-%left ISIN
-%left UNION
-%left INTERSECT
 %left PLUS MINUS 
 %left TIMES DIVIDE MOD 
 %right NOT
@@ -160,16 +155,9 @@ expr:
   | ID ASSIGN expr      { Assign($1, $3)                           }
   | ID MODEQ expr       { Assign($1, Binop (Id($1), Mod,       $3))}
   | ID PLUSEQ expr      { Assign($1, Binop (Id($1), Add,       $3))}
-  | ID UNIONEQ expr     { Assign($1, Binop (Id($1), Union,     $3))}
   | ID MINUSEQ expr     { Assign($1, Binop (Id($1), Sub,       $3))}
   | ID TIMESEQ expr     { Assign($1, Binop (Id($1), Mult,      $3))}
   | ID DIVIDEEQ expr    { Assign($1, Binop (Id($1), Div,       $3))}
-  | ID INTERSECTEQ expr { Assign($1, Binop (Id($1), Intersect, $3))}
-
-  // Set and List Operators
-  | expr ISIN expr      {Binop ($1, Isin,      $3)}
-  | expr UNION expr     {Binop ($1, Union,     $3)}
-  | expr INTERSECT expr {Binop ($1, Intersect, $3)}
 
   // Variable Declarations
   | typ ID             { BindDec    ($1, $2)    }
@@ -201,11 +189,9 @@ struct_expr:
   | ID struct_opts ASSIGN expr      { StructAssign ($1 :: List.rev $2, $4) }
   | ID struct_opts MODEQ expr       { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Mod,       $4))}
   | ID struct_opts PLUSEQ expr      { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Add,       $4))}
-  | ID struct_opts UNIONEQ expr     { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Union,     $4))}
   | ID struct_opts MINUSEQ expr     { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Sub,       $4))}
   | ID struct_opts TIMESEQ expr     { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Mult,      $4))}
   | ID struct_opts DIVIDEEQ expr    { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Div,       $4))}
-  | ID struct_opts INTERSECTEQ expr { StructAssign ($1 :: List.rev $2, Binop (StructAccess($1 :: List.rev $2), Intersect, $4))}
 
 struct_opts:
     DOT ID             { [$2]     }
