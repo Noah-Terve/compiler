@@ -4,8 +4,7 @@
 
 template @l T @r 
 struct database { 
-    /* list @l T @r data_list; */
-    T test_student;
+    list @l T @r data_list;
     int numElements; 
 };
 
@@ -22,12 +21,11 @@ int insertFront(list @l T @r aList, T aElement) {
 
 
 template @l T @r 
-int insertBack(list @l T @r aList, T aElement){
+list @l T @r insertBack(list @l T @r aList, T aElement){
     int length = list_length @l T @r (aList);
-    print @l int @r (length);
-    /* list @l T @r updatedList = list_insert @l T @r (aList, length - 1, aElement); */
+    list @l T @r updatedList = list_insert @l T @r (aList, length, aElement);
 
-    return 0;
+    return updatedList;
 }
 
 
@@ -79,7 +77,6 @@ int sortByLastName(list@l Student_data @r aList){
 
 int print_studentList ( list @l Student_data @r aList){
     int numStudents = list_length @l Student_data @r (aList); 
-
     for (int i = 0; i < numStudents; i += 1){
         Student_data currStudent = list_at @l Student_data @r (aList, i);
 
@@ -91,7 +88,7 @@ int print_studentList ( list @l Student_data @r aList){
         print @l string @r ("First name: ");
         print @l string @r (currStudent.firstName); 
 
-        print @l string @r ("Last name: ");
+        print @l string @r (" Last name: ");
         print @l string @r (currStudent.lastName);
         println @l string @r ("}");
     }
@@ -101,22 +98,25 @@ int print_studentList ( list @l Student_data @r aList){
 
 {
 
-database @l Student_data @r data = #l #l 3, "yo", "hey" #r, 1 #r; 
+database @l Student_data @r data; 
 /** Inserting Students **/ 
 
-/* list @l Student_data @r database.data_list = []; */
+/* menhir error? */
+data.data_list = [];
 
-print @l int @r (data.test_student.studentId);
 
-/*list @l Student_data @r student_list = data.data_list;*/
-Student_data s = #l 3, "Song", "Hyun-min" #r;
-Student_data s1 = #l 3, "Kane", "Harry" #r;
-/*
-int a = insertBack @l Student_data @r (student_list, s); 
-int a = insertBack @l Student_data @r (student_list, s1); 
-int a = insertBack(student_list, #l 3, "Tomiyasu", "Hiro" #r ); 
-int a = insertBack(student_list, #l 3, "Alba", "Danny" #r ); 
+Student_data s = #l 1, "Song", "Hyun-min" #r;
+Student_data s1 = #l 2, "Kane", "Harry" #r;
+Student_data s2 = #l 3, "Tomiyasu", "Hiro" #r;
+Student_data s3 = #l 4, "Alba", "Danny" #r;
+list @l Student_data @r student_list = [s];
+student_list = insertBack @l Student_data @r (student_list, s); 
+student_list = insertBack @l Student_data @r (student_list, s1); 
+student_list = insertBack @l Student_data @r (student_list, s2 ); 
+student_list = insertBack @l Student_data @r (student_list, s3 ); 
+data.data_list = student_list;
 print_studentList(data.data_list);
+/*
 */
 
 }

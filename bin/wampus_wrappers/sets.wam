@@ -111,7 +111,7 @@ set @l T @r set_add (set @l T @r s, T elem) {
 template @l T @r
 set @l T @r set_remove (set @l T @r s, T elem) {
     s = set_of_list @l T @r (s);
-    for (int i = list_length @l T @r (s); i >= 0; i -= 1) {
+    for (int i = list_length @l T @r (s) - 1; i >= 0; i -= 1) {
         if (list_at @l T @r (s, i) == elem) {
             list_remove @l T @r (s, i);
         }
