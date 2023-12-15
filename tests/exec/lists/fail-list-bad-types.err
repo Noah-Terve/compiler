@@ -1,0 +1,1 @@
+Fatal error: exception Failure("illegal assignment list @l int @r = list @l bool @r in l = [true, false, true]")

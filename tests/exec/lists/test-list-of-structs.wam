@@ -1,0 +1,24 @@
+struct dog {
+    int age;
+    string name;
+};
+
+int main() {
+    dog d;
+    d.age = 5;
+    d.name = "Buddy";
+    dog c = #l 10, "spot" #r;
+
+    list @l dog @r l = [c, d ];
+
+    println @l int @r(list_length @l dog @r(l));
+
+    dog f = list_at @l dog @r(l, 1);
+    println @l string @r(f.name);
+
+    f.age = 11;
+    println @l int @r(f.age);
+    println @l int @r(c.age);
+}
+
+main();

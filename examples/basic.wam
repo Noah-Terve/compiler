@@ -1,10 +1,13 @@
-/* Author: Christopher Sasanuma */
-/* Modified by: Neil Powers */
+/* Author: Christopher Sasanuma, Neil Powers */
 /*** Lists with strings ***/
+int write(string s) {
+    println @l string @r (s);
+}
+
 list @l string @r tStops = ["North Station", "Haymarket", "Government Center"]; 
 
-println @l string @r ("******************************");
-println @l string @r ("Initial stops: ");
+write("******************************");
+write("Initial stops: ");
 printlist @l string @r (tStops);
 
 list @l string @r updatedStops = list_insert @l string @r (tStops, 0, "Lechmere"); 
@@ -12,30 +15,30 @@ list @l string @r updatedStops = list_insert @l string @r (tStops, 0, "East Some
 
 int list_len = list_length @l string @r (tStops);
 
-println @l string @r ("\n\nUpdated stops changed in reference to original list: ");
+write("\n\nUpdated stops changed in reference to original list: ");
 printlist @l string @r (tStops); 
 
-println @l string @r ("\n\nRemoving last stop (Gov. Cen.) from the list: ");
+write("\n\nRemoving last stop (Gov. Cen.) from the list: ");
 list_remove @l string @r (tStops, list_len - 1);
 printlist @l string @r (tStops);
 
-println @l string @r ("\n\nRemoving first stop (East Somerville) from the list: ");
+write("\n\nRemoving first stop (East Somerville) from the list: ");
 list_remove @l string @r (tStops, 0);
 printlist @l string @r (tStops);
 
-println @l string @r ("\n\nRemoving second stop (North Station) from the list: ");
+write("\n\nRemoving second stop (North Station) from the list: ");
 list_remove @l string @r (tStops, 1);
 printlist @l string @r (tStops);
 
-println @l string @r ("\n\nNew first stop is supposed to be Lechmere: ");
+write("\n\nNew first stop is supposed to be Lechmere: ");
 print @l string @r (list_at @l string @r (tStops, 0));
 
 while (list_length @l string @r (tStops) > 0) {
     list @l string @r currList = list_remove @l string @r (tStops, 0);
 }
 
-println @l string @r ("\n\nRemoved all stops from the list: ");
+write("\n\nRemoved all stops from the list: ");
 printlist @l string @r (tStops);
-println @l string @r ("\n******************************");
+write("\n******************************");
 
 

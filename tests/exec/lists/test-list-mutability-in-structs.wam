@@ -1,0 +1,16 @@
+struct Dog {
+    string name;
+    list @l int @r friends;
+};
+
+{
+    Dog d;
+    d.name = "Buddy";
+    d.friends = [ 1, 2, 3 ];
+
+    printlnlist @l int @r(d.friends);
+
+    list_insert @l int @r(d.friends, 0, 4);
+
+    printlnlist @l int @r(d.friends);
+}
