@@ -167,14 +167,14 @@ let translate program =
     lstruct
   in
 
-  let rec instantitateall_structs t name builder =
+  let rec instantiate_all_structs t name builder =
     (* instantiate the struct itself *)
     let init_struct = instantitate_struct t name in 
 
     let (types, _) = try List.split (StringMap.find name struct_decls)
       with Not_found -> raise(Failure("Struct name is not a valid struct")) in
     let llvaluelist = List.map (fun t1 -> (match t1 with 
-    A.Struct(s) -> instantitateall_structs t1 s builder
+    A.Struct(s) -> instantiate_all_structs t1 s builder
     | _ -> init t1))  types in
     let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
     let lty = L.element_type pty in (* getting the type of the struct *)
@@ -610,7 +610,7 @@ define i32 @list_length(ptr noundef %0) #0 {
           (match t with 
             A.Struct(name) -> 
               (* let lstruct = instantitate_struct t name in *)
-              let str_ptr = instantitateall_structs t name builder in
+              let str_ptr = instantiate_all_structs t name builder in
               let pty = ltype_of_typ t in 
               (* let lty = L.element_type pty in getting the type of the struct *)
               (* let str_ptr = (L.build_alloca lty n builder) in *)
