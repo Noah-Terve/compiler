@@ -168,16 +168,22 @@ let translate program =
   in
 
   let rec instantitateall_structs t name builder =
+    (* instantiate the struct itself *)
+    let init_struct = instantitate_struct t name in 
+
     let (types, _) = try List.split (StringMap.find name struct_decls)
       with Not_found -> raise(Failure("Struct name is not a valid struct")) in
-    let arr_type = Array.of_list (List.map (fun t1 -> (match t1 with 
-    A.Struct(s) -> let i = instantitateall_structs t1 s builder in i
-    | _ -> init t1))  types) in
+    let llvaluelist = List.map (fun t1 -> (match t1 with 
+    A.Struct(s) -> instantitateall_structs t1 s builder
+    | _ -> init t1))  types in
     let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
     let lty = L.element_type pty in (* getting the type of the struct *)
-    let lstruct = L.const_named_struct lty arr_type in
-    (* (str_ptr, bind n str_ptr envs) *)
-    let str_ptr = L.build_alloca lty name builder in
+    (* Add values again -> for nested structs *)
+    let add_elem acc (value, index) = L.build_insertvalue acc value index "building_empty_struct" builder in
+    let ord_val_pairs = (List.combine llvaluelist (List.init (List.length llvaluelist) (fun i -> i))) in
+    let lstruct = List.fold_left add_elem init_struct ord_val_pairs in
+    
+    let str_ptr = L.build_alloca lty "empty_struct" builder in
     let _ = L.build_store lstruct str_ptr builder in
     str_ptr
   in

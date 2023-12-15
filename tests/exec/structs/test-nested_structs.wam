@@ -22,13 +22,14 @@ struct MyResponsibilities {
     int r;
 };
 int func () {
+    MyAnimals a;
     MyResponsibilities me2;
     print @l int @r (me2.r);
     me2.a = #l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r, 15 #r;
     return me2.a.d.age;
 }
-/*
 Cat c = #l 2, 9, "kitty", "terve" #r;
+/*
 MyAnimals a = #l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r, 15 #r;
 print @l int @r (a.d.age);
 MyResponsibilities me = #l#l #l 4, "dogo", "terve", "golden" #r, #l 2, 9, "kitty", "terve" #r, 15 #r, 20 #r; */
