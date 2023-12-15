@@ -180,16 +180,3 @@ bool set_subset (set @l T @r s1, set @l T @r s2) {
     return set_superset @l T @r (s2, s1);
 }
 
-template @l T @r
-bool set_equals (set @l T @r s1, set @l T @r s2) {
-    /* enforce invariant on both before checking the set opperations */
-    set @l T @r temp1 = set_of_list @l T @r (s1);
-    set @l T @r temp2 = set_of_list @l T @r (s2);
-
-    if (set_superset @l T @r (temp1, temp2)) {
-        if (set_size @l T @r (temp1) == set_size @l T @r (temp2)) {
-            return true;
-        }
-    }
-    return false;
-}

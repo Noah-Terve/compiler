@@ -39,8 +39,7 @@ let add_std_lib units =
   let set_intersection = {fname = "set_intersection"; typ = List(Templated("T")); formals = [(List(Templated("T")), "s1"); (List(Templated("T")), "s2")]; fun_t_list = ["T"]; body = [Expr(BindAssign(List(Templated("T")), "new_set", ListExplicit([]))); Expr(BindAssign(Int, "len", TemplatedCall("list_length", [Templated("T")], [Id("s1")]))); For(BindAssign(Int, "i", Literal(0)), Binop(Id("i"), Less, Id("len")), Assign("i", Binop(Id("i"), Add, Literal(1))), Block([If(TemplatedCall("list_contains", [Templated("T")], [Id("s2"); TemplatedCall("list_at", [Templated("T")], [Id("s1"); Id("i")])]), Block([Expr(Assign("new_set", TemplatedCall("set_add", [Templated("T")], [Id("new_set"); TemplatedCall("list_at", [Templated("T")], [Id("s1"); Id("i")])])))]), Block([]))])); Return(Id("new_set"))]} in
   let set_superset = {fname = "set_superset"; typ = Bool; formals = [(List(Templated("T")), "s1"); (List(Templated("T")), "s2")]; fun_t_list = ["T"]; body = [Expr(BindAssign(List(Templated("T")), "temp1", TemplatedCall("set_of_list", [Templated("T")], [Id("s1")]))); Expr(BindAssign(List(Templated("T")), "temp2", TemplatedCall("set_of_list", [Templated("T")], [Id("s2")]))); Expr(BindAssign(Int, "len", TemplatedCall("list_length", [Templated("T")], [Id("temp2")]))); For(BindAssign(Int, "i", Literal(0)), Binop(Id("i"), Less, Id("len")), Assign("i", Binop(Id("i"), Add, Literal(1))), Block([If(Unop(Not, TemplatedCall("list_contains", [Templated("T")], [Id("temp1"); TemplatedCall("list_at", [Templated("T")], [Id("temp2"); Id("i")])])), Block([Return(BoolLit(false))]), Block([]))])); Return(BoolLit(true))]} in
   let set_subset = {fname = "set_subset"; typ = Bool; formals = [(List(Templated("T")), "s1"); (List(Templated("T")), "s2")]; fun_t_list = ["T"]; body = [Return(TemplatedCall("set_superset", [Templated("T")], [Id("s2"); Id("s1")]))]} in
-  let set_equals = {fname = "set_equals"; typ = Bool; formals = [(List(Templated("T")), "s1"); (List(Templated("T")), "s2")]; fun_t_list = ["T"]; body = [Expr(BindAssign(List(Templated("T")), "temp1", TemplatedCall("set_of_list", [Templated("T")], [Id("s1")]))); Expr(BindAssign(List(Templated("T")), "temp2", TemplatedCall("set_of_list", [Templated("T")], [Id("s2")]))); If(TemplatedCall("set_superset", [Templated("T")], [Id("temp1"); Id("temp2")]), Block([If(Binop(TemplatedCall("set_size", [Templated("T")], [Id("temp1")]), Equal, TemplatedCall("set_size", [Templated("T")], [Id("temp2")])), Block([Return(BoolLit(true))]), Block([]))]), Block([])); Return(BoolLit(false))]} in
-
+  
   Fdecl(print) :: Fdecl(println) :: 
   Fdecl(list_insert) :: Fdecl(list_remove) ::
   Fdecl(list_at) :: Fdecl(list_length) :: Fdecl(list_replace) ::  
@@ -50,6 +49,6 @@ let add_std_lib units =
   Fdecl (printlnset) ::
   Fdecl (isin) :: Fdecl (set_add) :: Fdecl (set_remove) ::
   Fdecl (set_union) :: Fdecl (set_intersection) :: Fdecl (set_superset) ::
-  Fdecl (set_subset) :: Fdecl (set_equals) ::
+  Fdecl (set_subset) ::
 
   units
