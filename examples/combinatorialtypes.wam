@@ -1,0 +1,61 @@
+list @l int @r l = [];
+list @l int @r my_list = [1, 2, 3, 4, 5];
+
+int length = list_length @l int @r (my_list);
+
+/* my_list = [1, 2, 3, 4, 5, 5] */
+my_list = list_insert @l int @r (my_list, length, 5);
+
+/* my_list = [2, 3, 4, 5, 5] */
+my_list = list_remove @l int @r (my_list, 0);
+
+printlist @l int @r (my_list);
+
+
+set @l int @r my_set = {};
+set @l int @r my_set2 = {6, 7, 8, 9};
+
+my_set2 = set_add @l int @r (my_set2, 5);
+/* my_set2 = {5, 6, 7, 8, 9} */
+
+my_set2 = set_remove @l int @r (my_set2, 9); 
+/* my_set2 = {5, 6, 7, 8} */
+
+set @l int @r my_set3 = set_of_list @l int @r (my_list);
+/* my_set3 = {2, 3, 4, 5} */
+
+my_set = set_union @l int @r (my_set2, my_set3);
+printlnset @l int @r (my_set);
+/* my_set = {4, 3, 2, 8, 7, 6, 5} */
+
+my_set = set_intersection @l int @r (my_set2, my_set3);
+printlnset @l int @r (my_set);
+/* my_set = {5} */
+
+
+struct Dog {
+	string name;
+	int age;
+};
+
+struct Cat {
+	string name;
+	int age;
+};
+template @l T @r
+struct Animals {
+	T a;
+};
+
+int main () {
+    Animals @l Dog @r my_animal1 = #l #l "felix", 5 #r #r;
+    Cat c = #l "luna", 3 #r;
+    Animals @l Cat @r my_animal2;
+    my_animal2.a = c;
+    println @l string @r (my_animal1.a.name);
+    println @l string @r (my_animal2.a.name);
+    return 0;
+}
+main();
+/* 
+*/
