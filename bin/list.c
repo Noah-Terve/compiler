@@ -63,9 +63,7 @@ node **list_remove(node **head, unsigned int idx) {
         curr = curr->next;
     }
 
-    if (curr == NULL) {
-        return false;
-    }
+    assert(curr != NULL);
 
     if (prev == NULL) {
         *head = curr->next;
@@ -80,17 +78,15 @@ node **list_remove(node **head, unsigned int idx) {
 void *list_at(node **head, unsigned int idx) {
     assert(head && *head);
 
-    node * curr = *head;
+    node *curr = *head;
 
-    for (unsigned int i = 0; i < idx; i++) {
-        if (idx == 0) {
-            return curr->data;
-        }
-
-        curr = curr -> next;
-
+    for (unsigned int i = 0; i < idx && curr != NULL; i++) {
+        curr = curr->next;
     }
-    return curr -> data;
+
+    assert(curr != NULL);
+
+    return curr->data;
 }
 
 unsigned int list_length(node **head) {
