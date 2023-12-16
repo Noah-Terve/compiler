@@ -464,7 +464,7 @@ let check (units : program) =
           else
             bind id typ envs
         in *)
-        let (lt, e1') = check_expr (Assign(id, e1)) envs' not_toplevel in 
+        let (_, e1') = check_expr (Assign(id, e1)) envs' not_toplevel in 
         (match e1' with
             (* This match prevents multiple assigns in codegen *)
             SAssign (_, expr) -> (envs', (typ, SBindAssign(typ, id, expr)))

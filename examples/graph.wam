@@ -95,7 +95,6 @@ int print_graph (Graph @l T @r g) {
 template @l T @r
 int remove_node(Graph @l T @r g, node @l T @r n) {
     int len = list_length @l node @l T @r @r (g.nodes);
-    print @l int @r (len);
     for (int i = len - 1; i >= 0; i -= 1) {
         node @l T @r n0 = list_at @l node @l T @r @r (g.nodes, i);
         /* make sure the node doesn't think it's connected to the node we removed */
@@ -130,30 +129,31 @@ Graph @l int @r g = new_graph @l int @r();
 
 
 */
-Graph @l int @r g = #l {}, 0 #r; 
+{
+    Graph @l int @r g = #l {}, 0 #r; 
 
-int len = list_length @l node @l int @r @r (g.nodes);
-println @l int @r (len);
+    int len = list_length @l node @l int @r @r (g.nodes);
+    println @l int @r (len);
 
-node @l int @r n0 = #l "first", 3, {"hello"} #r;
-n0.connections = set_add @l string @r (n0.connections,  "hello");
+    node @l int @r n0 = #l "first", 3, {"hello"} #r;
+    n0.connections = set_add @l string @r (n0.connections,  "hello");
 
-node @l int @r n1 = #l "hello", 5, {"first"} #r;
-print_node @l int @r (n0);
-print_node @l int @r (n1);
+    node @l int @r n1 = #l "hello", 5, {"first"} #r;
+    print_node @l int @r (n0);
+    print_node @l int @r (n1);
 
-add_node @l int @r (g, n0);
-add_node @l int @r (g, n1);
-
-
-len = list_length @l node @l int @r @r (g.nodes);
-println @l int @r (len);
-
-println @l bool @r (has_node @l int @r (g, "first"));
+    add_node @l int @r (g, n0);
+    add_node @l int @r (g, n1);
 
 
-print_graph @l int @r (g);
-/*
-remove_node @l int @r (g, n0);
-print_graph @l int @r (g);
-*/
+    len = list_length @l node @l int @r @r (g.nodes);
+    println @l int @r (len);
+
+    print @l string @r ("Graph has node first: ");
+    println @l bool @r (has_node @l int @r (g, "first"));
+
+    print_graph @l int @r (g);
+    println @l string @r ("Removing node n0 from the graph..");
+    remove_node @l int @r (g, n0);
+    print_graph @l int @r (g);
+}

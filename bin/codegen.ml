@@ -70,8 +70,8 @@ let translate program =
   let main_function = 
     { styp = A.Int;
       sfname = "main";
-      sformals = []; (* TODO: Remove formals from funcitons; use environment instead *)
-      slocals = []; (* TODO: Remove locals from functions; use environment instead*)
+      sformals = [];
+      slocals = [];
       sbody = List.rev (List.fold_left (fun acc units -> match units with 
                                 SStmt struc -> struc :: acc 
                                 | _ -> acc) [] program);} in
@@ -95,7 +95,6 @@ let translate program =
   and float_t    = L.double_type context
   and struct_t   = L.named_struct_type context
   and str_t      = L.pointer_type (L.i8_type context)
-  and void_t     = L.void_type   context 
   and voidptr_t  = L.pointer_type (L.i8_type context) in
   let nodeptr_t  = L.pointer_type (L.named_struct_type context "Node") in
   let list_t     = L.pointer_type (L.struct_type context [| voidptr_t; nodeptr_t |]) in
@@ -103,7 +102,6 @@ let translate program =
   (* Create an LLVM module -- this is a "container" into which we'll 
     generate actual code *)
   let the_module = L.create_module context "Wampus" in
-  let top_builder = L.builder context in
   let pointer_t = L.pointer_type in
   (* Creating a map of structs *)
   let struct_types =
@@ -154,7 +152,7 @@ let translate program =
     | (_, n)::rest -> if (n = sid) then i else find_index rest sid (i +1)
   in
   (* Builds a struct with name n and body of values *)
-  let instantitate_struct t name =
+  let instantiate_struct t name =
     let (types, _) = try List.split (StringMap.find name struct_decls)
       with Not_found -> raise(Failure("Struct name is not a valid struct")) in
     let arr_type = Array.of_list (List.map init types) in
@@ -169,7 +167,7 @@ let translate program =
 
   let rec instantiate_all_structs t name builder =
     (* instantiate the struct itself *)
-    let init_struct = instantitate_struct t name in 
+    let init_struct = instantiate_struct t name in 
 
     let (types, _) = try List.split (StringMap.find name struct_decls)
       with Not_found -> raise(Failure("Struct name is not a valid struct")) in
@@ -197,19 +195,15 @@ let translate program =
   let rec find_nested_struct sids sdecls llstruct builder = match sids with
       [] -> raise (Failure "In struct access Not possible")
     | name :: [] -> 
-      (* TODO: which sdecls should be a list of size 1*)
-      (* let _ = print_endline name in  *)
       let sformals = StringMap.find (List.hd sdecls) struct_decls in
       let index = find_index sformals name 0 in 
       let elm_ptr = L.build_struct_gep llstruct index name builder in
       (elm_ptr)
     | sid :: sids ->
-      (* let _ = print_endline sid in  *)
       let next_sdecls = (cdr sdecls) in
       (* environments could be an issue here *)
       let sformals = StringMap.find (List.hd sdecls) struct_decls in
       let index = find_index sformals sid 0 in
-      (* let _ = Printf.fprintf stderr "got here" in  *)
       let elm_ptr = L.build_struct_gep llstruct index sid builder in 
       let next_llstruct = (L.build_load elm_ptr sid builder) in 
       (find_nested_struct sids next_sdecls next_llstruct builder)
@@ -282,18 +276,9 @@ let translate program =
   let list_at_t          = L.function_type voidptr_t [| list_head_t; i32_t |] in
   let list_at_func       = L.declare_function "list_at" list_at_t the_module in
 
-  let list_print        = L.function_type void_t [| list_head_t |] in 
-  let list_print_func   = L.declare_function "list_int_print" list_print the_module in
-
   (* String function *)
   let string_concat_t = L.function_type str_t [| str_t; str_t |] in
   let string_concat_f = L.declare_function "string_concat" string_concat_t the_module in
-
-  (* TODO: Remove me! *)
-  let build_debug_print_list list_head builder = 
-    let _ = L.build_call list_print_func [| list_head |] "" builder in
-    list_head in
-  (* TODO: ADD THE SET BUILT-INS HERE *)
 
   (* ; Function Attrs: noinline nounwind optnone ssp uwtable
 define i32 @list_length(ptr noundef %0) #0 {
@@ -340,8 +325,9 @@ define i32 @list_length(ptr noundef %0) #0 {
   return len;
 } *)
 
-  (* list_len implementation: *)
-  let list_len_func_new =
+  (* list_len implementation: 
+   * partially implemented *)
+  let _ =
     let list_len_func = L.define_function "list_length_new" list_len_t the_module in
     let builder = L.builder_at_end context (L.entry_block list_len_func) in
     (* formal: node **head *)
@@ -366,7 +352,7 @@ define i32 @list_length(ptr noundef %0) #0 {
     
     
     let _ = L.position_at_end loop_bb builder in
-    let next_ptr = L.build_struct_gep (L.build_load curr "curr" builder) 1 "next_ptr" builder in
+    let _ = L.build_struct_gep (L.build_load curr "curr" builder) 1 "next_ptr" builder in
     (* let _ = L.build_store (L.build_load next_ptr "next" builder) curr builder in *)
     let _ = L.build_store (L.build_add (L.build_load len "len" builder) (L.const_int i32_t 1) "len" builder) len builder in
     let _ = L.build_br loop_cond_bb builder in
@@ -569,15 +555,12 @@ define i32 @list_length(ptr noundef %0) #0 {
           let (value, _) = expr builder e3 envs in
           let mallocd_value = L.build_bitcast (build_malloc builder value) voidptr_t "voidptr" builder in
           let _ = L.build_call list_insert_func [| list_head; idx; mallocd_value |] "" builder in
-          (* let _ = build_debug_print_list list_head builder in *)
-          (* let _ = L.build_call list_print_func [| list_head |] "" builder in *)
           (list_head, envs)
 
       | SCall (s, [e1; e2]) when (String.starts_with ~prefix:"_list_remove" s) ->
           let (list_head, _) = expr builder e1 envs in
           let (idx, _) = expr builder e2 envs in
           let _ = L.build_call list_remove_func [| list_head; idx |] "" builder in
-          (* let _ = build_debug_print_list list_head builder in *)
           (list_head, envs)
 
       | SCall (s, [e1; e2; e3]) when (String.starts_with ~prefix:"_list_replace" s) ->
@@ -586,59 +569,36 @@ define i32 @list_length(ptr noundef %0) #0 {
           let (value, _) = expr builder e3 envs in
           let mallocd_value = L.build_bitcast (build_malloc builder value) voidptr_t "voidptr" builder in
           let _ = L.build_call list_replace_func [| list_head; idx; mallocd_value |] "" builder in
-          (* let _ = build_debug_print_list list_head builder in *)
           (list_head, envs)
 
       | SCall (f, args) ->
           let (fdef, fdecl) = StringMap.find f function_decls in
           let (llargs, envs) = List.fold_left (fun (llargs, envs) (t, e) -> 
             let (e', envs) = expr builder (t, e) envs in
-            (* let e'' = match e' with 
-                 nodeptr_t -> (L.pointer_type nodeptr_t)
-               | e' 
-
-              e'' :: llargs, envs)) ([], envs) args in
-            *)
             (e' :: llargs, envs)) ([], envs) args in
           let result = (A.string_of_typ fdecl.styp) ^ "result" in
-          (* let _ = print_endline result in *)
-
-          (* (L.build_call fdef (Array.of_list llargs) result builder, envs) *)
           (L.build_call fdef (Array.of_list (List.rev llargs)) result builder, envs)
   
       | SBindDec (t, n) -> 
           (match t with 
             A.Struct(name) -> 
-              (* let lstruct = instantitate_struct t name in *)
               let str_ptr = instantiate_all_structs t name builder in
               let pty = ltype_of_typ t in 
-              (* let lty = L.element_type pty in getting the type of the struct *)
-              (* let str_ptr = (L.build_alloca lty n builder) in *)
-              (* let _ = L.build_store lstruct str_ptr builder in *)
               let str_ptr_ptr = L.build_alloca pty n builder in
               let _ = L.build_store str_ptr str_ptr_ptr builder in
               (str_ptr_ptr, bind n str_ptr_ptr envs)
-              (* let (types, _) = try List.split (StringMap.find name struct_decls)
-                with Not_found -> raise(Failure("Struct name is not a valid struct")) in
-              let arr_type = Array.of_list (List.map init types) in
-              let str_ptr = instantitate_struct t n arr_type builder in
-              (str_ptr, bind n str_ptr envs) *)
           | A.List (_) ->
               let list_ptr = L.build_alloca (L.pointer_type (ltype_of_typ t)) n builder in
               let _        = L.build_store (init t) list_ptr builder in
               (list_ptr, bind n list_ptr envs)
           | _ -> 
-              (* let _ = L.build_call "_print.string" (A.string_of_typ t) in *)
-              (* let _ = Printf.fprintf stderr "generating code for binding %s\n" n in *)
               let local_var = L.build_alloca (ltype_of_typ t) n builder in
               (init t, bind n local_var envs))
       | SAssign (var_name, e) ->
           let (value_to_assign, envs) = expr builder e envs in 
-          (* let _ = print_endline var_name in    *)
           let _ = L.build_store value_to_assign (lookup var_name envs) builder in
           (value_to_assign, envs)
       | SStructAssign (sdnames, sids, e) ->
-        (* let _ = Printf.fprintf stderr "Assigning a struct value" in *)
         let llstruct = L.build_load (lookup (List.hd sids) envs) (List.hd sids) builder in
         (* environments could be an issue here *)
         let (llvalue, envs) = (match e with 
@@ -648,9 +608,6 @@ define i32 @list_length(ptr noundef %0) #0 {
           | _ -> expr builder e envs) in
         (* get the formals of sname *)
         let elm_ptr = find_nested_struct (cdr sids) sdnames llstruct builder in
-        (* let sformals = StringMap.find name struct_decls in
-        let index = find_index sformals sid 0 in
-        let elm_ptr = L.build_struct_gep llstruct index sid builder in  *)
         (L.build_store llvalue elm_ptr builder, envs)
       | SStructAccess (sdnames, sids) -> 
         let llstruct = L.build_load (lookup (List.hd sids) envs) (List.hd sids) builder in 
@@ -662,7 +619,7 @@ define i32 @list_length(ptr noundef %0) #0 {
       | SNestedStructExplicit (t, n, el) ->
         ( match t with 
         A.Struct(name) -> 
-        let init_struct = instantitate_struct t name in
+        let init_struct = instantiate_struct t name in
         (* Build the array of values for struct *)
         let (_, names) = List.split (StringMap.find name struct_decls) in
         (* function that takes in the two lists -> if expr is another struct literal, pass in an additional variable prev_name *)
@@ -687,7 +644,7 @@ define i32 @list_length(ptr noundef %0) #0 {
       | SStructExplicit(t, n, el) ->
         ( match t with 
         A.Struct(name) -> 
-        let init_struct = instantitate_struct t name in
+        let init_struct = instantiate_struct t name in
         (* Build the array of values for struct *)
         let (_, names) = List.split (StringMap.find name struct_decls) in
         let pty = ltype_of_typ t in (* getting the pointer of the struct type *)
@@ -712,14 +669,13 @@ define i32 @list_length(ptr noundef %0) #0 {
         let str_ptr_ptr = L.build_alloca pty n builder in
         let _ = L.build_store str_ptr str_ptr_ptr builder in
 
-        (* let str_ptr = instantitate_struct t n array builder in *)
+        (* let str_ptr = instantiate_struct t n array builder in *)
         (str_ptr_ptr, bind n str_ptr_ptr envs)
         | _ -> raise (Failure "Should only be a struct"))
 
         (* let rec expr builder ((_, e) : sexpr) (envs: L.llvalue StringMap.t list) = match e with *)
       
       | SListExplicit l -> 
-          (* TODO: Remove the List.rev and fold_right when inserting instead *)
           let l = List.rev (l) in
           (* Fold through the list 'l' and recursively runs expr builder -> 
              returns tuple of list of llvals and environment *)
@@ -760,7 +716,6 @@ define i32 @list_length(ptr noundef %0) #0 {
              3) Loads the value of list_ptr into listval variable
              4) Calls list_insert_func with (head, index of insertion, node to insert)
              *)
-          (* TODO: This is extremely ugly *)
           let _ = List.fold_left 
             (fun _ (i, llval) -> 
               (* Cast each llval to a void * before inserting it into the list *)
