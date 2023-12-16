@@ -1,0 +1,19 @@
+testing basic set printing
+a: {1, 2, 3, 4}
+size: 4
+b: {1, 2}
+size: 2
+testing set add and remove
+[1,2] + 3
+{3, 1, 2}
+{1, 2}
+testing subset and superset
+0
+1
+1
+0
+testing set intersection and union
+a U b
+{4, 3, 2, 1}
+a inter b
+{2, 1}

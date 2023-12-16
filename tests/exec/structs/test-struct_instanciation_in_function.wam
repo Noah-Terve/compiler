@@ -9,7 +9,7 @@ box @l int @r make_new_box (box @l int @r b) {
     return b0;
 }
 int main () {
-   box @l int @r b;
+    box @l int @r b;
     b.item = 3;
 
     make_new_box(b); 

@@ -14,7 +14,7 @@ the executable and any intermediary files generated along the way.
 
 To run our compiler on a source file written in our language, and generate all
 intermediate files generated, run:
-    > `./bin/compile.sh [.wam file] [executable name]`
+    > `./compile.sh [.wam file] [executable name]`
 
 To run all the tests and see the status of each, use:
     > `make test`
@@ -78,17 +78,63 @@ Variable declaration and assignment, all in:
     test-dec-in-block.wam - variable declaration in non-global scope
     test-dec.wam - variable declaration in global scope
 
-
 Variable Scope tests, all in:
 /tests/exec/variable_scope
-    fail-test-function-scope.wam - a function tries to use the local variables of the function that called it (not passed in as formal parameters)
+    fail-function-scope.wam - a function tries to use the local variables of the function that called it (not passed in as formal parameters)
     test-f-args.wam - updating environment within an expression e.g. `f(x = x + 1)`
     test-globals-in-blocks.wam - global variables should be accessible in all scopes
+    test-structparam.wam - testing structs as parameters
+
+Control Flow tests, in:
+/tests/exec/control_flow/
+    test-for-if1 - testing control flow with multiple levels of if statements
+
+List tests, in:
+/tests/exec/lists/
+    fail-insert.wam - attempts to insert a value into a list at an invalid index
+    fail-list-bad-types.wam - mismatch between variable and list 
+    test-at.wam - access to first, center, and last elements of a list
+    test-insert.wam - insertion to first, center, and last index of a list
+    test-list-empty.wam - verifies you can create empty lists/sets and use them in expressions
+    test-list-length.wam - verifies that the length of a list is correct
+    test-list-mutability-in-structs.wam - ensures lists in structs are accessible and mutable
+    test-list-of-structs.wam - tests making and use of structs inside of lists
+    test-list-remove.wam - tests removing from the first, center, and last index of a list
+    test-list-scope.wam - tests lists mutability and scope by passing it around to different contexts
+    test-list.wam - tests declaration and assignment of lists in global and local scopes
+    test-more-lists.wam - lists of lists of lists and lists
+    test-nested-list.wam - tests list of lists (inc. empty lists)
+    test-replace.wam - tests replacement of first, center, and last index of a list
 
 
-Things we still need to add to our compiler:
-   Lists
-   Sets
-   Structs
-   We don't enforce reachable returns right now
-   enhanced for loops
+Overloading of functions tests, in:
+/tests/exec/overloading_functions/
+    fail-basic_overloading.wam - Overloading two functions witth the same name and same parameter types
+    test-basic_overloading.wam - Overloading three functions with the same name and three different parameter types
+
+Print debugging tests, in:
+/tests/exec/print_debugging
+    nestedprint.wam - Testing printing an integer  5 in the function main
+
+Struct tests, in:
+/tests/exec/structs/
+    fail-struct_extrareference.wam - A struct access that tries to access another extra member vaariable
+    fail-struct_self_reference.wam - A struct that tries to refer to itself
+    test-basic_structs.wam - Test for declaring, accessing, and assign struct values
+    test-nested_structs.wam - Test for declaring, accessing, and assign nested struct values
+    test-nested_templated_structs.wam - Test for declaring, accessing, and assign nested and templated struct values
+    test-struct_instanciation_in_function.wam - Test that you can make a struct in a function and it works correctly
+    test-struct_self_reference_via_templating.wam - test that a struct can psudo reference itself via templating
+    test-templated_structs.wam - test a templated struct and setting it to struct literals
+
+Set tests, in:
+/tests/exec/sets/
+    test-set.wam - test that all the set functions are workin
+    test-empty.wam - test that empty sets are correctly typed
+
+Random tests, in :
+/tests/exec/random/
+    function_call.wam - test a basic function call
+    test-scope1.wam - test nested scope
+    test-whilebreak.wam - test break statements
+    test-whilecontinue.wam - test continue statements
